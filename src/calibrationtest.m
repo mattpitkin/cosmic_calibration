@@ -1,6 +1,8 @@
 global verbose;
 verbose = 1;
 
+% hello
+
 % create a chirp-like signal
 a0 = 1e-20; % initial amplitude
 t0 = 0; % initial time
