@@ -64,6 +64,10 @@ function [post_samples, logPsamples] = mcmc_sampler(data, likelihood, ...
 %               distribution. If not set the default is 0.1
 %   recalcprop - the number of samples after which to recalculate the
 %                proposal distribution during burn-in. Default is 1000.
+%   NensembleStretch - number of point to use in a ensemble 'stretch' move
+%                      sampler. If this is set and non-zero the 'stretch'
+%                      move will be used to draw a new sample instead of
+%                      using the covariance matrix.
 
 global verbose;
 
@@ -81,6 +85,7 @@ dimupdate = 0; % update all dimensions duing each MCMC sample
 outputBi = 0; % do not output the burn in samples
 propscale = 0.1; % scale the proposal distribution by this factor
 recalciter = 1000; % number of samples from which to recalculate the proposal
+Nstretch = 0; % number of ensemble stretch move points
 
 if optargin > 1
     for i = 1:2:optargin
@@ -140,6 +145,15 @@ if optargin > 1
                     recalciter = varargin{i+1};
                 end
             end
+        elseif strcmpi(varargin{i}, 'NensembleStretch') % number of ensmeble stretch move points
+            if ~isempty(varargin{i+1})
+                if varargin{i+1} < 0
+                    fprintf(1, 'Number of ensemble points must be a positive integer greater than 0. Defaulting to 10\n');
+                    Nstretch = 10;
+                else
+                    Nstretch = varargin{i+1};
+                end
+            end
         end
     end
 end
@@ -168,11 +182,6 @@ else
     error('Error... Expecting a model function!');
 end
 
-% allocate memory for the samples
-Ntot = Nmcmc + Nburnin;
-post_samples = zeros(Ntot, D); % posterior samples
-logPsamples = zeros(Ntot, 1); % log posterior values
-
 % acceptance ratio
 acc = 0;
 accBi = 0;
@@ -183,43 +192,58 @@ if verbose
 end
 
 % draw initial sample from the prior, get posterior and then rescale
-inisample = zeros(1, D);
-newPrior = -inf;
-for i=1:D
-    priortype = char(prior(i,2));
-    p4 = cell2mat(prior(i,4));
-    p3 = cell2mat(prior(i,3));
-    
-    % currently only handles uniform or Gaussian priors
-    if strcmp(priortype, 'uniform')
-        inisample(i) = p3 + (p4-p3)*rand;
-        
-        pv = -log(p4-p3);
-        newPrior = logplus(newPrior, pv);
-    elseif strcmp(priortype, 'gaussian')
+if Nstretch == 0
+    Nens = 1;
+else
+    Nens = Nstretch;
+end
+
+% allocate memory for the samples
+Ntot = Nmcmc + Nburnin;
+post_samples = zeros(Ntot, D); % posterior samples
+logPsamples = zeros(Ntot, 1); % log posterior values
+
+inisample = zeros(Nens, D);
+newPrior = -inf*ones(Nens,1);
+for j=1:Nens
+    for i=1:D
+        priortype = char(prior(i,2));
+        p4 = cell2mat(prior(i,4));
         p3 = cell2mat(prior(i,3));
-        inisample(i) = p3 + p4*randn;
+    
+        % currently only handles uniform or Gaussian priors
+        if strcmp(priortype, 'uniform')
+            inisample(j, i) = p3 + (p4-p3)*rand;
         
-        pv = -l2p - inisample(i)^2/2;
-        newPrior = logplus(newPrior, pv);
-    elseif strcmp(priortype, 'jeffreys')
-        % uniform in log space
-        inisample(i) = 10.^(log10(p3) + (log10(p4)-log10(p3))*rand);
+            pv = -log(p4-p3);
+            newPrior(j) = logplus(newPrior(j), pv);
+        elseif strcmp(priortype, 'gaussian')
+            p3 = cell2mat(prior(i,3));
+            inisample(j,i) = p3 + p4*randn;
         
-        pv = -log(10^(inisample(i)*(log10(p4) - log10(p3)) + log10(p3)));
-        newPrior = logplus(newPrior, pv);
+            pv = -l2p - inisample(j, i)^2/2;
+            newPrior(j) = logplus(newPrior(j), pv);
+        elseif strcmp(priortype, 'jeffreys')
+            % uniform in log space
+            inisample(j, i) = 10.^(log10(p3) + (log10(p4)-log10(p3))*rand);
+        
+            pv = -log(10^(inisample(j, i)*(log10(p4) - log10(p3)) + log10(p3)));
+            newPrior(j) = logplus(newPrior(j), pv);
+        end
     end
 end
 
-parvals = cat(1, num2cell(inisample'), extraparvals);
-logL = feval(flike, data, model, parnames, parvals);
+for j=1:Nens
+    parvals = cat(1, num2cell(inisample(j,:)'), extraparvals);
+    logL = feval(flike, data, model, parnames, parvals);
 
-% now scale the parameters, so that uniform parameters range from 0->1, 
-% and Gaussian parameters have a mean of zero and unit standard deviation
-inisample = scale_parameters(prior, inisample);
+    % now scale the parameters, so that uniform parameters range from 0->1, 
+    % and Gaussian parameters have a mean of zero and unit standard deviation
+    inisample(j,:) = scale_parameters(prior, inisample(j,:));
 
-post_samples(1,:) = inisample;
-logPsamples(1) = logL + newPrior;
+    post_samples(j,:) = inisample(j,:);
+    logPsamples(j) = logL + newPrior(j);
+end
 
 % set up initial covariance matrix to be unity
 cholmat = propscale*eye(D); % an identity matrix
@@ -228,9 +252,11 @@ loginvtemp = log(1/temperature);
 
 i = 2;
 
+Nits = floor(Ntot/Nens);
+
 % run the MCMC
-while i < Ntot+1
-    if i < (1 + Nburnin/2)
+while i < Nits+1
+    if i < (1 + Nburnin/2) && Nens == 1
         % use annealing, so scale the temperature - have it fall and reach
         % 1 half way through the burn in - also only update every
         % recalciter samples
@@ -241,7 +267,7 @@ while i < Ntot+1
         temptemp = 1;
     end
     
-    if i < Nburnin && mod(i, recalciter) == 0
+    if i < Nburnin && mod(i, recalciter) == 0 && Nens == 1
         % if no new points have been accepted rescale the covariance matrix
         if accBi == 0
             covmat = cholmat*cholmat';
@@ -257,31 +283,34 @@ while i < Ntot+1
         accBi = 0;
     end
     
-    [post_samples(i,:), logPsamples(i), ar] = ...
-        draw_mcmc_sample(post_samples(i-1,:), cholmat, ...
-        logPsamples(i-1), prior, data, likelihood, model, parnames, ...
+    % draw new sample, or ensemble of samples
+    [post_samples((i-1)*Nens+1:i*Nens,:), logPsamples((i-1)*Nens+1:i*Nens), ar] = ...
+        draw_mcmc_sample(post_samples((i-2)*Nens+1:(i-1)*Nens,:), cholmat, ...
+        logPsamples((i-2)*Nens+1:(i-1)*Nens), prior, data, likelihood, model, parnames, ...
         extraparvals, temptemp, dimupdate);
     
+    %post_samples((i-1)*Nens, :)
+    
     % check acceptance rate
-    if i < Nburnin
-        if ar
-            accBi = accBi + 1;
-        end
-    else
-        if ar
-            acc = acc + 1;
+    if Nens == 1
+        if i < Nburnin
+            if ar(1)
+                accBi = accBi + 1;
+            end
+        else
+            if ar(1)
+                acc = acc + 1;
+            end
         end
     end
     
     % print out acceptance rate
     if verbose
-        if ar
-            acctmp = acctmp + 1;
-        end
-        
-        if mod(i, niter) == 0
+        acctmp = acctmp + mean(ar);
+               
+        if mod(i, niter/Nens) == 0
             fprintf(1, '%i: Acceptance rate: %.1f%%\n', i, ...
-                100*acctmp/niter);
+                100*acctmp/(niter/Nens));
             acctmp = 0;
         end
     end
