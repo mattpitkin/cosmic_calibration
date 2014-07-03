@@ -50,7 +50,7 @@ ar = zeros(Nens,1);
 sampletmp = zeros(Nens, Npars);
 sampleOut = zeros(Nens, Npars);
 logPOut = zeros(Nens,1);
-propratio = 0;
+propratio = zeros(Nens,1);
 
 % if not using an ensemble of samples do this
 if Nens == 1
@@ -76,19 +76,12 @@ else
     
     % draw stretch value from between 1/a and a (uniformly in log(a))
     maxscale = 3;
-    R = rand;
+    R = rand(Nens,1);
     lm = log(maxscale);
     logscale = 2.*lm*R - lm;
     scale = exp(logscale); % scale factor
     propratio = logscale*Npars; % proposal ratio
-    
-    % check scale is within range
-    if scale < 1/maxscale || scale > maxscale
-        sampleOut = sampleIn;
-        logPOut = logPIn;
-        return
-    end
-    
+        
     if dimupdate > 0 && dimupdate < Npars
         r = randperm(Npars);
         propratio = logscale*dimupdate; % re-calculate proposal ratio
@@ -102,7 +95,7 @@ else
             i = randi(Nens);
         end
         
-        sampletmp(j,:) = scale*(sampleIn(j,:)-sampleIn(i,:));
+        sampletmp(j,:) = scale(j)*(sampleIn(j,:)-sampleIn(i,:));
         
         % check how many of the dimensions you want to update
         if dimupdate > 0 && dimupdate < Npars
@@ -191,7 +184,7 @@ for i=1:Nens
         logPnew = logLnew + newPrior;
         %logPIn(i)
         
-        ratio = ((logPnew - logPIn(i)) * temperature + propratio);
+        ratio = ((logPnew - logPIn(i)) * temperature + propratio(i));
         X = log(rand);
         
         % accpet/reject point using Metropolis-Hastings criterion
