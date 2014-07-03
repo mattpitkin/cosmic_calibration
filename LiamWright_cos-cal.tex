@@ -1,0 +1,38 @@
+\documentclass[a4paper]{article}
+
+\title{Modifications to Calibration files}
+\author{Liam Wright}
+
+\begin{document}
+\maketitle
+
+\section*{Initial}
+
+Modifications to the inspiraltest.m file:
+\begin{enumerate}
+   \item Move definition of $l2p = -\frac{1}{2}log(2\pi)$ from draw\_mcmc\_sample.m to mcmc\_sampler.m
+   \item Changing scale frequencies from a range of $F_{min}$ to $F_{max}$ to 125Hz.
+   \item In freqdomaininspiral.m had to change the scaleint to work for only one scale frequency.
+   \item Running the code with every variable as a set value, and then continuely adding more variables into the prior; each variable being:
+   \begin{enumerate}
+      \item Masses of each spiraling star having a value between 1 and 2.5 $M_{\odot}$. Uniform prior.
+      \item psi having a uniform prior with a value from $-\frac{\pi}{4}$ to $\frac{\pi}{4}$
+      \item phic having a uniform prior with a value from 0 to $2\pi$
+      \item Luminosity distance having a gaussian prior with a width of about 10\% of its injection distance.
+      \item Iota value with a gaussian prior. Width about 30\% of a radian and an injection angle of 0 radians.
+
+   \end{enumerate}
+   Remebering to change update in extraparams(...) to 1. \\
+
+   Comparing the standard deviations of post\_samples(:,1), the scale frequency.
+
+\end{enumerate}
+
+
+Next I used the effective\_sample\_size.m to work out the autocorrected length and effective number of uncorrelated samples in the post\_samples matrix with N parameters (same  from the prior). \\
+
+
+
+
+
+\end{document}
