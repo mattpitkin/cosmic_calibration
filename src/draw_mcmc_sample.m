@@ -1,9 +1,9 @@
-function [sampleOut, logPOut, ar] = draw_mcmc_sample(sampleIn, cholmat, ...
-    logPIn, prior, data, likelihood, model, parnames, extraparvals, ...
+function [sampleOut, logPOut, logPriorOut, ar] = draw_mcmc_sample(sampleIn, cholmat, ...
+    logPIn, logPriorIn, prior, data, likelihood, model, parnames, extraparvals, ...
     temperature, dimupdate)
 
-% function [sampleOut, logPOut, ar] = draw_mcmc_sample(sampleIn, cholmat, ...
-%    logLmin, prior, data, likelihood, model, Nmcmc, parnames, ...
+% function [sampleOut, logPOut, logPriorOut, ar] = draw_mcmc_sample(sampleIn, cholmat, ...
+%    logPIn, logPriorIn, prior, data, likelihood, model, Nmcmc, parnames, ...
 %    extraparvals, temperature, dimupdate)
 %
 % If sampleIn contains one sample then this function will draw a new
@@ -50,6 +50,7 @@ ar = zeros(Nens,1);
 sampletmp = zeros(Nens, Npars);
 sampleOut = zeros(Nens, Npars);
 logPOut = zeros(Nens,1);
+logPriorOut = zeros(Nens,1);
 propratio = zeros(Nens,1);
 
 % if not using an ensemble of samples do this
@@ -111,7 +112,7 @@ end
 
 for i=1:Nens
     % check sample(s) is within the (scaled) prior
-    newPrior = -inf;
+    newPrior = 0;
     outofbounds = 0;
 
     for j=1:Npars
@@ -144,11 +145,11 @@ for i=1:Nens
             end
                 
             pv = -log(p4-p3);
-            newPrior = logplus(newPrior, pv);
-                
+            newPrior = newPrior + pv;
+            
         elseif strcmp(priortype, 'gaussian')
             pv = -l2p - sampletmp(i,j)^2/2;
-            newPrior = logplus(newPrior, pv);
+            newPrior = newPrior + pv;
         elseif strcmp(priortype, 'jeffreys')
             behaviour = char(prior(j,5));
                 
@@ -165,13 +166,14 @@ for i=1:Nens
             end
                 
             pv = -log(10^(sampletmp(i,j)*(log10(p4) - log10(p3)) + log10(p3)));
-            newPrior = logplus(newPrior, pv);
+            newPrior = newPrior + pv;
         end
     end
     
     if outofbounds % reject point
         sampleOut(i,:) = sampleIn(i,:);
         logPOut(i) = logPIn(i);
+        logPriorOut(i) = logPriorIn(i);
     else
         % rescale sample back to its proper range for likelihood
         sc = rescale_parameters(prior, sampletmp(i,:));
@@ -182,7 +184,6 @@ for i=1:Nens
     
         % get posterior probability
         logPnew = logLnew + newPrior;
-        %logPIn(i)
         
         ratio = ((logPnew - logPIn(i)) * temperature + propratio(i));
         X = log(rand);
@@ -192,10 +193,12 @@ for i=1:Nens
             % reject the new sample
             sampleOut(i,:) = sampleIn(i,:);
             logPOut(i) = logPIn(i);
+            logPriorOut(i) = logPriorIn(i);
         else
             % accept the new sample
             sampleOut(i,:) = sampletmp(i,:);
             logPOut(i) = logPnew;
+            logPriorOut(i) = newPrior;
             ar(i) = 1;
         end
     end

@@ -1,4 +1,4 @@
-function [post_samples, logPsamples] = mcmc_sampler(data, likelihood, ...
+function [post_samples, logPsamples, logPriorsamples] = mcmc_sampler(data, likelihood, ...
           model, prior, extraparams, varargin)
 
 % function [post_samples, logPsamples] = mcmc_sampler(data, likelihood, ...
@@ -123,7 +123,7 @@ if optargin > 1
             end
         elseif strcmpi(varargin{i}, 'outputBi') % output the burn in chain along with the posterior
             if ~isempty(varargin{i+1})
-                if varargin{i+1} ~= 1 || varargin{i+1} ~= 0
+                if varargin{i+1} ~= 1 && varargin{i+1} ~= 0
                     fprintf(1, 'Argument for outputing burn in samples should be 0 (False) or 1 (True). Defaulting to 0\n');
                 else
                     outputBi = varargin{i+1};
@@ -202,9 +202,11 @@ end
 Ntot = Nmcmc + Nburnin;
 post_samples = zeros(Ntot, D); % posterior samples
 logPsamples = zeros(Ntot, 1); % log posterior values
+logPriorsamples = zeros(Ntot, 1); % log of prior values
 
 inisample = zeros(Nens, D);
-newPrior = -inf*ones(Nens,1);
+newPrior = zeros(Nens,1);
+l2p = 0.5*log(2*pi);
 for j=1:Nens
     for i=1:D
         priortype = char(prior(i,2));
@@ -216,19 +218,20 @@ for j=1:Nens
             inisample(j, i) = p3 + (p4-p3)*rand;
         
             pv = -log(p4-p3);
-            newPrior(j) = logplus(newPrior(j), pv);
+            newPrior(j) = newPrior(j) + pv;
         elseif strcmp(priortype, 'gaussian')
             p3 = cell2mat(prior(i,3));
-            inisample(j,i) = p3 + p4*randn;
+            r = randn;
+            inisample(j,i) = p3 + p4*r;
         
-            pv = -l2p - inisample(j, i)^2/2;
-            newPrior(j) = logplus(newPrior(j), pv);
+            pv = -l2p - r^2/2;
+            newPrior(j) = newPrior(j) + pv;
         elseif strcmp(priortype, 'jeffreys')
             % uniform in log space
             inisample(j, i) = 10.^(log10(p3) + (log10(p4)-log10(p3))*rand);
         
             pv = -log(10^(inisample(j, i)*(log10(p4) - log10(p3)) + log10(p3)));
-            newPrior(j) = logplus(newPrior(j), pv);
+            newPrior(j) = newPrior(j) + pv;
         end
     end
 end
@@ -243,6 +246,7 @@ for j=1:Nens
 
     post_samples(j,:) = inisample(j,:);
     logPsamples(j) = logL + newPrior(j);
+    logPriorsamples(j) = newPrior(j);
 end
 
 % set up initial covariance matrix to be unity
@@ -284,12 +288,12 @@ while i < Nits+1
     end
     
     % draw new sample, or ensemble of samples
-    [post_samples((i-1)*Nens+1:i*Nens,:), logPsamples((i-1)*Nens+1:i*Nens), ar] = ...
+    [post_samples((i-1)*Nens+1:i*Nens,:), logPsamples((i-1)*Nens+1:i*Nens), ...
+        logPriorsamples((i-1)*Nens+1:i*Nens), ar] = ...
         draw_mcmc_sample(post_samples((i-2)*Nens+1:(i-1)*Nens,:), cholmat, ...
-        logPsamples((i-2)*Nens+1:(i-1)*Nens), prior, data, likelihood, model, parnames, ...
-        extraparvals, temptemp, dimupdate);
-    
-    %post_samples((i-1)*Nens, :)
+        logPsamples((i-2)*Nens+1:(i-1)*Nens), ...
+        logPriorsamples((i-2)*Nens+1:(i-1)*Nens), prior, data, ...
+        likelihood, model, parnames, extraparvals, temptemp, dimupdate);
     
     % check acceptance rate
     if Nens == 1
@@ -328,6 +332,7 @@ end
 if ~outputBi
     post_samples = post_samples(end-(Nmcmc-1):end,:);
     logPsamples = logPsamples(end-(Nmcmc-1):end);
+    logPriorsamples = logPriorsamples(end-(Nmcmc-1):end);
 end
     
 return
