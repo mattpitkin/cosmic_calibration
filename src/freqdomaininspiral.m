@@ -17,6 +17,8 @@ nparams = lpn;
 scalefreqs = []; %empty matrix
 nbins = 0;
 
+sf1 = 1;
+
 update = 1; % by default update the inspiral signal
 
 % extract parameter values
@@ -26,24 +28,24 @@ for ii=1:nparams % between 1 and length of parnames
     switch parnames{ii}
         case 'sf1'
             sf1 = parvals{ii};
-        case 'sf2'
-            sf2 = parvals{ii};
-        case 'sf3'
-            sf3 = parvals{ii};
-        case 'sf4'
-            sf4 = parvals{ii};
-        case 'sf5'
-            sf5 = parvals{ii};
-        case 'sf6'
-            sf6 = parvals{ii};    
+        %case 'sf2'
+        %    sf2 = parvals{ii};
+        %case 'sf3'
+        %    sf3 = parvals{ii};
+        %case 'sf4'
+        %    sf4 = parvals{ii};
+        %case 'sf5'
+        %    sf5 = parvals{ii};
+        %case 'sf6'
+        %    sf6 = parvals{ii};    
         case 'fmin' % minimum start frequency of inspiral
             fmin = parvals{ii};
         case 'fmax' % end frequency of inspiral
             fmax = parvals{ii}; 
-        case 'scalefreqs'
-            scalefreqs = parvals{ii};
-        case 'nbins'
-            nbins = parvals{ii};
+        %case 'scalefreqs'
+        %    scalefreqs = parvals{ii};
+        %case 'nbins'
+        %    nbins = parvals{ii};
         case 'D' % luminosity distance (Mpc)
             Dl = parvals{ii};
         case 'm1' % mass of component 1 (solar masses)
@@ -103,13 +105,13 @@ end
 
 hf = zeros(length(fs), 1);
 
-if update == 1
-    % some constants
-    GAMMA = 0.5772156649015328606065120900824024; % Euler's constant
-    MTSUN_SI = 4.9254923218988636432342917247829673e-6; % geometrised solar mass in seconds 
-    MRSUN_SI = 1.4766254500421874513093320107664308e3; % geometrised solar mass in metres
-    PC_SI = 3.0856775807e16; % parsec in metres 
+% some constants
+GAMMA = 0.5772156649015328606065120900824024; % Euler's constant
+MTSUN_SI = 4.9254923218988636432342917247829673e-6; % geometrised solar mass in seconds 
+MRSUN_SI = 1.4766254500421874513093320107664308e3; % geometrised solar mass in metres
+PC_SI = 3.0856775807e16; % parsec in metres 
 
+if update == 1
     m = (1+z)*(m1 + m2);
     m_sec = m * MTSUN_SI;  % total mass in seconds
     eta = m1 * m2 / (m * m);
@@ -135,7 +137,7 @@ if update == 1
     pfl6 = -6848./21.;
     pfa7 = pi*(5./756.)*((15419335./336.) + (75703./2.)*eta - 14809.*eta^2);
 
-    amp0 = -(4.*m1*m2/(PC_SI*1e6*Dl))*MRSUN_SI*MTSUN_SI*sqrt(pi/12);
+    amp0 = -(4.*m1*m2)*MRSUN_SI*MTSUN_SI*sqrt(pi/12);
     shft = 2*pi*tc;
 
     % get indexes of frequencies to calculate
@@ -175,20 +177,29 @@ if update == 1
     % get antenna pattern at coalesence time
     [fp, fc] = antenna_pattern(det, ra, dec, psi, tc);
 
-    ci = cos(iota);
-
-    % cross polarisation
-    hc = 1i*ci*hf*fc;
-
-    % cross polarisation
-    hp = 0.5*(1+ci^2)*hf*fp;
+    hc = 1i*hf*fc;
+    
+    hp = hf*fp;
 end
- 
+
+ci = cos(iota);
+
+% cross polarisation
+hcn = hc*ci;
+
+% cross polarisation
+hpn = 0.5*(1+ci^2)*hp;
+
 % add plus and cross components
-hf = hc + hp;
+hf = hcn + hpn;
 
-if ~isempty(scalefreqs)    
+% scale by distance
+hf = hf / (PC_SI*1e6*Dl);
+
+%if ~isempty(scalefreqs)    
     % divide data by scale factor
-    hf = hf ./ 10.^(scaleint');
+%    hf = hf ./ 10.^(scaleint');
     %hf = hf ./ scaleint;
-end
+%end
+
+hf = hf*sf1;
