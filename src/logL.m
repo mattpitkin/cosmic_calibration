@@ -58,8 +58,14 @@ ys = y(v);
 Cs = C(v);
 mds = md(v);
 
+df = fs(2)-fs(1);
+
 % calculate the log likelihood
-logL = -0.5*real((conj(ys - mds).' ./ Cs.')*(ys - mds));
+dh = real((conj(ys).' ./ Cs.')*mds); % model crossed with data
+hh = real((conj(mds).' ./ Cs.')*mds); % model crossed with model
+dd = real((conj(ys).' ./ Cs.')*ys); % data crossed with data
+
+logL = 4*df*(dh - 0.5*(hh + dd));
 
 fprintf(1, '%le\n', logL);
 
