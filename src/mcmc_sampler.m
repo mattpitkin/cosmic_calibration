@@ -267,9 +267,14 @@ while i < Nits+1
         if i == 2 || mod(i, recalciter) == 0
             temptemp = temperature*exp(loginvtemp * (i-1)/(Nburnin/2));
         end
+    elseif i < (1 + (Nburnin/Nens)/2) && Nens > 1
+        if i == 2 || mod(i, recalciter/Nens) == 0
+            temptemp = temperature*exp(loginvtemp * (i-1)/((Nburnin/Nens)/2));
+        end
     else
         temptemp = 1;
     end
+    
     
     if i < Nburnin && mod(i, recalciter) == 0 && Nens == 1
         % if no new points have been accepted rescale the covariance matrix
