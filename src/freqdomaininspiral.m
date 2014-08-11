@@ -184,7 +184,11 @@ if update == 1
     else
         psis = resplut(:,1);
         dpsi = psis(2)-psis(1);
-        psibin = round((psi - psis(1))/dpsi);
+        if psi < psis(end)
+            psibin = ceil((psi - psis(1))/dpsi);
+        else
+            psibin = length(psis);
+        end
         fp = resplut(psibin,2);
         fc = resplut(psibin,3);
     end
