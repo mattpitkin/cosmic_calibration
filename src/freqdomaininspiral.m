@@ -21,6 +21,8 @@ sf1 = 1;
 
 update = 1; % by default update the inspiral signal
 
+resplut = []; % 
+
 % extract parameter values
 % returns parvals for each parnames (case is true when case and switch are
 % equal) - see inspiraltest.m (prior)
@@ -68,6 +70,8 @@ for ii=1:nparams % between 1 and length of parnames
             phic = parvals{ii};
         case 'det' % detector
             det = char(parvals{ii});
+        case 'resplut' % antenna pattern look-up table
+            resplut = parvals{ii};
         case 'update' % say whether or not to update the inspiral signal
             update = parvals{ii};
     end
@@ -175,7 +179,15 @@ if update == 1
     hf(idx) = amp.*cos(phasing) - 1i*amp.*sin(phasing);
 
     % get antenna pattern at coalesence time
-    [fp, fc] = antenna_pattern(det, ra, dec, psi, tc);
+    if isempty(resplut)
+        [fp, fc] = antenna_pattern(det, ra, dec, psi, tc);
+    else
+        psis = resplut(:,1);
+        dpsi = psis(2)-psis(1);
+        psibin = round((psi - psis(1))/dpsi);
+        fp = resplut(psibin,2);
+        fc = resplut(psibin,3);
+    end
 
     hc = 1i*hf*fc;
     
