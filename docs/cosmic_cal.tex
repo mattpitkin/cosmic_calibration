@@ -1,0 +1,199 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    INSTITUTE OF PHYSICS PUBLISHING                                   %
+%                                                                      %
+%   `Preparing an article for publication in an Institute of Physics   %
+%    Publishing journal using LaTeX'                                   %
+%                                                                      %
+%    LaTeX source code `ioplau2e.tex' used to generate `author         %
+%    guidelines', the documentation explaining and demonstrating use   %
+%    of the Institute of Physics Publishing LaTeX preprint files       %
+%    `iopart.cls, iopart12.clo and iopart10.clo'.                      %
+%                                                                      %
+%    `ioplau2e.tex' itself uses LaTeX with `iopart.cls'                %
+%                                                                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% First we have a character check
+%
+% ! exclamation mark    " double quote  
+% # hash                ` opening quote (grave)
+% & ampersand           ' closing quote (acute)
+% $ dollar              % percent       
+% ( open parenthesis    ) close paren.  
+% - hyphen              = equals sign
+% | vertical bar        ~ tilde         
+% @ at sign             _ underscore
+% { open curly brace    } close curly   
+% [ open square         ] close square bracket
+% + plus sign           ; semi-colon    
+% * asterisk            : colon
+% < open angle bracket  > close angle   
+% , comma               . full stop
+% ? question mark       / forward slash 
+% \ backslash           ^ circumflex
+%
+% ABCDEFGHIJKLMNOPQRSTUVWXYZ 
+% abcdefghijklmnopqrstuvwxyz 
+% 1234567890
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\documentclass[12pt]{iopart}
+\usepackage {latexsym}
+\usepackage {graphicx}
+\usepackage{iopams}
+\usepackage {color}
+
+%\documentclass[12pt]{iopart}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}  
+%\usepackage {amsmath}
+%\usepackage {amssymb}
+%\usepackage {amsfonts}
+%\usepackage {amsthm}
+%\usepackage {mathrsfs}
+%\usepackage {natbib}
+%\usepackage {latexsym}
+%\usepackage {graphicx}
+%\usepackage {dsfont}
+%\usepackage {times}
+%\usepackage {txfonts}
+%\usepackage {rotating}
+%\usepackage {wasysym}
+%\usepackage {multirow}
+%\usepackage {hhline}
+\usepackage {hyperref}
+%\usepackage {color}
+\usepackage {bm}
+%\usepackage{appendix}
+\usepackage{acronym}
+%\usepackage{dcolumn}   % needed for some tables
+\usepackage {url}
+%\usepackage[normalem]{ulem}   % temporal one in draft.
+
+% variable shortcuts 
+\newcommand{\Hub}{H_{0}}
+\newcommand{\DL}{D_{\mathrm{L}}}
+\newcommand{\lam}{\bm{\lambda}}
+%\newcommand{\data}{\bm{d}}
+%\newcommand{\sigpar}{\bm{\theta}}
+%\newcommand{\nuispar}{\bm{\lambda}}
+%\newcommand{\globpar}{\bm{\gamma}}
+%\newcommand{\model}{\mathcal{H}}
+
+%% ----- input git-version tag
+\input{tag.tex}
+
+\newcommand{\dcc}{LIGO-PXXXXXXXX}
+\newcommand{\CM}[1]{\textcolor{red}{CM: #1}}
+\newcommand{\MH}[1]{\textcolor{blue}{MH: #1}}
+\newcommand{\XF}[1]{\textcolor{green}{XF: #1}}
+
+\newcommand{\aap}{A\&A }
+\newcommand{\apj}{ApJ  }
+\newcommand{\apjl}{ApJL  }
+\newcommand{\apjs}{ApJS  }
+\newcommand{\prd}{Phys. Rev. D  }
+\newcommand{\nat}{Nature}
+\newcommand{\araa}{ARA\&A}
+\newcommand{\mnras}{Monthly Notices of the Royal Astronomical Society  }
+\begin{document}
+
+\title{Requirements and usefulness of galaxy catalogues for gravitational wave astrophysics}
+
+\author{L.~Wright$^1$, M.~Pitkin$^1$ \& C.~Messenger$^1$}
+\address{$^1$ SUPA, School of Physics and Astronomy, University of
+  Glasgow, Glasgow G12 8QQ, United Kingdom}
+\ead{1002990W@student.gla.ac.uk}
+
+\begin{abstract}
+  We present an investigation into the potential of calibrating
+  gravitational wave detector outputs through the use of standard
+  sirens. Such signals, as measured via gravitational wave
+  observations provide an estimated luminosity distance which is
+  subject to uncertainties in the calibration of the data.  If a host
+  galaxy is identified for a given source then its redshift can be
+  obtained and combined with current knowledge of the cosmologic
+  parameters.  This will yield the true luminosity distance and allow
+  the direct comparison with the estimated value.  Discrepancies can
+  then be used to correct the originbal calibration.
+\end{abstract}
+
+% acronym definitions
+\acrodef{GW}[GW]{gravitational wave}
+\acrodef{BNS}[BNS]{binary neutron star}
+\acrodef{MWEG}[MWEG]{Milky Way equivelent galaxies}
+\acrodef{BBH}[BBH]{binary black hole}
+\acrodef{NSBH}[NSBH]{neutron star black hole}
+\acrodef{SNR}[SNR]{signal-to-noise ratio}
+\acrodef{GRB}[GRB]{gamma-ray burst}
+
+%Uncomment for PACS numbers title message
+%\pacs{00.00, 20.00, 42.10}
+% Keywords required only for MST, PB, PMB, PM, JOA, JOB? 
+%\vspace{2pc}
+%\noindent{\it Keywords}: Article preparation, IOP journals
+% Uncomment for Submitted to journal title message
+%\submitto{\JPA}
+% Comment out if separate title page not required
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction\label{sec:intro}}
+
+Explain the basic idea.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Gravitational wave detector calibration\label{sec:calibration}}
+
+We need to define our model for the calibration, i.e. are we talking
+about amplitude only and are we breaking this up over frequency.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Binary neutron star standard sirens\label{sec:sirens}}
+
+We should explain what this means starting with reference
+to~\cite{1986Natur.323..310S}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{GRB counterparts\label{sec:GRB}}
+
+We should discuss the key points with regards to 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A single event with GRB counterpart\label{sec:single}}
+
+This should be the simplest case we can do (and maybe the only case).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multiple events without counterpart\label{sec:multiple}}
+
+An analysis or discussion of the issues regarding multiple events
+without EM counterparts.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Discussion\label{sec:discussion}}
+
+What did we learn.
+
+\ack
+
+We would like to acknowledge the useful discussions with a whole bunch
+of people.
+
+\section*{References}
+
+\bibliographystyle{unsrt}
+\bibliography{masterbib}
+\end{document}
+
+
