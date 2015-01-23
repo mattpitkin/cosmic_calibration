@@ -1,29 +1,51 @@
 function [sample, logL] = draw_mcmc(livepoints, cholmat, logLmin, ...
-    prior, data, likelihood, model, Nmcmc, parnames, extraparvals)
+    prior, data, likelihood, model, Nmcmc, Nsloppy, covfrac, ...
+    diffevfrac, walkfrac, stretchfrac, parnames, extraparvals)
 
 % function [sample, logL] = draw_mcmc(livepoints, cholmat, logLmin, ...
-%    prior, data, likelihood, model, Nmcmc, parnames, extraparvals)
+%    prior, data, likelihood, model, Nmcmc, Nsloppy, covfrac, ...
+%    diffevfrac, walkfrac, stretchfrac, parnames, extraparvals)
 %
 % This function will draw a multi-dimensional sample from the prior volume
 % for use in the nested sampling algorithm. The new point will have a
 % likelihood greater than the value logLmin. The new point will be found by
 % evolving a random multi-dimensional sample from within the sample array,
-% livepoints, using an MCMC with Nmcmc iterations. The MCMC will use a 
-% Students-t (with N=2 degrees of freedon) proposal distribution based on
-% the Cholesky decomposed covariance matrix of the array, cholmat. 10% of 
-% the samples will actually be drawn using differential evolution by taking
-% two random points from the current live points. extraparvals is a vector
-% of additional parameters needed by the model.
+% livepoints, using an MCMC with Nmcmc iterations.
+% 
+% The MCMC can use four different proposals to draw new samples:
+%   - a Students-t (with N=2 degrees of freedon) proposal distribution
+%     based on the Cholesky decomposed covariance matrix of the array,
+%     cholmat.
+%   - using differential evolution by taking two random points from the
+%     current live points. 
+%   - using the affine invariant stretch move
+%   - using the affine invariant walk move
+%     (see Goodman & Weare (2010) DOI: 10.2140/camcos.2010.5.65)
+% Each of these proposals will be used in propotion to the values given by
+% covfrac, diffevfrac, stretchfrac and walkfrac respectively.
+%
+% extraparvals is a vector of additional parameters needed by the model.
+%
+% If Nsloppy is an integer greater than 1, then the likelihood will only be
+% evaluated once every Nsloppy point, otherwise samples will just be
+% accepted/rejected based on the prior.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 global verbose;
 
-mcmcfrac = 0.9; 
 l2p = 0.5*log(2*pi); % useful constant
+maxscale = 3;
+lms = log(maxscale);
+walksamplesize = 3;
+totalfrac = covfrac+diffevfrac+walkfrac+stretchfrac;
 
 Nlive = size(livepoints,1);
 Npars = size(livepoints,2);
+
+if walkfrac > 0
+    assert(walksamplesize <= Nlive, 'Error... number of livepoints must be greater than 3')
+end
 
 Ndegs = 2; % degrees of freedom of Students't distribution
 
@@ -59,7 +81,9 @@ while 1
     end
         
     for i=1:Nmcmc        
-        if rand < mcmcfrac % use Students-t proposal
+        propratio = 0; % proposal ratio
+        rnum = rand*totalfrac;
+        if rnum < covfrac % use Students-t proposal with covariance matrix
             % draw points from mulitvariate Gaussian distribution 
             gasdevs = randn(Npars,1);
             sampletmp = (cholmat*gasdevs)';
@@ -69,7 +93,8 @@ while 1
             
             % add value onto old sample
             sampletmp = sample + sampletmp*sqrt(Ndegs/chi);
-        else % use differential evolution
+        elseif rnum < (covfrac+diffevfrac) % use differential evolution
+            % use differential evolution
             % draw two random (different points) A and B and add (B-A) to
             % the current sample
             idx1 = ceil(rand*Nlive);
@@ -82,6 +107,38 @@ while 1
             B = livepoints(idx2, :);
             
             sampletmp = sample + (B-A);
+        elseif rnum < (covfrac+diffevfrac+stretchfrac) % use an ensemble sampler (with Walk and Stretch moves)
+            % stretch move
+            R = rand;
+            logscale = 2.*lms*R - lms;
+            scale = exp(logscale); % scale factor
+            propratio = logscale*Npars; % proposal ratio
+                
+            % pick two random samples from the live points
+            idx1 = randi(Nlive);
+            idx2 = randi(Nlive);
+            while idx1 == idx2
+                idx2 = randi(Nlive);
+            end
+                
+            % get new sample
+            A = livepoints(idx1, :);
+            B = livepoints(idx2, :);
+               
+            sampletmp = sample + scale*(B-A);
+        else
+            % otherwise use walk move
+            idxs = randperm(Nlive, walksamplesize);
+            
+            % get centre of mass of points
+            com = mean(livepoints(idxs,:));
+                
+            % generate univariate random Gaussian variables for each sample
+            uv = randn(walksamplesize,1);
+            
+            step = (livepoints(idxs,:)-repmat(com,walksamplesize,1))'*uv;
+            
+            sampletmp = sample + step.';
         end
         
         % check sample is within the (scaled) prior
@@ -142,7 +199,11 @@ while 1
             end
         end
         
-        if log(rand) > newPrior - currentPrior % reject point
+        if log(rand) > newPrior - currentPrior + propratio % reject point
+            continue;
+        elseif Nsloppy ~= 0 && mod(i, Nsloppy) ~= 0 % don't need to recalculate the posterior at every point
+            sample = sampletmp;
+            currentPrior = newPrior;
             continue;
         end
         
@@ -164,7 +225,7 @@ while 1
             logL = logLnew;
         end
     end
-    
+
     % only break if at least one point was accepted otherwise try again
     if acc > 0
         acctot = acc;
@@ -177,7 +238,11 @@ end
 
 % print out acceptance ratio
 if verbose
-    fprintf(1, 'Acceptance ratio: %1.4f, ', acctot/(Ntimes*Nmcmc));
+    if ~Nsloppy
+        fprintf(1, 'Acceptance ratio: %1.4f, ', acctot/(Ntimes*Nmcmc));
+    else
+        fprintf(1, 'Acceptance ratio: %1.4f, ', acctot*Nsloppy/(Ntimes*Nmcmc));
+    end
 end
 
 return

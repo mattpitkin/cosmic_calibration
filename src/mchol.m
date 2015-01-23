@@ -135,8 +135,8 @@ L(ind)=1;
 %
 %  if needed, find a descent direction.  
 %
-if ((nargout == 4) & (min(diag(C)) < 0.0))
-    [m,col]=min(diag(C));
+if ((nargout == 4) && (min(diag(C)) < 0.0))
+    [~,col]=min(diag(C));
     rhs=zeros(n,1);
     rhs(col)=1;
     pneg=L'\rhs;
