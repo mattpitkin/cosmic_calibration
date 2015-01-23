@@ -114,6 +114,7 @@ GAMMA = 0.5772156649015328606065120900824024; % Euler's constant
 MTSUN_SI = 4.9254923218988636432342917247829673e-6; % geometrised solar mass in seconds 
 MRSUN_SI = 1.4766254500421874513093320107664308e3; % geometrised solar mass in metres
 PC_SI = 3.0856775807e16; % parsec in metres 
+PI2 = pi^2;
 
 if update == 1
     m = (1+z)*(m1 + m2);
@@ -133,9 +134,9 @@ if update == 1
     pfa4 = 5.*((3058.673/7.056) + (5429./7.)*eta + 617.*eta^2)/72.;
     pfa5 = (5./9.)*((7729./84.) - 13.*eta)*pi;
     pfl5 = (5./3.)*((7729./84.) - 13.*eta)*pi;
-    pfa6 = ((11583.231236531/4.694215680) - (640./3.)*pi^2 - ...
+    pfa6 = ((11583.231236531/4.694215680) - (640./3.)*PI2 - ...
         (6848./21.)*GAMMA) + ...
-        eta*((-15335.597827/3.048192) + (2255./12.)*pi^2 - ...
+        eta*((-15335.597827/3.048192) + (2255./12.)*PI2 - ...
         (1760./3.)*theta + (12320./9)*lambda) + ...
         eta^2*(76055./1728.) - eta^3*(127825./1296.);
     pfl6 = -6848./21.;
@@ -151,11 +152,12 @@ if update == 1
         fmax = fISCO;
     end
     idx = fs >= fmin & fs <= fmax;
-
+    fsf = fs(idx);
+    
     log4 = log(4.0);
     logv0 = log(v0);
 
-    v = (piM * fs(idx)).^(1/3);
+    v = (piM * fsf).^(1/3);
     logv = log(v);
     v2 = v.*v;
     v3 = v2.*v;
@@ -173,29 +175,25 @@ if update == 1
 
     phasing = (pfaN./v5).*(pfa7*v7 + (pfa6+pfl6*(log4+logv)).*v6 + ...
         (pfa5+pfl5*(logv-logv0)).*v5 + pfa4*v4 + pfa3*v3 + pfa2*v2 + 1) + ...
-        shft*fs(idx) - 2*phic - pi/4;
+        shft*fsf - 2*phic - pi/4;
     amp = amp0*sqrt(-(dETaN*v)./(FTaN*v10)).*v;
 
-    hf(idx) = amp.*cos(phasing) - 1i*amp.*sin(phasing);
-
+    hff = amp.*cos(phasing) - 1i*amp.*sin(phasing);
+    
     % get antenna pattern at coalesence time
     if isempty(resplut)
         [fp, fc] = antenna_pattern(det, ra, dec, psi, tc);
     else
-        psis = resplut(:,1);
-        dpsi = psis(2)-psis(1);
-        if psi < psis(end)
-            psibin = ceil((psi - psis(1))/dpsi);
-        else
-            psibin = length(psis);
-        end
-        fp = resplut(psibin,2);
-        fc = resplut(psibin,3);
+        s2p = sin(2*psi);
+        c2p = cos(2*psi);
+        a = resplut(1);
+        b = resplut(2);
+        fp = a*c2p + b*s2p;
+        fc = b*c2p - a*s2p;
     end
-
-    hc = 1i*hf*fc;
     
-    hp = hf*fp;
+    hc = 1i*hff*fc;
+    hp = hff*fp;
 end
 
 ci = cos(iota);
@@ -204,10 +202,12 @@ ci = cos(iota);
 hcn = hc*ci;
 
 % cross polarisation
-hpn = 0.5*(1+ci^2)*hp;
+ap = 0.5*(1+ci^2);
+hpn = ap*hp;
 
 % add plus and cross components
-hf = hcn + hpn;
+%hf = hcn + hpn;
+hf(idx) = hcn + hpn;
 
 % scale by distance
 hf = hf / (PC_SI*1e6*Dl);

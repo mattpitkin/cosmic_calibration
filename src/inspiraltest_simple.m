@@ -14,34 +14,22 @@ iota = 0; % orientation angle (rads) ( 0=face on system)
 psi = 0.3; % polarisation angle (rads) 
 det = 'H1'; % use H1 detector
 z = 0; % approximately redsift of zero (as close)
-D = 15; % luminosity distance of 50 Mpc
+D = 50; % luminosity distance of 50 Mpc
 tc = 900000000; % coalesence time
-phic = 4.5; % phase at coalescence (rads)
+phic = 1.5; % phase at coalescence (rads)
 ra = 0.3; % right ascension (rads)
 dec = -0.76; % declination (rads)
-fmin = 20; % initial frequency of signal
-fmax = 250; % final frequency of signal
+fmin = 40; % initial frequency of signal
+fmax = 1600; % final frequency of signal
 
-% create antenna pattern look-up table
-psis = linspace(-pi/4, pi/4, 100);
-fps = zeros(100,1);
-fcs = zeros(100,1);
-for i=1:length(psis)
-    [fp, fc] = antenna_pattern(det, ra, dec, psis(i), tc);
-    fps(i) = fp;
-    fcs(i) = fc;
-end
-resplut = [psis', fps, fcs]';
-size(resplut)
+% create antenna pattern values
+[fp, fc] = antenna_pattern(det, ra, dec, 0, tc);
+resplut = [fp, fc];
 
 parnames = {'fmin', 'fmax', 'D', 'm1', 'm2', 'z', 'tc', 'iota', 'psi', 'ra', 'dec', 'phic', 'det', 'resplut'};
 parvals = {fmin, fmax, D, m1, m2, z, tc, iota, psi, ra, dec, phic, det, resplut};
 
-Nd = 2000;
-dt = 1/Nd;
-
 % set frequencies
-%fbins = linspace(0, (Nd/2), (Nd/2)+1);
 fbins = linspace(0, 1000, 200);
 
 % create a signal
@@ -84,48 +72,32 @@ data{3} = (scalefactor*cn(idx)).^2;
 likelihood = @logL;
 model = @freqdomaininspiral;
 
-%prior =  {'sf1', 'uniform', 0, 2, 'reflect';
-%          'D', 'gaussian', 15, 0.2, '';
-%          'iota', 'gaussian', 0, 0.1, ''};
-prior =  {'sf1', 'jeffreys', 1e-2, 1e3, '';
-          'D', 'gaussian', 15, 0.2, '';
+prior =  {'sf1', 'uniform', 0, 2, 'fixed';
           'iota', 'gaussian', 0, 0.1, '';
-          'm1', 'uniform', 1.39, 1.41, '';
-          'm2', 'uniform', 1.39, 1.41, ''};
+          %'m1', 'uniform', 1, 2.4, 'fixed';
+          %'m2', 'uniform', 1, 2.4, '';
+          'psi', 'uniform', 0, pi/2, 'fixed';
+          'phic', 'uniform', 0, pi, 'cyclic'; % only need 0 to pi range
+          'tc', 'uniform', 900000000-0.01, 900000000+0.01, 'fixed'};
 
       
 extraparams = {'fmin', fmin; ...
                'fmax', fmax; ...
-               %'D', D; ...
-               %'m1', m1; ...
-               %'m2', m2; ...
+               'D', D; ...
+               'm1', m1; ...
+               'm2', m2; ...
                'z', z; ...
-               'tc', tc; ...
-               %'iota', iota; ...
-               'psi', psi; ...
                'ra', ra; ...
                'dec', dec; ...
-               'phic', phic; ...
                'det', det; ...
                'resplut', resplut'; ...
-               'update', 1}; % no need to update the inspiral signal
+               'update', 1}; % need to update the inspiral signal
                
-% call MCMC routine
-%Nmcmc = 100000;
-%Nburnin = 100000;
-
-%[post_samples, logP, logPrior] = mcmc_sampler(data, likelihood, model, prior, ...
-%    extraparams, 'Nmcmc', Nmcmc, 'Nburnin', Nburnin, 'NensembleStretch', 5, ...
-%    'temperature', 1e-30, 'outputbi', 1);
-
-%[post_samples, logP, logPrior] = mcmc_sampler(data, likelihood, model, prior, ...
-%    extraparams, 'Nmcmc', Nmcmc, 'Nburnin', Nburnin, ...
-%    'temperature', 1e-30, 'outputbi', 1);
-
+% call nested sampling routine
 tolerance = 0.1;
 Nlive = 1000;
 Nmcmc = 200;
 
-[logZ, nest_samples, post_samples] = nested_sampler(data, Nlive, Nmcmc, ...
-  tolerance, likelihood, model, prior, extraparams);
+[logZ, nest_samples, post_samples] = nested_sampler(data, Nlive, ...
+  tolerance, likelihood, model, prior, extraparams, 'Nmcmc', Nmcmc);
 
