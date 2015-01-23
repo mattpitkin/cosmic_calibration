@@ -64,9 +64,9 @@ while 1
     currentPrior = 0;
     
     for j=1:Npars
-        priortype = char(prior(j,2));
-        p3 = cell2mat(prior(j,3));
-        p4 = cell2mat(prior(j,4));
+        priortype = prior{j,2};
+        p3 = prior{j,3};
+        p4 = prior{j,4};
                 
         if strcmp(priortype, 'uniform')
             pv = -log(p4-p3);
@@ -144,12 +144,12 @@ while 1
         % check sample is within the (scaled) prior
         newPrior = 0;
         for j=1:Npars
-            priortype = char(prior(j,2));
-            p3 = cell2mat(prior(j,3));
-            p4 = cell2mat(prior(j,4));
+            priortype = prior{j,2};
+            p3 = prior{j,3};
+            p4 = prior{j,4};
             
             if strcmp(priortype, 'uniform')
-                behaviour = char(prior(j,5));
+                behaviour = prior{j,5};
                 
                 dp = 1;
                 

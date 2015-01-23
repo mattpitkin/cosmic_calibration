@@ -25,13 +25,13 @@ function [logZ, nest_samples, post_samples] = nested_sampler(data, ...
 %
 % The prior should be a cell array with each cell containing five values:
 %   parameter name (string)
-%   prior type (string) e.g. 'uniform', 'gaussian' of 'jeffreys'
+%   prior type (string) e.g. 'uniform', 'gaussian' or 'jeffreys'
 %   minimum value (for uniform prior), or mean value (for Gaussian prior)
 %   maximum value (for uniform prior), or width (for Gaussian prior)
 %   parameter behaviour (string):
 %       'reflect' - if the parameters reflect off the boundaries
 %       'cyclic'  - if the parameter space is cyclic
-%       'fixed'   - if the parameters have fixe boundaries
+%       'fixed'   - if the parameters have fixed boundaries
 %       ''        - for gaussian priors
 %   e.g., prior = {'h0', 'uniform', 0, 1, 'reflect'; 
 %                  'r', 'gaussian', 0, 5, '';
@@ -148,9 +148,9 @@ end
 livepoints = zeros(Nlive, D);
 
 for i=1:D
-    priortype = char(prior(i,2));
-    p3 = cell2mat(prior(i,3));
-    p4 = cell2mat(prior(i,4));
+    priortype = prior{i,2};
+    p3 = prior{i,3};
+    p4 = prior{i,4};
     
     % currently only handles uniform or Gaussian priors
     if strcmp(priortype, 'uniform')

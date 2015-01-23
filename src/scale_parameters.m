@@ -12,9 +12,9 @@ lp = length(params);
 scaled = zeros(lp,1);
 
 for i=1:lp
-    priortype = char(prior(i,2));
-    p3 = cell2mat(prior(i,3));
-    p4 = cell2mat(prior(i,4));
+    priortype = prior{i,2};
+    p3 = prior{i,3};
+    p4 = prior{i,4};
     
     % currently only handles uniform or Gaussian priors
     if strcmp(priortype, 'uniform')
