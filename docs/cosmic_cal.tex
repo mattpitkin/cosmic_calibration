@@ -83,13 +83,16 @@
 %\newcommand{\globpar}{\bm{\gamma}}
 %\newcommand{\model}{\mathcal{H}}
 
+\newcommand{\curlH}{\mathcal{H}}
+\newcommand{\gws}{\tilde{h}}
+
 %% ----- input git-version tag
 \input{tag.tex}
 
 \newcommand{\dcc}{LIGO-PXXXXXXXX}
-\newcommand{\CM}[1]{\textcolor{red}{CM: #1}}
-\newcommand{\MH}[1]{\textcolor{blue}{MH: #1}}
-\newcommand{\XF}[1]{\textcolor{green}{XF: #1}}
+\newcommand{\cm}[1]{\textcolor{red}{CM: #1}}
+\newcommand{\MP}[1]{\textcolor{blue}{MP: #1}}
+\newcommand{\lw}[1]{\textcolor{green}{LW: #1}}
 
 \newcommand{\aap}{A\&A }
 \newcommand{\apj}{ApJ  }
@@ -101,7 +104,7 @@
 \newcommand{\mnras}{Monthly Notices of the Royal Astronomical Society  }
 \begin{document}
 
-\title{Requirements and usefulness of galaxy catalogues for gravitational wave astrophysics}
+\title{Astrophysical calibration of gravitational-wave detectors}
 
 \author{L.~Wright$^1$, M.~Pitkin$^1$ \& C.~Messenger$^1$}
 \address{$^1$ SUPA, School of Physics and Astronomy, University of
@@ -118,7 +121,7 @@
   obtained and combined with current knowledge of the cosmologic
   parameters.  This will yield the true luminosity distance and allow
   the direct comparison with the estimated value.  Discrepancies can
-  then be used to correct the originbal calibration.
+  then be used to correct the original calibration.
 \end{abstract}
 
 % acronym definitions
@@ -144,14 +147,70 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction\label{sec:intro}}
 
-Explain the basic idea.
+\cm{Explain the basic idea.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Gravitational wave detector calibration\label{sec:calibration}}
 
-We need to define our model for the calibration, i.e. are we talking
-about amplitude only and are we breaking this up over frequency.
+\cm{We need to define our model for the calibration, i.e. are we talking
+about amplitude only and are we breaking this up over frequency.}
+
+The technique used throughout GW research in calibrating the detectors is
+carried out through a complicated system of physical manipulations of the
+Fabret-Perot Michelson interferometer; where an elaborate feedback system is
+used to sustain a defined measurement in arm length difference between the
+moving mirrors~\cite{LIGOCal}. In general, the interferometers are set to move
+at a frequency corresponding to a GW signal. An error signal is then found
+through the Pound-Driver-Hall technique~\cite{Black} for mirror stabilisation
+which is proportional to the difference in mirror separation of the
+Fabret-Perot Michelson interferometer. The Pound-Drever-Hall technique is
+essentially a control loop feedback system in which the difference output (in
+GW detectors, this is the distance the mirrors move due to the GW) and the the
+output set is reduced to the highest degree of certainty. This is just a brief
+overview of the calibration method currently used, and is an extensive study in
+itself, see~\cite{Vitale} and references therein. For advanced LIGO and Virgo,
+at the frequency range used in this project, the error in the calibration using
+the 'hardware injection method' is roughly $10\%$~\cite{Vitale}. This is a
+benchmark set for the error estimation using the proposed new method in this
+project.
+
+The hardware method of calibrating the ground-based detectors is incredibly
+complex in its application, with many sources of error which have to be
+accounted for. The new method of calibration proposed and tested in this
+project is a lot simpler. The method acts as an external calibrator, to be
+carried out using the data collected by the detector, $\tilde{d}(f)$. We assume
+the collected data contains some unknown and unaccounted for calibration error.
+The uncertainty in $\tilde{d}(f)$ can then be evaluated using methods of
+parameterisation already carried out in GW research. This method of
+parameterising GW defining variables is then carried out on a known source, a
+standard candle as described above, which allows one to measure the calibration
+uncertainty in the data set.
+
+One can estimate the error in the calibration using parameter estimation
+methods, or more precisely Bayesian inference. In this project the calibration
+offset used throughout is simply a scale factor, $s$. This effects the data set
+collected by a simple multiplication:
+
+\begin{equation}
+  \label{eq:scaledata}
+  \tilde{d}_m(f) = \tilde{d}_e(f) \times s
+\end{equation}
+
+where $\tilde{d}_m(f)$ is the data-set measured by the detector, and
+$\tilde{d}_e(f)$ is the exact data set, with no error. A description of the
+collected data is given in section~\ref{sec:cbc}. The scale factor being
+parameterised, $s$, represents all known sources of error in the system. This
+is not entirely realistic as $s$ is known to be a function of frequency.
+Testing a more realistic calibration error is work to be done in the future.
+
+
+Being able to resolve the calibration scale factor with the least amount of
+uncertainty was the aim of this project; to show that this method is
+competitive with current techniques. If the calibration error can be resolved
+with known uncertainty, GW data analysis can then be carried out with more
+certainty. This is useful as an entirely independent method of assessing the
+uncertainty in the current calibration method.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -164,26 +223,613 @@ to~\cite{1986Natur.323..310S}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{GRB counterparts\label{sec:GRB}}
 
-We should discuss the key points with regards to 
+A GW detection on its own right would be ground breaking, allowing
+astrophysicists to observe the sky above in a whole new spectrum. However, to
+increase the scientific return on a direct GW detection, a counterpart EM
+observation of the source itself would need to be seen.  There are two
+approaches to observing a source both in EM and GW spectrum's~\cite{grb}:
+
+\begin{enumerate}
+  \item locating and observing a source with an EM follow-up to
+a GW detection
+  \item searching for a GW signal generated by a source seen
+through EM observations
+\end{enumerate}
+
+Both of these methods have their pros and cons. Firstly, an EM follow-up would
+be very difficult due to the duration of GW source system detectable by
+ground-based interferometers. A neutron star binary system (NS-NS binary) has a
+duration of $\sim15$ minutes~\cite{bnstime}.  Errors in the sky position from a
+GW detection would also create issues for an EM follow-up. The sky localisation
+obtained from the ground-based detectors gives a large field of view for the EM
+observatories to search, roughly an area spanning $100$'s of
+degrees~\cite{grb}.
+
+The more promising detection approach then is a follow-up GW search from an EM
+trigger, especially for the source of GW considered in this paper. The merger
+time for NS-NS binaries are known with an uncertainty within a few seconds for
+the EM radiation emitted from this system~\cite{grb}.
+
+
+Identifying the source of GWs redshift would then lead to calculating the
+Hubble constant and other cosmological parameters~\cite{Schutz}. The evolution
+of the system could be better understood, allowing for searches with greater
+accuracy. Counterpart EM observations of a GW source will also remove
+uncertainty in the defining GW parameters, a fact which was taken advantage of
+for this project.
+
+
+The source of GW considered in this paper will be a coalescing binary system
+consisting of neutron stars. As well as being the most probable source of GWs
+detectable by ground-based interferometers, they are also expected to emit EM
+radiation. As shown in figure~\ref{fig:grb}, the emission occurs due to the
+high velocity with which the stars coalesce. The coalescences are thought to be
+the progenerators of short-duration gamma ray bursts (SGRBs)~\cite{grb}.
+Observations of this radiation has been see, through the Swift satellite and
+follow-up ground-based telescopes~\cite{swift}. Unfortunately, no observation
+of SGRBs have been seen within the range of advanced generation of LIGO and
+Virgo. It is probable, however, that such a source exists well within the range
+of advanced LIGO/ Virgo, but has simply not been observed~\cite{grb}. This then
+validates the assumption made throughout the project.
+
+
+In this paper, a key assumption has to be made in order to test this new method
+of calibration. It is assumed that there exists a source of GWs with enough
+information known through EM observation such that it can be used as a
+\textit{standard candle}, i.e. an accurately known and well modelled source of
+GWs. In this project (for the source of GWs being analysed), a GRB observation
+is assumed to have been seen. This allows for discrepancies in the detector
+calibration itself to be parameterised. This is the proposed new method of
+calibration for the detectors, for all types of detectors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{A single event with GRB counterpart\label{sec:single}}
 
-This should be the simplest case we can do (and maybe the only case).
+\cm{This should be the simplest case we can do.}
+
+In this project the hypothesis considered, $\curlH$, simply states that the
+data, $\tilde{d}(f),$ collected by a generic detector contains the GW signal,
+$\gws(f)$, and some noise, $\tilde{n}(f)$~\cite{JVei},
+
+\begin{equation}
+  \label{eq:data}
+  \tilde{d}^D(f) = \gws^D(f) + \tilde{n}^D(f)
+\end{equation}
+
+where $D$ represents the detector site. In this project there will be three
+detectors in question: LIGO Livingston (L), LIGO Hanford (H), and Virgo (V); $D
+= \{L,H,V\}$. Testing different hypotheses is the method used to determine
+whether a data set contains a GW signal or not~\cite{SathSchutz}. This was not
+explored in this project so the above hypothesis is consistent throughout this
+paper.
+
+Coalescing binary systems of compact objects, such as neutron stars or black
+holes, are the most probable source of GWs detectable by ground-based
+interferometers~\cite{peadvanced}. A direct detection of GWs would allow for a
+fuller understanding of the mechanics of these systems. Compact binary
+coalescence's (CBCs) are systems of two compact object inspiralling, with
+reducing separation, until the inevitable merger of the objects. This orbital
+motion creates ripples in space-time; this is the GW from this motion. For
+gravitational wave research, the interests lie in the GW signal generated, or
+the \textit{waveform}, shown in figure~\ref{fig:signal}.
+
+In this paper, a brief overview of the mathematical breakdown for the waveform
+is shown. For a more rigorous derivation, see~\cite{SathSchutz} and references
+there in. The waveform used throughout this project is a simplified system
+where the neutron stars are non rotating about their axes, in a perfectly
+circular inspiralling orbit; known as the TaylorF2 model~\cite{TF2,pN}. A more
+complex and realistic model could be tested in future for this calibration
+method. Parameter estimation using a variety of complex waveforms are carried
+out in~\cite{peadvanced}.
+
+The general equation for a GW signal detected at a generic detector, in the
+reference frame of the detector site, is given as~\cite{SathSchutz}
+
+\begin{equation}
+  \label{eq:gravsig}
+   \gws^D(f) = \big[ F_{+}^D(\alpha, \delta, \psi)\gws_{+}(f) +
+F_{\times}^D(\alpha, \delta, \psi)\gws_{\times}(f)\big]
+\end{equation}
+
+where $F_{+,\times}(\alpha, \delta, \psi)$ are the antenna response function of
+the detector, dependent on the right ascension, $\alpha$, declination,
+$\delta$, the polarisation angle $\psi$, and time. Testing the antenna patterns
+is carried out in section~\ref{sec:rndsp} of this report when the sky
+positions, $(\alpha, \delta)$, are randomised across the entire field of view
+for the detector.
+
+The polarisation amplitudes of the GW, given by $\gws_{+}(f)$, and
+$\gws_{\times}(f)$, represent the direction with which the GW compresses and
+stretches space-time. The form of these two amplitudes depends on the source
+being analysed. As mentioned above, the model used throughout this project was
+the TaylorF2 model. The parameters defining the GW polarisation amplitudes
+using the TaylorF2 model are:
+
+\begin{itemize}
+\item the total mass, $M = m_{1}+m_{2}$, where $m_{1,2}$ are the masses of the
+binary stars
+\item the symmetric mass ratio $\eta = \frac{m_{1}m_{2}}{(m_{1}+m_{2})}$
+\item chirp mass, $\mathcal{M} = \eta^{3/5}M$
+\item luminosity distance, $D_{L}$, measured in Mpc ($1 Mpc \approx
+3.1\times10^{22}m  $)
+\item the angle of inclination $\iota$. This is the angle from the source,
+taken as the angle between the normal of the orbital plane and the observer
+orientation.
+\item phase of the wave, $\psi$, which defines the polarisation of the angle of
+the GW, shown in equation~\ref{eq:psi}.
+\item the coalescence time, $t_c$, and phase of coalescence, $\phi_c$.
+\end{itemize}
+
+Together with the sky position, these parameters form the vector $\vec{\Theta}
+= \{\mathcal{M}, \eta, D_{L}, \iota, \alpha, \delta, \psi, t_{c}, \phi_{c}\}$
+which defines the entire GW signal.  The form of the polarisation amplitudes
+using the TaylorF2 model are given as~\cite{SathSchutz,pN,TF2}
+
+\begin{equation}
+  \gws_{+}(f) = \frac{1+\cos^{2}\iota}{2D_{L}}
+\frac{\mathcal{M}^{5/6}}{\pi^{2/3}} \sqrt{\frac{5}{24}}f^{-7/6}e^{-i\psi(f)}
+\end{equation}
+\begin{equation}
+  \gws_{\times}(f) =
+i\frac{\cos^{2}\iota}{D_{L}}\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
+\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\psi(f)}
+\end{equation}
+
+where the phase of the GW, $\psi$, is
+\begin{equation}
+  \label{eq:psi}
+  \psi(f) = 2\pi f t_c - \phi_c + \psi_N(\eta)\sum\limits_{k=0}^4{\psi_k(\eta)
+(\pi(m_1 + m_2)f)^{(k-5)/3}}.
+\end{equation}
+
+The terms $\psi_N$ and $\psi_k$ are the standard Newtonian and post-Newtonian
+coefficients. Derivations of these two equations can be found in~\cite{pN} and
+references there-in. The simulated gravitational wave signal used throughout
+this project can be seen in figure~\ref{fig:signal}. As one can see, the signal
+strength is very faint (an order of magnitude around $10^{-24}$). This is the
+the biggest problem in detecting GWs.
+
+As mentioned above, the source considered throughout this project thought to
+produce EM radiation; SGRBs. In this project, we assume that SGRBs of the GW
+source described above have been observed. If a GRB has been seen, then the
+redshift of the merger can be calculated. This then allows for the luminosity
+distance to be calculated and in turn other defining parameters can be obtained
+(or known to a degree of uncertainty)~\cite{SathSchutz}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{grav_signal}
+  \caption{The gravitational waveform produced using coalescing binary
+neutron stars. The wave is represented in the frequency domain with masses
+$m_{1,2} = 1.4M_{\odot}$ at a luminosity distance $D_{L} = 200 \,Mpc$.}
+  \label{fig:signal}
+\end{figure}
+
+%More explination
+Finally, the last term in equation~\ref{eq:data} must be discussed; the noise
+of the model, $\tilde{n}(f)$. Throughout this project, we have added no noise
+to the signal, although as discussed later we do include a noise estimate in
+the likelihood.
+
+The prior probability function, $p(\vec{\theta} | \curlH)$ in
+equation~\ref{eq:bayesgw}, represents our prior knowledge in $\theta$ before
+the analysis.The range of parameters used throughout this paper were chosen due
+to their inability to be justifiably known through a GRB assumption. The
+parameters were drawn from the ranges for any signals generated in this
+analysis, given in table 1.
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|c|}
+%  \caption{Prior parameters}
+    \hline
+    Parameter & Distribution \\
+    \hline
+    $\psi$   &  U($0,\pi/2$)\\
+    $\iota$   & N($0,0.1$) \\
+    $\phi_c$  & U($0,\pi/2$)\\
+    $t_c$     & U($t_{o}-0.01, t_{o}+0.01$) \\
+    $s$       & U(0,2) \\
+    \hline
+  \end{tabular}
+  \label{tab:prior}
+  \caption{\textit{The parameters used throughout the analysis with some degree
+of uncertainty. U(a,b) is a uniform distribution between a and b. N($\mu,
+\sigma$) is a normal distribution, with a mean $\mu$ and standard deviation
+$\sigma$. $t_{o} = 9\times10^{8}$}}
+\end{table}
+
+Through the assumption made above allows us to constrain the system,
+maintaining a small number of parameters in the prior. For a realistic
+parameter estimation of the source, a larger range of values with a bigger
+distribution. This was not tested due to time constraints but is proposed as
+work for the future.
+
+The likelihood functiona used throughout this project is given for a generic
+detector D as~\cite{JVei},
+
+\begin{equation}
+  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp(-(d^{D}(f) -
+h^{D}(f)|d^{D}(f) - h^{D}(f))/2)
+\end{equation}
+
+where $(\cdot |\cdot )$ is a representation of the inner product. This
+derivation is given in the appendix. Using the inner product of two real
+functions, and approximating for discrete integer values, the likelihood then
+becomes
+
+\begin{equation}
+  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp\Bigg[ 2\Delta
+f\sum_{k>0}\frac{|\tilde{d}(f_{k}) - \tilde{h}(f_{k})|^{2}}{S(f_{k})} \Bigg]
+\end{equation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{PSD}
+  \caption{\textit{Noise spectral density for advanced LIGO and Virgo.}}
+  \label{fig:psd}
+\end{figure}
+
+where $S(f_{k})$ is the \textit{power spectral density} (PSD). This defines the
+sensitivity of the detector as it a measure of the strain in the detector due
+to noise~\cite{SathSchutz,sens}. The PSD for advanced LIGO and Virgo are shown
+in figure~\ref{fig:psd}. The figure shows that the strain effect for advanced
+LIGO is less than it is for Virgo; LIGO has a better sensitivity. This is a
+factor in analysing the calibration error, given in section~\ref{sec:results}.
+The subscript $k$ represents discrete values of relevant frequency bins (As
+carrying out the integral would become computationally costly). This likelihood
+will be used throughout the project. The factor of $\Delta f$ comes from the
+approximation of the inner product of two real functions (as it is integrated
+over frequency space).
+
+The aim of this project was to determine how well the calibration error could
+be parameterised in a software injected gravitational wave source. The error
+was estimated through numerous situations but the basis of the simulations
+remained the same throughout the project: a single source of GWs at varying
+signal to noise ratios. The GRB assumption was analysed as well by relaxing
+some of the defining GW paramaters and adding some uncertainty into their
+value, given in section~\ref{sec:pandl}.
+
+
+These values where chosen due to the assumed counterpart EM observation. These
+values could not be justified by that assumption so they were added into the
+prior with reasonable uncertainty.
+
+The estimation of the error, given in its simplest form as a scale factor, was
+performed for numerous systems: single detector, a network of detectors, random
+sky positions, etc. Before the parameter estimation was carried out, the
+relationship between distance of the source relative to the detector and the
+signal to noise ratio (SNR) needed to be found.
+
+The SNR is given by
+\begin{equation}
+  \label{eq:snr}
+  SNR = \sqrt{\Bigg( \frac{2 |\gws^D(f)|^2}{S^D(f)} df \Bigg)}
+\end{equation}
+
+where the noise spectral density, $S^D(f)$ is not a function of distance, shown
+in section~\ref{sec:pandl}. For coalescing binary neutron stars of masses
+$m_{1,2} = 1.4\,M_{\odot}$ and  $D_{L}200\,Mpc$, the expected SNR is roughly 8.
+The SNR was determined from $D_{L} = [10,200]\,Mpc$  using a randomly chosen
+sky position which defines the antenna patterns and the GW signal. The range of
+luminosity distance used in this paper represented a high level of SNR up to
+the distance at which the first predicted detectable GW source; $D_{L} =
+200\,Mpc$. The detector limits for the advanced era is a luminosity distance of
+$\sim 450\,Mpc$. This was not initially tested as the SNR was low enough to
+cause problems with computational time. It was however tested in the random sky
+position simulations, see section~\ref{sec:rndsp}. The initial value for the
+calibration error used in the analysis was chosen randomly.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{DvsSNR-mult-det}
+  \caption{The distance and SNR relationship for all three detectors:
+LIGO Hanford, H1, LIGO Livingston, L1, and VIRGO.}
+  \label{fig:distsnr}
+\end{figure}
+
+To begin with, parameter estimation was carried out on the simplest case: a
+single source of GWs using a single detector, LIGO Hanford, at different levels
+of SNR. The aim was to resolve the calibration scale factor with the highest
+degree of certainty.  Before testing the uncertainty resolution using a the
+full range of prior parameters, we fixed all values to known signal values and
+only searched over the scale factor. Results shown for with and without a full
+prior range are given in figures~\ref{fig:sd-empty-D}
+and~\ref{fig:sd-non-empty-D} respectively.
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{SD_empty_D10_200}
+  \caption{\textit{Posterior distribution on the calibration scale factor for
+LIGO Hanford. Simulations carried out using an entirely known source of GWs.}}
+  \label{fig:sd-empty-D}
+\end{figure}
+
+The figure above is a histogram of the calibration error, with each curve
+representing a different distance (SNR). The black line at $s = 0.8$ is the
+initial scale factor value used to multiply the unanalysed data set. This
+representation of the initial calibration scale factor will be continuous
+throughout the paper.  One would expect with lower SNR (greater $D_{L}$), the
+estimation of the parameter would become less certain. This is clearly shown in
+figure~\ref{fig:sd-empty-D} as the standard deviations of the curves increases
+with smaller SNR/larger luminosity distances. For this entirely known source of
+GWs, we would expect to find the uncertainty in $s$ to be approximately
+$1/$SNR; this is what we see in figure~\ref{fig:sd-empty-D}. The error in
+estimating $s$ for $D_{L} = 200 \,Mpc$ is roughly $\sim 20\%$. This is larger
+than the current method of obtaining the uncertainty in calibration. A full
+test of the new method proposed is carried out in section~\ref{sec:rndsp}.
+
+The next estimation of the calibration scale factor was performed with a full
+range of prior parameters, giving a more realistic system. As before, the
+simulations were carried out for differing levels of SNR and a histogram of the
+calibration error was made, seen in figure~\ref{fig:sd-non-empty-D}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{SD_non_empty_D10_200}
+  \caption{\textit{Posterior distribution on the calibration scale factor for
+LIGO Hanford. Simulations carried out with some parameters in the prior.}}
+  \label{fig:sd-non-empty-D}
+\end{figure}
+
+The error in the calibration scale factor, as before, increases with decreasing
+SNR (increasing $D_{L}$). The magnitude of this error however is larger than in
+the previous simulation. With a full prior range given in
+section~\ref{sec:pandl}, the standard deviation increases; at $D_{L} =
+200\,Mpc$ the error in $s$ is $\sim 24\%$. When comparing this new method of
+calibration scale factor estimation with the current, feedback loop system
+method used today, this method is not as accurate. However, it should again be
+noted that this method is an independent estimate of the calibration accuracy.
+
+A network of detectors are used throughout GW research. Being able to show the
+effect of the calibration error and recovering its uncertainty in the analysis
+would help in giving a detection more confidence. In this section, the
+simulations were carried out using multiple detectors; LIGO Hanford, LIGO
+Livingston, and Virgo. In reality, multiple detectors are used in order to
+determine the (rough) sky position of a signal. Due to their locations, if one
+site detects a signal before the others, then the position of the source can be
+roughly worked out. The aim was, as before, to estimate the calibration scale
+factor with the least amount of uncertainty for differing levels of SNR for a
+single source of GWs.
+
+For a network of detectors, the overall likelihood function becomes a product
+of each likelihood for all detectors, i.e.
+
+\begin{equation}
+  \label{eq:mult-likeli}
+  p(\vec{d}| \vec{\theta}, \curlH) = \prod \limits_D p(\vec{d}^D| \vec{\theta},
+\curlH)
+\end{equation}
+
+where $D = \{H,L,V\}$. The initial calibration scale factors where again chosen
+at random ($s = [4.6, 2.5, 6.1]$ for LIGO Hanford, LIGO Livingston, and Virgo
+respectively). The simulations were the same as before, using the same
+parameter values. The GRB assumption was again tested in these simulations as a
+handful of parameters were relaxed and given some uncertainty. The results of
+these simulations are shown in figure~\ref{fig:mult-empty-D} and
+figure~\ref{fig:mult-non-D}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{MD_empty_D10_200}
+  \caption{Posterior distribution on the calibration scale factor for
+all three detectors. Simulations carried out using an entirely known source of
+GWs.}
+    \label{fig:mult-empty-D}
+\end{figure}
+
+Figure~\ref{fig:mult-empty-D} shows the histograms of the calibration scale
+factor for each detector. These simulations used an entirely known source of
+GWs, at a randomly chosen sky position (the same sky position as before). As
+the figure shows both LIGO sites, Hanford and Livingston, are able to resolve
+the error with a measurable degree of uncertainty. The standard deviation for
+$s$ at $D_{L}=200\,Mpc$ is $24\%$ and $41\%$ of the true scale factor for
+Hanford and Livingston respectively. The estimation for the calibration error
+using VIRGO however, was not as accurate. It can be seen that, for increasing
+luminosity distances, the resolution of $s$ becomes increasingly uncertain
+until the point at which the distribution becomes almost uniform; $D_{L}
+\approx 120\,Mpc$. There are a few reasons why this may be. Firstly, the sky
+position used may not be 'ideal' for generating the antenna patterns. The most
+probable cause of the estimation being very poor will lie in the detector
+itself. The interferometer itself is not as sensitive the two LIGO sites, hence
+the estimation of parameters using this site will not be as precise.
+
+\begin{figure}
+  \centering
+  \includegraphics[width = \textwidth]{MD_non_empty_D10_200}
+  \caption{Posterior distribution on the calibration scale factor for
+all three detectors. Simulations carried out with some prior parameters.}
+  \label{fig:mult-non-D}
+\end{figure}
+
+
+The histograms shown in figure~\ref{fig:mult-non-D} were made using the full
+range of prior parameters. The uncertainty in the calibration error is larger
+with a less known source of GWs. VIRGO, again, has the least certain
+calibration error resolution with the distribution becoming even more uniform.
+The standard deviation for both LIGO curves become larger with increasing
+luminosity distance as before. For $D_{L} = 200Mpc$,  the standard deviation is
+$\tilde 30\%$ of the true value. When comparing this to the current method,
+this again is not as accurate.
+
+Throughout the duration of this project the antenna patterns were defined by a
+randomly chosen sky position, as seen in equation~\ref{eq:gravsig}. This did
+not give a true representation of the estimation capable by algorithm as this
+position could be a bad one; making parameterisation more difficult and less
+precise. To then test this new method of calibration fully, the entire field of
+view of the detector must be analysed. The sky positions $\alpha$, $\delta$,
+were distributed as: \begin{table}[H] \centering \begin{tabular}{|c|c|} \hline
+Parameter & Distribution \\ \hline $\alpha$       & U($0$,$2\pi$) \\
+$\sin(\delta)$ & U($-1$,$1$)    \\ \hline \end{tabular} \caption{\textit{The
+distribution of sky position. U(a,b) indicates a uniform distribution between a
+and b.}} \label{tab:sp} \end{table}
+
+Figures~\ref{fig:snr-rndsp} and~\ref{fig:std-rndsp} were obtained using a
+luminosity distance $D_{L} = 200 Mpc$ as this is the expected luminosity
+distance predicted to host the first observable GW~\cite{peadvanced}. $100$
+different sky positions were tested using the LIGO Hanford site. The number of
+locations was limited by the length of time these simulations took to carry
+out. Increasing the number of locations would give a more accurate
+representation of the estimation ability; this can be carried out in future.
+Finally, a full range of prior parameters were also used in the simulation
+set-up.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{rand_sp_snr_D200}
+  \caption{Signal to noise ratio for every sky position analysed at
+$D_{L} = 200 \,Mpc$. The vertical black line represents the SNR for the sky
+position used throughout previous simulations}
+  \label{fig:snr-rndsp}
+\end{figure}
+
+Figure~\ref{fig:snr-rndsp} shows the histogram of SNRs for the entire field of
+view for the detector. Predictions state that at a luminosity distance of
+$D_{L}=200\,Mpc$, the SNR will be roughly 8. This is consistent with the
+results obtained. The vertical black line shown in figure~\ref{fig:snr-rndsp}
+represents the SNR used throughout the project using the randomly chosen
+$\alpha$ and $\delta$. One can see that this is a less-than-average SNR and may
+explain the resolution of the calibration error not being too precise. This
+then is a promising result and the full testing of this new calibration method
+can be carried out.
+
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{rand_sp_std_D200}
+  \caption{Standard Deviation (as a $\%$ of the true scale factor
+value) for every sky position analysed at $D_{L}=\,200Mpc$. The vertical black
+line indicates the median of the distribution.}
+  \label{fig:std-rndsp}
+\end{figure}
+
+
+
+Figure~\ref{fig:std-rndsp} is the distribution of fractional standard
+deviations on s for each sky position analysed, given as a percentage. The
+vertical black line in this figure shows the \textit{median} of the
+distribution. The results show that the algorithm can resolve the calibration
+error in the data within the range of $\sim 7\%$ to $\sim 14\%$ of the true
+value of $s$, for $D_{L}=200\,Mpc$. Being able to recover the scale factor
+error to this accuracy range confirms that the new method of calibration method
+is very competative with current techniques. These results also confirm that
+the sky position used throughout the project was indeed a bad choice with an
+error estimation of $\sim 24\%$.
+
+
+Other simulations relating to the randomisation of $\alpha$ and $\delta$ were
+carried out in this project. Different luminosity distances were simulated to
+test different levels of SNR. The expected trend was that the standard
+deviation scales with SNR; with high SNR yielding a better resolution of the
+scale factor error. The results show this trend, given in table
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|c|c|}
+    \hline
+    Distance ($Mpc$) &$\langle$ SNR $\rangle$ & median(Standard
+Deviation)($\%$) \\
+    \hline
+    $20$ & 74 & 1.5 \\
+    $120$ & 12  & 7 \\
+    $450$ & 3 & 27\\
+    \hline
+  \end{tabular}
+  \caption{\textit{Random sky positions for different luminosity distances;
+$\langle$SNR$\rangle$ is the mean SNR for the distribution. }}
+  \label{tab:dist-randsp}
+\end{table}
+
+The last, and lengthiest, set of simulations carried out used a network of
+detectors. Analysis on a luminosity distance of $200 \,Mpc$ was the only one
+carried out in this paper. This was due to time taken to process these
+simulations. With a full prior range and $100$ random sky positions as before,
+the standard deviations and SNRs were obtained. Results are shown
+in~\ref{tab:mult-rndsp}.
+
+
+\begin{table}
+\centering
+\begin{tabular}[H]{|c|c|c|}
+\hline
+  Detector   & $\langle$SNR$\rangle$ & median(Standard Deviation)($\%$)\\
+\hline
+LIGO Hanford & 20& 3 \\
+LIGO Livingston & 20 & 10 \\
+Virgo & 5 & 30\\
+\hline
+\end{tabular}
+\caption{\textit{Results from randomising the sky position using a network of
+detectors with a full range of prior parameters at $D_{L} = 200\, Mpc$.}}
+\label{tab:mult-rndsp}
+\end{table}
+
+
+Table~\ref{tab:mult-rndsp} gives promising results for both LIGO sites. One can
+see that the error estimation for LIGO Hanford is very good, with half of the
+positions analysed having an uncertainty $<3\%$. One would expect the gap in
+estimation accuracy between the two LIGO sites to be smaller as they are built
+to the same sensitivity. This leads to the conclusion that not enough sky
+positions were analysed. Virgo again has a less accurate recovery of the
+calibration scale factor. As mentioned above, the larger uncertainty is
+expected to originate from the sensitivity of the detector itself.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Multiple events without counterpart\label{sec:multiple}}
 
-An analysis or discussion of the issues regarding multiple events
-without EM counterparts.
+\cm{A discussion of the issues regarding multiple events
+without EM counterparts.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion\label{sec:discussion}}
 
-What did we learn.
+\cm{What did we learn.}
+
+This paper has shown that for differing levels of SNR, the error in the
+calibration is resolved within a certain accuracy range. Initial simulations
+used a bad sky position, resulting a low SNR which created larger uncertainty
+in resolving $s$. It was shown that for this sky position, the calibration
+scale factor estimation was recovered with an accuracy of roughly a $27\%$ for
+$D_{L} = 200\,Mpc$ for LIGO Hanford. The resolution of $s$ for a network of
+detectors was also shown.
+
+The main results obtained in this project were from analysing randomly chosen
+sky positions from the entire field of view for the detector. Through these
+simulations, it was shown that this new method of calibration can reach and
+surpass the current method in terms of accuracy. The results in
+figure~\ref{fig:std-rndsp} show that for half of the randomly chosen sky
+positions relate to an estimation of $s$ within a range comparable with the
+current methods.
+
+These results are reassuring for parameter estimation of the defining GW signal
+and would help in reducing the uncertainty in a direct detection. This project
+was; however, time constrained. There are many, many things that could be done
+with this project. A true noise realisation with each frequency bin having a
+random Gaussian noise would be the next step in calibration error estimation.
+
+This project is only the beginning in testing this new method of calibration.
+More rigorous testing has to be carried out for a number of different systems.
+As mentioned above, a larger number of random sky positions have to be analysed
+to give better understanding of the resolution capabilities of the method. The
+current technique of calibration defines the error in the detector to be a
+complex function of frequency and phase of the GW. Instead of the simple scale
+factor used so far, a more realistic error can be tested to ensure that the
+estimation in its value is still comparable with current methods.
+
+
+For applications of this calibration method, hypothesis testing could be
+carried out. Testing different hypothesis is the technique used in determining
+a GW signal in a data-set when compared to a noise-only data-set. Being able to
+show with confidence that the data contains a signal is the primary focus of GW
+research at the moment. Therefore if uncertainty can be removed from the
+analysis this will ensure a more confident detection. Using this new method is
+resolving and removing the uncertainty is an area which has to be explored.
 
 \ack
 
