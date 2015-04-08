@@ -121,7 +121,7 @@
   obtained and combined with current knowledge of the cosmologic
   parameters.  This will yield the true luminosity distance and allow
   the direct comparison with the estimated value.  Discrepancies can
-  then be used to correct the original calibration.
+  then be used to correct the original calibration.~\cm{Update at end}
 \end{abstract}
 
 % acronym definitions
@@ -132,6 +132,9 @@
 \acrodef{NSBH}[NSBH]{neutron star black hole}
 \acrodef{SNR}[SNR]{signal-to-noise ratio}
 \acrodef{GRB}[GRB]{gamma-ray burst}
+\acrodef{sGRB}[sGRB]{short gamma-ray burst}
+\acrodef{CBC}[CBC]{compact binary coalescence}
+\acrodef{EM}[EM]{electro-magnetic}
 
 %Uncomment for PACS numbers title message
 %\pacs{00.00, 20.00, 42.10}
@@ -147,7 +150,54 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction\label{sec:intro}}
 
-\cm{Explain the basic idea.}
+% introduce GWs and BNS systems
+It is expected that the advanced generation of interferometric \ac{GW}
+detectors will detect such waves emitted from $O(10s)$ of compact binary
+coalescences.  One such class of these cataclysmic events, the inspiral and
+merger of \ac{BNS} systems will be detected out to a maximum range of $\approx
+450$ Mpc. Assuming the current best estimates for the cosmological parameters,
+this is equivelent to a redshift $z\approx 0.1$. As noted by~\cite{} \ac{CBC}
+systems can be used as cosmiological distance markers, otherwise known as
+"standard sirens" (analogous to the \ac{EM} standard candles). Standard sirens
+allow ...
+
+% BNS systems are GRBs
+It is considered likely that the merger of \ac{BNS} systems, in addition to
+emitting detectable \acp{GW}, is also the mechanism for producing \acp{sGRB}.
+In this scenario these \ac{EM} events are produced through the ... and result
+in tightly beamed emission parallel to the orbital angular momentum vector of
+the \ac{BNS} system. Additional evidence for the coincidence of \acp{sGRB} with
+\ac{GW} events are the estimated astrophysical rates of both phenomena.
+Observations of \acp{sGRB} give a rate of XXX Mpc$^{-3}$yr$^{-1}$ which can be
+compared to estimates of \ac{BNS} merger rates of XXX-XXX Mpc$^{-3}$yr$^{-1}$.
+This latter range is obtained from population synthesis models together with
+knowledge of the X known \ac{BNS} systems in our galaxy. 
+  
+% talk about the calibration idea
+If a single \ac{GW} event is observed in coincidence with a \ac{sGRB} it will
+be possible to identify the host galaxy of the \ac{BNS} source.  With this
+information a spectroscopic redshift can be very accurately obtained. With
+knowledge of the redshift, using current best estimates for the Hubble constant
+and other cosmological parameters, the true luminosity distance can be
+estimated to $\sim 1\%$ accuracy  The \ac{GW} measurement acts as a standard
+siren also giving us a direct measurement of the luminosity distance to the source.
+The accuracy of such a measurement depends on a number of factors including the
+accuracy with which the \ac{GW} detector has been calibrated.  Hence comparison
+with the distance estimate from the \ac{sGRB} we can re-calibrate (or validate)
+the existing experimentally obtained calibration. 
+
+% What do we do in this paper
+In this paper we investigate the feasibility of this approach for single
+coincident \ac{GW}--\ac{sGRB} events and establish the validation power of such
+a calibration technique.  In Sec.~\ref{sec:calibration} we briefly summarize
+the existing experimental technique for \ac{GW} detector calibration and its
+expected accuracy.  We then review the concept of \ac{GW} standard sirens and
+their proposed coincident \ac{EM} signatures, the \acp{sGRB} in
+Secs.~\ref{sec:sirens} and~\ref{sec:GRB}. In Sec.~\ref{sec:single} we present
+the results of Monte-Carlo simulations for the purpose of luminosity distance
+estimation using \ac{GW} events. In Sec.~\ref{sec:cosmo} we show the likely
+accuracy of \ac{sGRB} distances obtained from their host galaxy redshift and in
+Sec.~\ref{sec:discussion} we conclude.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,44 +223,23 @@ itself, see~\cite{Vitale} and references therein. For advanced LIGO and Virgo,
 at the frequency range used in this project, the error in the calibration using
 the 'hardware injection method' is roughly $10\%$~\cite{Vitale}. This is a
 benchmark set for the error estimation using the proposed new method in this
-project.
+project.~\cm{Clean this up and expand.}
 
-The hardware method of calibrating the ground-based detectors is incredibly
-complex in its application, with many sources of error which have to be
-accounted for. The new method of calibration proposed and tested in this
-project is a lot simpler. The method acts as an external calibrator, to be
-carried out using the data collected by the detector, $\tilde{d}(f)$. We assume
-the collected data contains some unknown and unaccounted for calibration error.
-The uncertainty in $\tilde{d}(f)$ can then be evaluated using methods of
-parameterisation already carried out in GW research. This method of
-parameterising GW defining variables is then carried out on a known source, a
-standard candle as described above, which allows one to measure the calibration
-uncertainty in the data set.
-
-One can estimate the error in the calibration using parameter estimation
-methods, or more precisely Bayesian inference. In this project the calibration
-offset used throughout is simply a scale factor, $s$. This effects the data set
-collected by a simple multiplication:
-
-\begin{equation}
-  \label{eq:scaledata}
-  \tilde{d}_m(f) = \tilde{d}_e(f) \times s
+% Describe our model for the calibration
+In this work the calibration correction factor used throughout is simply a scale
+factor, $s$. This effects the data set collected by a simple multiplication:
+%
+\begin{equation}\label{eq:scaledata}
+  h(t) = s\times h_{\mathrm{m}}(t)
 \end{equation}
-
-where $\tilde{d}_m(f)$ is the data-set measured by the detector, and
-$\tilde{d}_e(f)$ is the exact data set, with no error. A description of the
+%
+where $h_{\mathrm{m}}(t)$ is the measured detector strain, and
+$h(t)$ is the exact perfectly calibrated strain. A description of the
 collected data is given in section~\ref{sec:cbc}. The scale factor being
 parameterised, $s$, represents all known sources of error in the system. This
 is not entirely realistic as $s$ is known to be a function of frequency.
-Testing a more realistic calibration error is work to be done in the future.
-
-
-Being able to resolve the calibration scale factor with the least amount of
-uncertainty was the aim of this project; to show that this method is
-competitive with current techniques. If the calibration error can be resolved
-with known uncertainty, GW data analysis can then be carried out with more
-certainty. This is useful as an entirely independent method of assessing the
-uncertainty in the current calibration method.
+Testing a more realistic calibration error is work to be done in the
+future.~\cm{Need to clean this up and expand the discussion}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,70 +252,61 @@ to~\cite{1986Natur.323..310S}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{GRB counterparts\label{sec:GRB}}
 
-A GW detection on its own right would be ground breaking, allowing
-astrophysicists to observe the sky above in a whole new spectrum. However, to
-increase the scientific return on a direct GW detection, a counterpart EM
-observation of the source itself would need to be seen.  There are two
-approaches to observing a source both in EM and GW spectrum's~\cite{grb}:
+% what are sGRBs 
+\cm{What are sGRBs?}\\
 
-\begin{enumerate}
-  \item locating and observing a source with an EM follow-up to
-a GW detection
-  \item searching for a GW signal generated by a source seen
-through EM observations
-\end{enumerate}
+% discuss joint-event rates
+\cm{Discuss the expected rate of joint detections}\\
 
-Both of these methods have their pros and cons. Firstly, an EM follow-up would
-be very difficult due to the duration of GW source system detectable by
-ground-based interferometers. A neutron star binary system (NS-NS binary) has a
-duration of $\sim15$ minutes~\cite{bnstime}.  Errors in the sky position from a
-GW detection would also create issues for an EM follow-up. The sky localisation
-obtained from the ground-based detectors gives a large field of view for the EM
-observatories to search, roughly an area spanning $100$'s of
-degrees~\cite{grb}.
+% observing a coincident event
+The most likely scenario in which a coincident \ac{GW}--\ac{sGRB} event would
+be identified is through the targeted follow-up of an observed \ac{sGRB} or by
+post-facto matching of \ac{GW} trigger lists with known \ac{sGRB} events.  The
+likelihood of being able to follow-up \ac{GW} events using gamma-ray telescopes
+with low enough latency to catch a \ac{sGRB} is low.  Compounding this issue is
+the relatively large \ac{GW} sky error-box giving a field-of-view for the
+\ac{EM} observatories to search spanning $\sim 100$'s of square
+degrees~\cite{grb}.  For the \ac{GW} follow-up of \ac{sGRB} scenario the merger
+time for \ac{BNS} systems will be estimated from the \ac{sGRB} to within a few
+seconds~\cite{grb}.  This makes the follow-up search less computationally
+expensive since it is performed over a smaller range of data using potentially
+fewer numbers of waveform templates.  This computational saving enables the use
+of a more computationally expensive multi-detector coherent scheme rather than
+the cheaper coincidence methods used in the untargeted searches. 
 
-The more promising detection approach then is a follow-up GW search from an EM
-trigger, especially for the source of GW considered in this paper. The merger
-time for NS-NS binaries are known with an uncertainty within a few seconds for
-the EM radiation emitted from this system~\cite{grb}.
+% discuss the inclination angle issue
+A fortunate consequence of a joint \ac{GW}--\ac{sGRB} observation will be the
+fact that in order for such an event to be observed, the \ac{BNS} system must
+have had its orbital angular momentum vector pointing towards (or away) from
+the detector.  The actual inclination angle of the system, defined as the angle
+between the orbital angular momentum vector and the line of sight, must be $<$
+half of the \ac{sGRB} beaming angle.  This prerequisite property limits us to
+systems that are approximately "face-on" and therefore biases us to higher
+\ac{SNR} signals.  However, as discussed earlier, the property of beaming
+severely impacts the probable rate of such joint observations.   
 
-
-Identifying the source of GWs redshift would then lead to calculating the
-Hubble constant and other cosmological parameters~\cite{Schutz}. The evolution
-of the system could be better understood, allowing for searches with greater
-accuracy. Counterpart EM observations of a GW source will also remove
-uncertainty in the defining GW parameters, a fact which was taken advantage of
-for this project.
-
-
-The source of GW considered in this paper will be a coalescing binary system
-consisting of neutron stars. As well as being the most probable source of GWs
-detectable by ground-based interferometers, they are also expected to emit EM
-radiation. As shown in figure~\ref{fig:grb}, the emission occurs due to the
-high velocity with which the stars coalesce. The coalescences are thought to be
-the progenerators of short-duration gamma ray bursts (SGRBs)~\cite{grb}.
-Observations of this radiation has been see, through the Swift satellite and
-follow-up ground-based telescopes~\cite{swift}. Unfortunately, no observation
-of SGRBs have been seen within the range of advanced generation of LIGO and
-Virgo. It is probable, however, that such a source exists well within the range
-of advanced LIGO/ Virgo, but has simply not been observed~\cite{grb}. This then
-validates the assumption made throughout the project.
-
-
-In this paper, a key assumption has to be made in order to test this new method
-of calibration. It is assumed that there exists a source of GWs with enough
-information known through EM observation such that it can be used as a
-\textit{standard candle}, i.e. an accurately known and well modelled source of
-GWs. In this project (for the source of GWs being analysed), a GRB observation
-is assumed to have been seen. This allows for discrepancies in the detector
-calibration itself to be parameterised. This is the proposed new method of
-calibration for the detectors, for all types of detectors.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{A single event with GRB counterpart\label{sec:single}}
 
-\cm{This should be the simplest case we can do.}
+\cm{This should be the simplest case we can do.  We need to cut a lot of this.}
+
+% Describe what we are going to do in this section
+
+% Describe the signal model (Taylor F2 etc...)
+
+% Define the detectors and the noise epoch we will be using
+
+% Define the likelihood function we will be using
+
+% describe what parameters we will be considering
+
+% describe the priors
+
+% mention the no-noise issue
+
+% Describe the ensemble of simulations used
 
 In this project the hypothesis considered, $\curlH$, simply states that the
 data, $\tilde{d}(f),$ collected by a generic detector contains the GW signal,
@@ -303,16 +323,6 @@ detectors in question: LIGO Livingston (L), LIGO Hanford (H), and Virgo (V); $D
 whether a data set contains a GW signal or not~\cite{SathSchutz}. This was not
 explored in this project so the above hypothesis is consistent throughout this
 paper.
-
-Coalescing binary systems of compact objects, such as neutron stars or black
-holes, are the most probable source of GWs detectable by ground-based
-interferometers~\cite{peadvanced}. A direct detection of GWs would allow for a
-fuller understanding of the mechanics of these systems. Compact binary
-coalescence's (CBCs) are systems of two compact object inspiralling, with
-reducing separation, until the inevitable merger of the objects. This orbital
-motion creates ripples in space-time; this is the GW from this motion. For
-gravitational wave research, the interests lie in the GW signal generated, or
-the \textit{waveform}, shown in figure~\ref{fig:signal}.
 
 In this paper, a brief overview of the mathematical breakdown for the waveform
 is shown. For a more rigorous derivation, see~\cite{SathSchutz} and references
@@ -397,14 +407,6 @@ redshift of the merger can be calculated. This then allows for the luminosity
 distance to be calculated and in turn other defining parameters can be obtained
 (or known to a degree of uncertainty)~\cite{SathSchutz}.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{grav_signal}
-  \caption{The gravitational waveform produced using coalescing binary
-neutron stars. The wave is represented in the frequency domain with masses
-$m_{1,2} = 1.4M_{\odot}$ at a luminosity distance $D_{L} = 200 \,Mpc$.}
-  \label{fig:signal}
-\end{figure}
 
 %More explination
 Finally, the last term in equation~\ref{eq:data} must be discussed; the noise
@@ -776,7 +778,12 @@ positions were analysed. Virgo again has a less accurate recovery of the
 calibration scale factor. As mentioned above, the larger uncertainty is
 expected to originate from the sensitivity of the detector itself.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Distance estimates from \acp{sGRB}\label{sec:cosmo}}
 
+~\cm{Describe the cosmological analysis used to obtain the distance from the
+GRB}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
