@@ -293,222 +293,99 @@ severely impacts the probable rate of such joint observations.
 \cm{This should be the simplest case we can do.  We need to cut a lot of this.}
 
 % Describe what we are going to do in this section
-
+Let us consider a single \ac{GW} detection of the inspiral stage of a \ac{BNS}
+merger and assume that this signal has been associated with a potential
+\ac{sGRB} detection. We therefore also assume that the inclination angle
+of the binary is consistent with a given \ac{sGRB} beaming angle.  Finally we
+assume that a host galaxy has been identified for the source and that the sky
+position is therefore known to high precision. 
+ 
 % Describe the signal model (Taylor F2 etc...)
+We use the post-Newtonian Taylor F2 waveform approximation for modelling the
+signal whereby the \ac{GW} phase for 2 point-particles of mass $m_{1}$ and
+$m_{2}$ is given by
+%
+\begin{equation}
+\label{eq:gwphase}
+  \Psi(f) = 2\pi f t_\mathrm{c} - \phi_{\mathrm{c}} - \frac{\pi}{4} +
+\frac{3}{128\eta\nu^{5}}\sum\limits_{k=0}^{7}\alpha_{k}\nu^{k}.
+\end{equation}
+%
+Here $\eta=m_{1}m_{2}/M^{2}$ is the symmetric mass-ratio with $M=m_{1}+m_{2}$
+the total mass.  The post-Newtonian expansion parameter is $\nu=(\pi M
+f)^{1/3}$ and the coefficients are $\alpha$.
+
+The frequency-domain polarisation amplitudes are then defined as
+%
+\begin{eqnarray}
+  \gws_{+}(f) &=& \frac{1+\cos^{2}\iota}{2D_{L}}
+\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
+\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\Psi(f)}\\
+  \gws_{\times}(f) &=&
+ i\frac{\cos^{2}\iota}{D_{L}}\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
+\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\Psi(f)}
+\end{eqnarray}
+%
+where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$,
+and $\iota$ is the inclination angle.  The \ac{GW} strain measured
+at the $k$'th detector is then given by
+%
+\begin{equation}
+  \label{eq:gravsig}
+   \gws^{k}(f) = \big[ F_{+}^{k}(\alpha, \delta, \psi)\gws_{+}(f) +
+F_{\times}^D(\alpha, \delta, \psi)\gws_{\times}(f)\big]
+\end{equation}
+%
+where $F_{+},F_{\times}$ are the antenna response functions which are dependent
+upon the polarisation angle $\psi$ and the sky position of the source
+$\alpha,\delta$.
 
 % Define the detectors and the noise epoch we will be using
+For this analysis we will consider advanced generation instruments operating
+at their design sensitivity.  The network we consider is the 3 detector
+H1--L1--V1 configuration. 
 
 % Define the likelihood function we will be using
+We consider that the measured data in any detector is defined as
+%
+\begin{equation}
+  d^{k}(f)=\tilde{n}^{k}(f)+s\gws_{k}(f)
+\end{equation}
+%
+where $\tilde{n}(f)$ is the Fourier transform of Gaussian noise drawn from a
+distribution consistent with the power-spectral-density of the advanced
+detector noise.  The likelihood function for application to discretely sampled
+data is 
+%
+\begin{equation}
+  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp\Bigg[ 2\Delta
+f\sum_{k>0}\frac{|\tilde{d}(f_{k}) - \tilde{h}(f_{k})|^{2}}{S(f_{k})}\Bigg]
+\end{equation}
+% 
+where $\Delta f$ is the frequency resolution of the frequency domain data. 
 
-% describe what parameters we will be considering
-
-% describe the priors
+% describe what parameters we will be considering and their priors
+We assume uniform prior distributions on the unknown nuisance parameters
+$\phi_{\mathrm{c}},\psi$ on their standard ranges. The time of coalescence is
+restricted to a prior range of $\pm 10$ msec around the true value.  Given our
+assumption of an \ac{sGRB} counterpart and host galaxy, we treat the sky
+position as exactly known. We also consider the cosine of the inclination angle to be drawn
+from a zero-mean Gaussian with standard deviation $0.1$ consistent with an
+uncertainty on \ac{sGRB} opening of XXX~\cm{What was exactly done here?}.  The
+main parameter of interest, the calibration scale factor $s$ is assumed to have
+a uniform prior distribution on the range $(0,2)$.    
 
 % mention the no-noise issue
+We note that the analysis performed here used zero-noise realisations in which
+no actual noise was added to our signals.  The likelihood functions still
+contain the correct \ac{PSD} and hence the accuracy with which the parameters
+are recovered (indicated by the widths of the posterior distributions) is
+representative of the statistical errors in realistic noise scenarios.
 
 % Describe the ensemble of simulations used
 
-In this project the hypothesis considered, $\curlH$, simply states that the
-data, $\tilde{d}(f),$ collected by a generic detector contains the GW signal,
-$\gws(f)$, and some noise, $\tilde{n}(f)$~\cite{JVei},
-
-\begin{equation}
-  \label{eq:data}
-  \tilde{d}^D(f) = \gws^D(f) + \tilde{n}^D(f)
-\end{equation}
-
-where $D$ represents the detector site. In this project there will be three
-detectors in question: LIGO Livingston (L), LIGO Hanford (H), and Virgo (V); $D
-= \{L,H,V\}$. Testing different hypotheses is the method used to determine
-whether a data set contains a GW signal or not~\cite{SathSchutz}. This was not
-explored in this project so the above hypothesis is consistent throughout this
-paper.
-
-In this paper, a brief overview of the mathematical breakdown for the waveform
-is shown. For a more rigorous derivation, see~\cite{SathSchutz} and references
-there in. The waveform used throughout this project is a simplified system
-where the neutron stars are non rotating about their axes, in a perfectly
-circular inspiralling orbit; known as the TaylorF2 model~\cite{TF2,pN}. A more
-complex and realistic model could be tested in future for this calibration
-method. Parameter estimation using a variety of complex waveforms are carried
-out in~\cite{peadvanced}.
-
-The general equation for a GW signal detected at a generic detector, in the
-reference frame of the detector site, is given as~\cite{SathSchutz}
-
-\begin{equation}
-  \label{eq:gravsig}
-   \gws^D(f) = \big[ F_{+}^D(\alpha, \delta, \psi)\gws_{+}(f) +
-F_{\times}^D(\alpha, \delta, \psi)\gws_{\times}(f)\big]
-\end{equation}
-
-where $F_{+,\times}(\alpha, \delta, \psi)$ are the antenna response function of
-the detector, dependent on the right ascension, $\alpha$, declination,
-$\delta$, the polarisation angle $\psi$, and time. Testing the antenna patterns
-is carried out in section~\ref{sec:rndsp} of this report when the sky
-positions, $(\alpha, \delta)$, are randomised across the entire field of view
-for the detector.
-
-The polarisation amplitudes of the GW, given by $\gws_{+}(f)$, and
-$\gws_{\times}(f)$, represent the direction with which the GW compresses and
-stretches space-time. The form of these two amplitudes depends on the source
-being analysed. As mentioned above, the model used throughout this project was
-the TaylorF2 model. The parameters defining the GW polarisation amplitudes
-using the TaylorF2 model are:
-
-\begin{itemize}
-\item the total mass, $M = m_{1}+m_{2}$, where $m_{1,2}$ are the masses of the
-binary stars
-\item the symmetric mass ratio $\eta = \frac{m_{1}m_{2}}{(m_{1}+m_{2})}$
-\item chirp mass, $\mathcal{M} = \eta^{3/5}M$
-\item luminosity distance, $D_{L}$, measured in Mpc ($1 Mpc \approx
-3.1\times10^{22}m  $)
-\item the angle of inclination $\iota$. This is the angle from the source,
-taken as the angle between the normal of the orbital plane and the observer
-orientation.
-\item phase of the wave, $\psi$, which defines the polarisation of the angle of
-the GW, shown in equation~\ref{eq:psi}.
-\item the coalescence time, $t_c$, and phase of coalescence, $\phi_c$.
-\end{itemize}
-
-Together with the sky position, these parameters form the vector $\vec{\Theta}
-= \{\mathcal{M}, \eta, D_{L}, \iota, \alpha, \delta, \psi, t_{c}, \phi_{c}\}$
-which defines the entire GW signal.  The form of the polarisation amplitudes
-using the TaylorF2 model are given as~\cite{SathSchutz,pN,TF2}
-
-\begin{equation}
-  \gws_{+}(f) = \frac{1+\cos^{2}\iota}{2D_{L}}
-\frac{\mathcal{M}^{5/6}}{\pi^{2/3}} \sqrt{\frac{5}{24}}f^{-7/6}e^{-i\psi(f)}
-\end{equation}
-\begin{equation}
-  \gws_{\times}(f) =
-i\frac{\cos^{2}\iota}{D_{L}}\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
-\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\psi(f)}
-\end{equation}
-
-where the phase of the GW, $\psi$, is
-\begin{equation}
-  \label{eq:psi}
-  \psi(f) = 2\pi f t_c - \phi_c + \psi_N(\eta)\sum\limits_{k=0}^4{\psi_k(\eta)
-(\pi(m_1 + m_2)f)^{(k-5)/3}}.
-\end{equation}
-
-The terms $\psi_N$ and $\psi_k$ are the standard Newtonian and post-Newtonian
-coefficients. Derivations of these two equations can be found in~\cite{pN} and
-references there-in. The simulated gravitational wave signal used throughout
-this project can be seen in figure~\ref{fig:signal}. As one can see, the signal
-strength is very faint (an order of magnitude around $10^{-24}$). This is the
-the biggest problem in detecting GWs.
-
-As mentioned above, the source considered throughout this project thought to
-produce EM radiation; SGRBs. In this project, we assume that SGRBs of the GW
-source described above have been observed. If a GRB has been seen, then the
-redshift of the merger can be calculated. This then allows for the luminosity
-distance to be calculated and in turn other defining parameters can be obtained
-(or known to a degree of uncertainty)~\cite{SathSchutz}.
 
 
-%More explination
-Finally, the last term in equation~\ref{eq:data} must be discussed; the noise
-of the model, $\tilde{n}(f)$. Throughout this project, we have added no noise
-to the signal, although as discussed later we do include a noise estimate in
-the likelihood.
-
-The prior probability function, $p(\vec{\theta} | \curlH)$ in
-equation~\ref{eq:bayesgw}, represents our prior knowledge in $\theta$ before
-the analysis.The range of parameters used throughout this paper were chosen due
-to their inability to be justifiably known through a GRB assumption. The
-parameters were drawn from the ranges for any signals generated in this
-analysis, given in table 1.
-
-\begin{table}
-  \centering
-  \begin{tabular}{|c|c|}
-%  \caption{Prior parameters}
-    \hline
-    Parameter & Distribution \\
-    \hline
-    $\psi$   &  U($0,\pi/2$)\\
-    $\iota$   & N($0,0.1$) \\
-    $\phi_c$  & U($0,\pi/2$)\\
-    $t_c$     & U($t_{o}-0.01, t_{o}+0.01$) \\
-    $s$       & U(0,2) \\
-    \hline
-  \end{tabular}
-  \label{tab:prior}
-  \caption{\textit{The parameters used throughout the analysis with some degree
-of uncertainty. U(a,b) is a uniform distribution between a and b. N($\mu,
-\sigma$) is a normal distribution, with a mean $\mu$ and standard deviation
-$\sigma$. $t_{o} = 9\times10^{8}$}}
-\end{table}
-
-Through the assumption made above allows us to constrain the system,
-maintaining a small number of parameters in the prior. For a realistic
-parameter estimation of the source, a larger range of values with a bigger
-distribution. This was not tested due to time constraints but is proposed as
-work for the future.
-
-The likelihood functiona used throughout this project is given for a generic
-detector D as~\cite{JVei},
-
-\begin{equation}
-  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp(-(d^{D}(f) -
-h^{D}(f)|d^{D}(f) - h^{D}(f))/2)
-\end{equation}
-
-where $(\cdot |\cdot )$ is a representation of the inner product. This
-derivation is given in the appendix. Using the inner product of two real
-functions, and approximating for discrete integer values, the likelihood then
-becomes
-
-\begin{equation}
-  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp\Bigg[ 2\Delta
-f\sum_{k>0}\frac{|\tilde{d}(f_{k}) - \tilde{h}(f_{k})|^{2}}{S(f_{k})} \Bigg]
-\end{equation}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{PSD}
-  \caption{\textit{Noise spectral density for advanced LIGO and Virgo.}}
-  \label{fig:psd}
-\end{figure}
-
-where $S(f_{k})$ is the \textit{power spectral density} (PSD). This defines the
-sensitivity of the detector as it a measure of the strain in the detector due
-to noise~\cite{SathSchutz,sens}. The PSD for advanced LIGO and Virgo are shown
-in figure~\ref{fig:psd}. The figure shows that the strain effect for advanced
-LIGO is less than it is for Virgo; LIGO has a better sensitivity. This is a
-factor in analysing the calibration error, given in section~\ref{sec:results}.
-The subscript $k$ represents discrete values of relevant frequency bins (As
-carrying out the integral would become computationally costly). This likelihood
-will be used throughout the project. The factor of $\Delta f$ comes from the
-approximation of the inner product of two real functions (as it is integrated
-over frequency space).
-
-The aim of this project was to determine how well the calibration error could
-be parameterised in a software injected gravitational wave source. The error
-was estimated through numerous situations but the basis of the simulations
-remained the same throughout the project: a single source of GWs at varying
-signal to noise ratios. The GRB assumption was analysed as well by relaxing
-some of the defining GW paramaters and adding some uncertainty into their
-value, given in section~\ref{sec:pandl}.
-
-
-These values where chosen due to the assumed counterpart EM observation. These
-values could not be justified by that assumption so they were added into the
-prior with reasonable uncertainty.
-
-The estimation of the error, given in its simplest form as a scale factor, was
-performed for numerous systems: single detector, a network of detectors, random
-sky positions, etc. Before the parameter estimation was carried out, the
-relationship between distance of the source relative to the detector and the
-signal to noise ratio (SNR) needed to be found.
-
-The SNR is given by
-\begin{equation}
-  \label{eq:snr}
-  SNR = \sqrt{\Bigg( \frac{2 |\gws^D(f)|^2}{S^D(f)} df \Bigg)}
-\end{equation}
 
 where the noise spectral density, $S^D(f)$ is not a function of distance, shown
 in section~\ref{sec:pandl}. For coalescing binary neutron stars of masses
