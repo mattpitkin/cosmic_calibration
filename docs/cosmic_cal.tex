@@ -112,7 +112,7 @@
 \ead{1002990W@student.gla.ac.uk}
 
 \begin{abstract}
-  We present an investigation into the potential of calibrating
+  We present an investigation into the potential of calibrating \MP{change to: ``assessing the validity of the calibration''?}
   gravitational wave detector outputs through the use of standard
   sirens. Such signals, as measured via gravitational wave
   observations provide an estimated luminosity distance which is
@@ -152,13 +152,13 @@
 
 % introduce GWs and BNS systems
 It is expected that the advanced generation of interferometric \ac{GW}
-detectors will detect such waves emitted from $O(10s)$ of compact binary
+detectors will detect waves emitted from $O(10s)$ of compact binary
 coalescences.  One such class of these cataclysmic events, the inspiral and
 merger of \ac{BNS} systems will be detected out to a maximum range of $\approx
 450$ Mpc. Assuming the current best estimates for the cosmological parameters,
 this is equivelent to a redshift $z\approx 0.1$. As noted by~\cite{} \ac{CBC}
 systems can be used as cosmiological distance markers, otherwise known as
-"standard sirens" (analogous to the \ac{EM} standard candles). Standard sirens
+``standard sirens'' (analogous to the \ac{EM} standard candles). Standard sirens
 allow ...
 
 % BNS systems are GRBs
@@ -174,12 +174,12 @@ This latter range is obtained from population synthesis models together with
 knowledge of the X known \ac{BNS} systems in our galaxy. 
   
 % talk about the calibration idea
-If a single \ac{GW} event is observed in coincidence with a \ac{sGRB} it will
+If a single \ac{GW} event is observed in coincidence with a \ac{sGRB} it will \MP{may?}
 be possible to identify the host galaxy of the \ac{BNS} source.  With this
 information a spectroscopic redshift can be very accurately obtained. With
 knowledge of the redshift, using current best estimates for the Hubble constant
 and other cosmological parameters, the true luminosity distance can be
-estimated to $\sim 1\%$ accuracy  The \ac{GW} measurement acts as a standard
+estimated to $\sim 1\%$ accuracy.  The \ac{GW} measurement acts as a standard
 siren also giving us a direct measurement of the luminosity distance to the source.
 The accuracy of such a measurement depends on a number of factors including the
 accuracy with which the \ac{GW} detector has been calibrated.  Hence comparison
@@ -206,6 +206,8 @@ Sec.~\ref{sec:discussion} we conclude.
 \cm{We need to define our model for the calibration, i.e. are we talking
 about amplitude only and are we breaking this up over frequency.}
 
+\MP{In this paper I think we stick to just talking about a single overall amplitude calibration scale.}
+
 The technique used throughout GW research in calibrating the detectors is
 carried out through a complicated system of physical manipulations of the
 Fabret-Perot Michelson interferometer; where an elaborate feedback system is
@@ -219,9 +221,9 @@ essentially a control loop feedback system in which the difference output (in
 GW detectors, this is the distance the mirrors move due to the GW) and the the
 output set is reduced to the highest degree of certainty. This is just a brief
 overview of the calibration method currently used, and is an extensive study in
-itself, see~\cite{Vitale} and references therein. For advanced LIGO and Virgo,
+itself, see~\cite{Vitale:2012} and references therein. For advanced LIGO and Virgo,
 at the frequency range used in this project, the error in the calibration using
-the 'hardware injection method' is roughly $10\%$~\cite{Vitale}. This is a
+the `hardware injection method' is roughly $10\%$~\cite{Vitale:2012}. This is a
 benchmark set for the error estimation using the proposed new method in this
 project.~\cm{Clean this up and expand.}
 
@@ -235,7 +237,7 @@ factor, $s$. This effects the data set collected by a simple multiplication:
 %
 where $h_{\mathrm{m}}(t)$ is the measured detector strain, and
 $h(t)$ is the exact perfectly calibrated strain. A description of the
-collected data is given in section~\ref{sec:cbc}. The scale factor being
+collected data is given in Section~\ref{sec:cbc}. The scale factor being
 parameterised, $s$, represents all known sources of error in the system. This
 is not entirely realistic as $s$ is known to be a function of frequency.
 Testing a more realistic calibration error is work to be done in the
@@ -281,7 +283,7 @@ have had its orbital angular momentum vector pointing towards (or away) from
 the detector.  The actual inclination angle of the system, defined as the angle
 between the orbital angular momentum vector and the line of sight, must be $<$
 half of the \ac{sGRB} beaming angle.  This prerequisite property limits us to
-systems that are approximately "face-on" and therefore biases us to higher
+systems that are approximately ``face-on'' and therefore biases us to higher
 \ac{SNR} signals.  However, as discussed earlier, the property of beaming
 severely impacts the probable rate of such joint observations.   
 
@@ -714,6 +716,18 @@ show with confidence that the data contains a signal is the primary focus of GW
 research at the moment. Therefore if uncertainty can be removed from the
 analysis this will ensure a more confident detection. Using this new method is
 resolving and removing the uncertainty is an area which has to be explored.
+
+\MP{We emphasise that our work has assumed that the PSD used in the likelihood function
+for estimating the calibration scale factor is an accurate representation of the
+PSD at the time of the observed CBC signal. In reality the PSD may be estimated from
+a period close to, but not overlapping, the signal time and therefore may be slightly
+different (see e.g. \cite{2013PhRvD..88h4044L}). Our result would therefore be completely correlated
+with any uncertainty in the PSD estimate, but would still offer an upper limit
+on the calibration uncertainty.}
+
+\MP{The BayesLine algorithm \cite{2015PhRvD..91h4034L} may provide a natural
+way to perform this analysis in particular when accounting for a frequency
+dependent calibration.}
 
 \ack
 
