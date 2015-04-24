@@ -351,24 +351,43 @@ H1--L1--V1 configuration.
 We consider that the measured data in any detector is defined as
 %
 \begin{equation}
-  d^{k}(f)=\tilde{n}^{k}(f)+s\gws_{k}(f)
+  \tilde{d}_{k}(f)=\tilde{n}_{k}(f)+s\gws_{k}(f,\vec{\theta})
 \end{equation}
 %
 where $\tilde{n}(f)$ is the Fourier transform of Gaussian noise drawn from a
 distribution consistent with the power-spectral-density of the advanced
-detector noise.  The likelihood function for application to discretely sampled
-data is 
+detector noise. 
+
+\MP{Our aim is to estimate the marginal posterior probability distribution function (pdf)
+for the unknown calibration scale factor. We use Bayes' theorem for which we need to define
+a likelihood function and prior pdfs on the signal parameters being estimated. In this
+analysis we use a nested sampling algorithm \cite{Skilling} to provide samples from the
+marginal posteriors that we require.}
+We use a Gaussian likelihood function given by
 %
+%\begin{equation}
+%  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp\Bigg[ 2\Delta
+%f\sum_{k>0}\frac{|\tilde{d}(f_{k}) - \tilde{h}(f_{k})|^{2}}{S(f_{k})}\Bigg]
+%\end{equation}
 \begin{equation}
-  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp\Bigg[ 2\Delta
-f\sum_{k>0}\frac{|\tilde{d}(f_{k}) - \tilde{h}(f_{k})|^{2}}{S(f_{k})}\Bigg]
+  p(\vec{d} | \vec{\theta}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm det}}
+  \sum_{i=i_{f_{\rm low}}}^{i_{f_{\rm high}}}\frac{\Re{\left\{ \tilde{d}^{*}_{k,i} \gws_{k,i}(\vec{\theta})
+  - \frac{1}{2}\left(\gws^*_{k,i}(\vec{\theta})\gws_{k,i}(\vec{\theta}) + \tilde{d}^*_{k,i}\tilde{d}_{k,i}\right) \right\}}}{S_{k,i}}\right]}
 \end{equation}
 % 
-where $\Delta f$ is the frequency resolution of the frequency domain data. 
+where $\Delta f$ is the frequency resolution of the data, $S_k$ is the
+$k^{\rm th}$ detector's one sided noise power spectral density, and the $i$ indices
+increment over frequency with $i_{f_{\rm low}}$ and $i_{f_{\rm high}}$ corresponding to
+the lower and upper range in frequencies used for our
+analsysis. \MP{Need to say the
+range of frequencies we integrate over, which I think was 50\,Hz to 1600\,Hz from looking
+at Liam's code.} The source parameters, and the unknown scale factor, have been subsumed
+into a vector $\vec{\theta}$.
 
 % describe what parameters we will be considering and their priors
 We assume uniform prior distributions on the unknown nuisance parameters
-$\phi_{\mathrm{c}},\psi$ on their standard ranges. The time of coalescence is
+$\phi_{\mathrm{c}},\psi$ on the ranges $[0, 2\pi]$ and $[0, \pi/2]$ respectively.
+The time of coalescence is
 restricted to a prior range of $\pm 10$ msec around the true value.  Given our
 assumption of an \ac{sGRB} counterpart and host galaxy, we treat the sky
 position as exactly known. We also consider the cosine of the inclination angle to be drawn
