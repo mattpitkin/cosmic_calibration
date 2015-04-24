@@ -71,7 +71,7 @@
 \usepackage{acronym}
 %\usepackage{dcolumn}   % needed for some tables
 \usepackage {url}
-%\usepackage[normalem]{ulem}   % temporal one in draft.
+\usepackage[normalem]{ulem}   % temporal one in draft.
 
 % variable shortcuts 
 \newcommand{\Hub}{H_{0}}
@@ -227,6 +227,28 @@ the `hardware injection method' is roughly $10\%$~\cite{Vitale:2012}. This is a
 benchmark set for the error estimation using the proposed new method in this
 project.~\cm{Clean this up and expand.}
 
+\MP{The gravitational wave strain is measured through the differential arm length changes
+of the interferometer via $h = \Delta L(f) / L$, where $L$ is the total arm length.
+Calibration is required to relate the actual measured interferometer error signal ouptut
+$e(f)$ to this differential arm length $\Delta L$. This relation
+is known as the length response function, $R(f,t)$, defined such that
+\begin{equation}
+\Delta L(f) = R(f,t) e(f),
+\end{equation}
+where $R$ various slowly in time (in comparison to transient signal timescales).
+Calculation of $R$ requires the measurement of various functions within a control feedback loop
+(see \cite{Vitale:2012} for a brief overview of this), which are subject to
+uncertainties. In this study we will assume an estimate of $R$ is available (although
+in theory we could take on the role of estimating $R$ itself), but that it differs from the
+truth through some unknown scale factor, $s$, so that
+\begin{equation}
+h_{\rm true}(f) = s h_{\rm measured}(f) = s \frac{R(f,t) e(f)}{L}.
+\end{equation}
+In this analysis we will simplify the situation by assuming that $s$ is a constant with
+respect to frequency, but in future studies that assumption could be dropped and $s$
+could take some functional form with respect to $f$.
+}
+
 % Describe our model for the calibration
 In this work the calibration correction factor used throughout is simply a scale
 factor, $s$. This effects the data set collected by a simple multiplication:
@@ -236,8 +258,8 @@ factor, $s$. This effects the data set collected by a simple multiplication:
 \end{equation}
 %
 where $h_{\mathrm{m}}(t)$ is the measured detector strain, and
-$h(t)$ is the exact perfectly calibrated strain. A description of the
-collected data is given in Section~\ref{sec:cbc}. The scale factor being
+$h(t)$ is the exact perfectly calibrated strain. \sout{A description of the
+collected data is given in Section~\ref{sec:cbc}}. The scale factor being
 parameterised, $s$, represents all known sources of error in the system. This
 is not entirely realistic as $s$ is known to be a function of frequency.
 Testing a more realistic calibration error is work to be done in the
