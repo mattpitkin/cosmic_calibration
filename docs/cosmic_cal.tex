@@ -73,6 +73,8 @@
 \usepackage {url}
 \usepackage[normalem]{ulem}   % temporal one in draft.
 
+%\usepackage{harvard}
+
 % variable shortcuts 
 \newcommand{\Hub}{H_{0}}
 \newcommand{\DL}{D_{\mathrm{L}}}
@@ -156,7 +158,7 @@ detectors will detect waves emitted from $O(10s)$ of compact binary
 coalescences.  One such class of these cataclysmic events, the inspiral and
 merger of \ac{BNS} systems will be detected out to a maximum range of $\approx
 450$ Mpc. Assuming the current best estimates for the cosmological parameters,
-this is equivelent to a redshift $z\approx 0.1$. As noted by~\cite{} \ac{CBC}
+this is equivelent to a redshift $z\approx 0.1$. As noted by \cite{1986Natur.323..310S} \ac{CBC}
 systems can be used as cosmiological distance markers, otherwise known as
 ``standard sirens'' (analogous to the \ac{EM} standard candles). Standard sirens
 allow ...
@@ -221,32 +223,33 @@ essentially a control loop feedback system in which the difference output (in
 GW detectors, this is the distance the mirrors move due to the GW) and the the
 output set is reduced to the highest degree of certainty. This is just a brief
 overview of the calibration method currently used, and is an extensive study in
-itself, see~\cite{Vitale:2012} and references therein. For advanced LIGO and Virgo,
+itself, see \cite{Vitale:2012} and references therein. For advanced LIGO and Virgo,
 at the frequency range used in this project, the error in the calibration using
-the `hardware injection method' is roughly $10\%$~\cite{Vitale:2012}. This is a
+the `hardware injection method' is roughly $10\%$ \cite{Vitale:2012}. This is a
 benchmark set for the error estimation using the proposed new method in this
 project.~\cm{Clean this up and expand.}
 
-\MP{The gravitational wave strain is measured through the differential arm length changes
+\MP{The gravitational wave strain is measured through the differential arm length, $\Delta L$, changes
 of the interferometer via $h = \Delta L(f) / L$, where $L$ is the total arm length.
 Calibration is required to relate the actual measured interferometer error signal ouptut
-$e(f)$ to this differential arm length $\Delta L$. This relation
-is known as the length response function, $R(f,t)$, defined such that
+$e(f)$ to $\Delta L$. This relation is known as the length response function, $R(f,t)$,
+defined such that
 \begin{equation}
 \Delta L(f) = R(f,t) e(f),
 \end{equation}
-where $R$ various slowly in time (in comparison to transient signal timescales).
+where $R$ varies slowly in time (in comparison to transient signal timescales).
 Calculation of $R$ requires the measurement of various functions within a control feedback loop
 (see \cite{Vitale:2012} for a brief overview of this), which are subject to
 uncertainties. In this study we will assume an estimate of $R$ is available (although
 in theory we could take on the role of estimating $R$ itself), but that it differs from the
 truth through some unknown scale factor, $s$, so that
 \begin{equation}
-h_{\rm true}(f) = s h_{\rm measured}(f) = s \frac{R(f,t) e(f)}{L}.
+h(f) = s h_{\rm m}(f) = s \frac{R(f,t) e(f)}{L},
 \end{equation}
+where $h(f)$ is the true strain and $h_{\rm m}(f)$ is the measured strain.
 In this analysis we will simplify the situation by assuming that $s$ is a constant with
 respect to frequency, but in future studies that assumption could be dropped and $s$
-could take some functional form with respect to $f$.
+could take some functional form, or piece-wise fit, with respect to $f$.
 }
 
 % Describe our model for the calibration
@@ -316,13 +319,29 @@ severely impacts the probable rate of such joint observations.
 
 \cm{This should be the simplest case we can do.  We need to cut a lot of this.}
 
+\MP{We want to assess how well a calibration scale factor can be estimated
+from a single observed \ac{GW} associated with a particular \ac{sGRB}. As we {\it a priori}
+have no knowledge of the likely location and distance of such an event we have performed
+simulations of multiple events to see the expected distribution the accuracy of the
+calibration scale factor recovery.}
+
 % Describe what we are going to do in this section
 Let us consider a single \ac{GW} detection of the inspiral stage of a \ac{BNS}
 merger and assume that this signal has been associated with a potential
 \ac{sGRB} detection. We therefore also assume that the inclination angle
 of the binary is consistent with a given \ac{sGRB} beaming angle.  Finally we
 assume that a host galaxy has been identified for the source and that the sky
-position is therefore known to high precision. 
+position is therefore known to high precision.
+
+\MP{We perform 100 simulations at each of a range of distances from 10\,Mpc out
+to 200\,Mpc. For the simulations at each distance range we have allowed the
+source's sky position to be randomly drawn from a uniform distribution over
+the sky, the polarisation angle $\psi$ to drawn from a uniform distribution in the
+range $[0, \pi/2]$, the coalescence phase to be drawn from a uniform distribution
+in the range $[0, 2\pi]$, and the inclination angle drawn from a Gaussian with range XX?.
+The binary system masses have been fixed as $1.4\,{\rm M}_\odot$ (based on the
+very good assumption that whatever masses are chosen in these cases they will be
+recovered to high accuracy) and the time of coalescence is fixed.}
  
 % Describe the signal model (Taylor F2 etc...)
 We use the post-Newtonian Taylor F2 waveform approximation for modelling the
@@ -366,8 +385,8 @@ $\alpha,\delta$.
 
 % Define the detectors and the noise epoch we will be using
 For this analysis we will consider advanced generation instruments operating
-at their design sensitivity.  The network we consider is the 3 detector
-H1--L1--V1 configuration. 
+at their design sensitivity, \MP{with noise power spectral densities taken from
+\cite{2013arXiv1304.0670L}}. The network we consider is the 3 detector H1--L1--V1 configuration. 
 
 % Define the likelihood function we will be using
 We consider that the measured data in any detector is defined as
@@ -380,11 +399,14 @@ where $\tilde{n}(f)$ is the Fourier transform of Gaussian noise drawn from a
 distribution consistent with the power-spectral-density of the advanced
 detector noise. 
 
+\subsection{Analysis method}
+
 \MP{Our aim is to estimate the marginal posterior probability distribution function (pdf)
 for the unknown calibration scale factor. We use Bayes' theorem for which we need to define
 a likelihood function and prior pdfs on the signal parameters being estimated. In this
-analysis we use a nested sampling algorithm \cite{Skilling} to provide samples from the
-marginal posteriors that we require.}
+analysis we use a nested sampling algorithm \cite{Skilling}\footnote{The code used was based
+on {\tt matlabmultinest} found at \url{https://github.com/mattpitkin/matlabmultinest}.}
+to provide samples from the marginal posteriors that we require.}
 We use a Gaussian likelihood function given by
 %
 %\begin{equation}
@@ -402,7 +424,7 @@ $k^{\rm th}$ detector's one sided noise power spectral density, and the $i$ indi
 increment over frequency with $i_{f_{\rm low}}$ and $i_{f_{\rm high}}$ corresponding to
 the lower and upper range in frequencies used for our
 analsysis. \MP{Need to say the
-range of frequencies we integrate over, which I think was 50\,Hz to 1600\,Hz from looking
+range of frequencies we integrate over, which I think was 40\,Hz to 1600\,Hz from looking
 at Liam's code.} The source parameters, and the unknown scale factor, have been subsumed
 into a vector $\vec{\theta}$.
 
@@ -418,6 +440,9 @@ uncertainty on \ac{sGRB} opening of XXX~\cm{What was exactly done here?}.  The
 main parameter of interest, the calibration scale factor $s$ is assumed to have
 a uniform prior distribution on the range $(0,2)$.    
 
+
+\subsection{Simulations}
+
 % mention the no-noise issue
 We note that the analysis performed here used zero-noise realisations in which
 no actual noise was added to our signals.  The likelihood functions still
@@ -428,20 +453,17 @@ representative of the statistical errors in realistic noise scenarios.
 % Describe the ensemble of simulations used
 
 
-
-
-where the noise spectral density, $S^D(f)$ is not a function of distance, shown
-in section~\ref{sec:pandl}. For coalescing binary neutron stars of masses
+For coalescing binary neutron stars of masses
 $m_{1,2} = 1.4\,M_{\odot}$ and  $D_{L}200\,Mpc$, the expected SNR is roughly 8.
 The SNR was determined from $D_{L} = [10,200]\,Mpc$  using a randomly chosen
 sky position which defines the antenna patterns and the GW signal. The range of
 luminosity distance used in this paper represented a high level of SNR up to
 the distance at which the first predicted detectable GW source; $D_{L} =
 200\,Mpc$. The detector limits for the advanced era is a luminosity distance of
-$\sim 450\,Mpc$. This was not initially tested as the SNR was low enough to
+$\sim 450\,Mpc$. \sout{This was not initially tested as the SNR was low enough to
 cause problems with computational time. It was however tested in the random sky
 position simulations, see section~\ref{sec:rndsp}. The initial value for the
-calibration error used in the analysis was chosen randomly.
+calibration error used in the analysis was chosen randomly.}
 
 \begin{figure}
   \centering
@@ -505,7 +527,7 @@ calibration scale factor estimation with the current, feedback loop system
 method used today, this method is not as accurate. However, it should again be
 noted that this method is an independent estimate of the calibration accuracy.
 
-A network of detectors are used throughout GW research. Being able to show the
+\sout{A network of detectors are used throughout GW research. Being able to show the
 effect of the calibration error and recovering its uncertainty in the analysis
 would help in giving a detection more confidence. In this section, the
 simulations were carried out using multiple detectors; LIGO Hanford, LIGO
@@ -514,7 +536,7 @@ determine the (rough) sky position of a signal. Due to their locations, if one
 site detects a signal before the others, then the position of the source can be
 roughly worked out. The aim was, as before, to estimate the calibration scale
 factor with the least amount of uncertainty for differing levels of SNR for a
-single source of GWs.
+single source of GWs.}
 
 For a network of detectors, the overall likelihood function becomes a product
 of each likelihood for all detectors, i.e.
@@ -759,10 +781,10 @@ analysis this will ensure a more confident detection. Using this new method is
 resolving and removing the uncertainty is an area which has to be explored.
 
 \MP{We emphasise that our work has assumed that the PSD used in the likelihood function
-for estimating the calibration scale factor is an accurate representation of the
+when estimating the calibration scale factor is an accurate representation of the
 PSD at the time of the observed CBC signal. In reality the PSD may be estimated from
 a period close to, but not overlapping, the signal time and therefore may be slightly
-different (see e.g. \cite{2013PhRvD..88h4044L}). Our result would therefore be completely correlated
+different \cite{2013PhRvD..88h4044L}. Our result would therefore be completely correlated
 with any uncertainty in the PSD estimate, but would still offer an upper limit
 on the calibration uncertainty.}
 
@@ -773,11 +795,14 @@ dependent calibration.}
 \ack
 
 We would like to acknowledge the useful discussions with a whole bunch
-of people.
+of people. LW was part funded for this work through a Royal Astronomical
+Society Undergraduate Research Bursary.
+MP is funded by the STFC under grant number ST/L000946/1.
 
 \section*{References}
 
-\bibliographystyle{unsrt}
+%\biaxbliographystyle{jphysicsB}
+\bibliographystyle{iopart-num}
 \bibliography{masterbib}
 \end{document}
 
