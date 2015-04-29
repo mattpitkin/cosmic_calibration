@@ -6,7 +6,10 @@ A script to run the calibration scale factor check using the emcee MCMC sampler
 import numpy as np
 import copy
 import sys
+import os
 from optparse import OptionParser
+
+from matplotlib import pyplot as pl
 
 # swig lal modules for signal generation
 import lal
@@ -14,10 +17,6 @@ import lalsimulation
 
 # MCMC code
 import emcee
-
-# pyCBC code for generating coloured frequency noise
-from pycbc.types import frequencyseries
-from pycbc import noise
 
 # a function to compute the antenna response
 def antenna_response( gpsTime, ra, dec, psi, det ):
@@ -30,10 +29,7 @@ def antenna_response( gpsTime, ra, dec, psi, det ):
             'L1': lal.LALDetectorIndexLLODIFF, \
             'G1': lal.LALDetectorIndexGEO600DIFF, \
             'V1': lal.LALDetectorIndexVIRGODIFF, \
-            'T1': lal.LALDetectorIndexTAMA300DIFF, \
-            'AL1': lal.LALDetectorIndexLLODIFF, \
-            'AH1': lal.LALDetectorIndexLHODIFF, \
-            'AV1': lal.LALDetectorIndexVIRGODIFF}
+            'T1': lal.LALDetectorIndexTAMA300DIFF}
 
   try:
     detector=detMap[det]
@@ -83,6 +79,48 @@ def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl):
   return hptilde.data.data, hctilde.data.data
 
 
+# A function to generate frequency domain coloured noise
+# This function is adapted from pyCBC in the noise module:
+# https://github.com/ligo-cbc/pycbc/blob/master/pycbc/noise/gaussian.py
+# copyright of Alex Nitz (2012)
+def frequency_noise_from_psd(psd, deltaF, seed = None):
+    """ Create noise with a given psd.
+    
+    Return noise coloured with the given psd. The returned noise 
+    has the same length and frequency step as the given psd. 
+    Note that if unique noise is desired a unique seed should be provided.
+    Parameters
+    ----------
+    psd : np.array
+        The noise weighting to color the noise.
+    deltaF: float
+        The frequency step size
+    seed : {0, int} or None
+        The seed to generate the noise. If None specified,
+        the seed will not be reset.
+        
+    Returns
+    --------
+    noise : numpy array
+        A numpy array containing gaussian noise colored by the given psd. 
+    """
+    sigma = 0.5 * np.sqrt(psd / deltaF)
+    if seed is not None:
+        np.random.seed(seed)
+    
+    not_zero = (sigma != 0) & np.isfinite(sigma)
+    
+    sigma_red = sigma[not_zero]
+    noise_re = np.random.normal(0, sigma_red)
+    noise_co = np.random.normal(0, sigma_red)
+    noise_red = noise_re + 1j * noise_co
+    
+    noise = np.zeros(len(sigma), dtype='complex')
+    noise[not_zero] = noise_red
+    
+    return noise
+
+
 # define the log posterior function:
 #  - theta - a vector of the varying parameter values
 #  - y - the frequency domain data divided by the ASD
@@ -98,7 +136,7 @@ def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl):
 #  - resps - the antenna respsonse functions
 #  - asds - the detector noise ASDs
 def lnprob(theta, y, dd, iotaprior, tccentre, m1, m2, dist, fmin, fmax, deltaF, resps, asds): 
-  lp = lnprior(theta, iotaprior, tccentre)
+  lp = lnprior(theta, iotaprior, tccentre, len(resps))
   
   if not np.isfinite(lp):
     return -np.inf
@@ -107,15 +145,15 @@ def lnprob(theta, y, dd, iotaprior, tccentre, m1, m2, dist, fmin, fmax, deltaF, 
 
 
 # define the log prior function
-def lnprior(theta, iotawidth, tccentre):
+def lnprior(theta, iotawidth, tccentre, ndets):
   # unpack theta
-  psi, phi0, iota, tc, sf1, sf2, sf3 = theta
+  psi, phi0, iota, tc = theta[0:4]
+  ss = theta[-ndets:]
+
   lp = 0. # logprior
 
-  ss = [sf1, sf2, sf3]
-
   # outside prior ranges
-  if 0. < psi < np.pi and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01:
+  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01:
     lp = 0.
   else:
     return -np.inf
@@ -136,11 +174,11 @@ def lnprior(theta, iotawidth, tccentre):
 # define the log likelihood function
 def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
   # unpack theta
-  psi, phi0, iota, tc, sf1, sf2, sf3 = theta
+  psi, phi0, iota, tc = theta[0:4]
+  ss = theta[-len(resps):]
   
   spsi = np.sin(2.*psi)
   cpsi = np.cos(2.*psi)
-  ss = [sf1, sf2, sf3]
   
   # generate waveform
   hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
@@ -155,7 +193,7 @@ def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
 
     Hs = H/asds[i]
     
-    Hs[~np.isfinite(Hs)] = 0.
+    # Hs[~np.isfinite(Hs)] = 0.
     
     dh = np.vdot(y[i], Hs)
     hh = np.vdot(Hs, Hs)
@@ -176,6 +214,16 @@ if __name__=='__main__':
                     "the analysis output (a sub-directory based on the pulsar "
                     "name will be created here that contains the pulsar "
                     "information)", metavar="DIR")
+
+  parser.add_option("-g", "--det", dest="dets",
+                    help="An interferometer to be used (multiple interferometers can be set \
+with multiple uses of this flag, e.g. \"-g H1 -g L1 -g V1\") [default: H1]", 
+                    action="append")
+
+  parser.add_option("-S", "--scalefac", dest="scales", action="append", type="float",
+                    help="The simulation calibration scale factors for each detector \
+- unless the value is 1 for all detectors there must be the same number of these values \
+set as detectors given [default: 1.]")
 
   parser.add_option("-N", "--Niter", dest="Niter",
                     help="Number of MCMC iterations [default: %default]", type="int",
@@ -216,10 +264,12 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
                     help="Time of coalescence (GPS) [default: %default]", default=900000000.)
 
   parser.add_option("-p", "--phi0", dest="phi0", type="float",
-                    help="The phase at coalescence (rads) [default: %default]", default=0.)
+                    help="The phase at coalescence (rads) - if not specified phi0 will be drawn from \
+a uniform distribution between 0 and 2pi.")
 
   parser.add_option("-a", "--psi", dest="psi", type="float",
-                    help="The polarisation angle (rads) [default: %default]", default=0.)
+                    help="The polarisation angle (rads) - if not specified psi will be drawn from \
+a uniform distribution between 0 and pi/2.")
 
   parser.add_option("-f", "--fmin", dest="fmin", type="float",
                     help="Lower frequency bound (Hz) [default: %default]", default=40.)
@@ -230,9 +280,13 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
   parser.add_option("-x", "--deltaF", dest="deltaF", type="float",
                     help="Frequency bins size (Hz) [default: %default]", default=2.)
 
-  parser.add_option("-z", "--noise", dets="noise", type="boolean", default=False,
+  parser.add_option("-z", "--noise", dest="noise", default=False, action="store_true",
                     help="If this flag is set a noise spectrum is added to the data")
 
+  parser.add_option("-k", "--psd-noise", dest="psdnoise", default=0, type="int",
+                     help="If this flag is non-zero the PSD is estimated as the average of \
+the given number of noisy PSD estimates.")
+  
 
   # parse input options
   (opts, args) = parser.parse_args()
@@ -251,6 +305,12 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
   Niter = opts.Niter
   Nburnin = opts.Nburnin
   Nensemble = opts.Nensemble
+
+  # detectors
+  if not opts.__dict__['dets']:
+    dets = ['H1']
+  else:
+    dets = opts.dets
 
   # integration options
   fmin = opts.fmin
@@ -279,14 +339,33 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
   else:
     iota = opts.iota
 
+  if not opts.__dict__['psi']:
+    psi = 0.5*np.pi*np.random.rand() # draw from between 0 and pi/2
+  else:
+    psi = opts.psi
+    
+  if not opts.__dict__['phi0']:
+    phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
+  else:
+    phi0 = opts.phi0
+
+  if not opts.__dict__['scales']:
+    scales = [1.]
+  else:
+    scales = opts.scales
+
   # check whether to add noise
   addnoise = opts.noise
+  
+  # check whether to calculate the PSD from noisy data
+  psdnoise = opts.psdnoise
 
-  # we will use three detectors H1, L1 and V1
-  dets = ['H1', 'L1', 'V1']
-
-  # we will hardcode the calibration scale factors for each detector
-  scales = [0.8, 1.2, 1.4]
+  if len(scales) != len(dets):
+    if len(scales) == 1 and scales[0] == 1.: # all scale factors will be one
+      scales = [1. for i in range(len(dets))]
+    else:
+      print >> sys.stderr, "Must specify the same number of calibration scale factors as detectors"
+      sys.exit(0)
 
   # create a simulated waveform in each detector
   # the masses will both be fixed at 1.4 solar masses
@@ -311,57 +390,75 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
   # create frequency series for PSDs
   psd = lal.CreateREAL8FrequencySeries('name', t0, 0., deltaF, lal.Unit(), len(hp))
 
-  if addnoise:
-    freqvals = np.linspace(0., deltaF*(len(hp)-1), len(hp))
-    freqarray = frequencyseries.FrequencySeries(freqvals, delta_f=deltaF)
-
   # generate the ASD esimates (use values from P1200087)
   asds = []
   SNRs = []
   dd = [] # the data cross product
+  
   for i in range(len(dets)):
     if dets[i] in ['H1', 'L1']:
       ret = lalsimulation.SimNoisePSDaLIGODesignSensitivityP1200087(psd, fmin)
-      asds.append(np.sqrt(psd.data.data)*scales[i])
+      psd.data.data[psd.data.data == 0.] = np.inf
     elif dets[i] in 'V1':
       ret = lalsimulation.SimNoisePSDAdVDesignSensitivityP1200087(psd, fmin)
+    
+    psd.data.data[psd.data.data == 0.] = np.inf
+    
+    if psdnoise:
+      # get average of 32 noise realisations for PSD
+      psdav = np.zeros(len(hp))
+      for j in range(psdnoise):
+        noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
+        psdav = psdav + 2.*deltaF*np.abs(noisevals)**2
+      psdav = psdav/float(psdnoise)
+      
+      psdav[psdav == 0.] = np.inf
+      
+      asds.append(np.sqrt(psdav)*scales[i])
+    else:
       asds.append(np.sqrt(psd.data.data)*scales[i])
+   
+    freqs = np.linspace(0., deltaF*(len(hp)-1.), len(hp))
+    #pl.plot(freqs, np.sqrt(psd.data.data), colours[i])
+    #pl.plot(freqs, np.abs(H[i]), colours[i])
     
-    # create additvie noise
-    if addnoise:
-        psdarray = frequencyseries.FrequencySeries(psd.data.data, delta_f=deltaF)
-        noisevals = noise.gaussian.frequency_noise_from_psd(psdarray)
-        H[i] = H[i] + noisevals*scales[i]
-    
-    H[i] = H[i]/(np.sqrt(psd.data.data)*scales[i])
-    H[i][~np.isfinite(H[i])] = 0.
-    
-    dd.append(np.vdot(H[i], H[i]).real)
-    
-    snr = np.sqrt(4.*deltaF*dd[i])
+    # get htmp for snr calculation
+    htmp = H[i]/asds[i]
+    #htmp[~np.isfinite(htmp)] = 0.
+    snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
     SNRs.append(snr)
     print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
+    
+    # create additive noise
+    if addnoise:
+      noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
+      #pl.plot(freqs, np.abs(noisevals), colours[i])
+
+      H[i] = H[i] + noisevals*scales[i]
+      
+    H[i] = H[i]/asds[i]
+    #H[i][~np.isfinite(H[i])] = 0.
+    
+    dd.append(np.vdot(H[i], H[i]).real)
+ 
+  #pl.show()
+  #sys.exit(0)
  
   # set up MCMC
   # get initial seed points
   pos = []
   for i in range(Nensemble):
-    # psi
-    psiini = np.random.rand()*np.pi
+    psiini = np.random.rand()*np.pi*0.5 # psi
+    phi0ini = np.random.rand()*2.*np.pi # phi0
+    iotaini = iotawidth*np.random.randn() # iota
+    tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
+    sfs = 0.01 + (10.-0.01)*np.random.rand(len(scales)) # scale factors
     
-    # phi0
-    phi0ini = np.random.rand()*2.*np.pi/2.
+    thispos = [psiini, phi0ini, iotaini, tcini]
+    for s in sfs:
+      thispos.append(s)
     
-    # iota
-    iotaini = iotawidth*np.random.randn()
-  
-    # time of coalescence
-    tcini = -0.01 + 2.*0.01*np.random.rand() + t0
-  
-    # scale factors
-    sfs = 0.01 + (10.-0.01)*np.random.rand(3)
-    
-    pos.append(np.array([psiini, phi0ini, iotaini, tcini, sfs[0], sfs[1], sfs[2]]))
+    pos.append(np.array(thispos))
   
   ndim = len(pos[0])
   # Multiprocessing version
@@ -370,15 +467,18 @@ a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
   sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2,
                                   dist, fmin, fmax, deltaF, resps, asds))
   
-  sampler.run_mcmc(pos, Niter)
+  sampler.run_mcmc(pos, Niter+Nburnin)
   
   #  remove burn-in and flatten
   samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))
-  
+ 
   import triangle
-  fig = triangle.corner(samples, labels=["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$s_1$", \
-                        "$s_2$", "$s_3$"],
-                        truths=[psi, phi0, iota, t0, scales[0], scales[1], scales[2]])
+  labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
+  truths = [psi, phi0, iota, t0]
+  for i in range(len(dets)):
+    labels.append("$s_{\mathrm{%s}}}$" % dets[i])
+    truths.append(scales[i])
+    print np.std(samples[:,4+i])
+    
+  fig = triangle.corner(samples, labels=labels, truths=truths)
   fig.savefig("test"+intseed+".png")
-
-  print np.std(samples[:,4]), np.std(samples[:,5]), np.std(samples[:,6])
