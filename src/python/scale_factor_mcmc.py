@@ -8,6 +8,7 @@ import copy
 import sys
 import os
 from optparse import OptionParser
+import json
 
 from matplotlib import pyplot as pl
 
@@ -203,6 +204,24 @@ def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
   return L
 
 
+# a function to get the credible intervals using a greedy binning method
+def credible_interval(dsamples, ci):
+    n, binedges = np.histogram(dsamples, bins=100)
+    dbins = binedges[1]-binedges[0] # width of a histogram bin
+    bins = binedges[0:-1]+dbins/2. # centres of bins
+
+    histIndices=np.argsort(n)[::-1]  # indices of the points of the histogram in decreasing order
+
+    frac = 0.0
+    j = 0
+    for i in histIndices:
+        frac += float(n[i])/float(len(dsamples))
+        j = j+1
+        if frac >= ci:
+            break
+
+    return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
+
 
 if __name__=='__main__':
   
@@ -287,6 +306,11 @@ a uniform distribution between 0 and pi/2.")
                      help="If this flag is non-zero the PSD is estimated as the average of \
 the given number of noisy PSD estimates.")
   
+  parser.add_option("-P", "--plot", dest="plot", default=False, action="store_true",
+                    help="If this flag is set the posteriors will be plotted (requires triangle.py).")
+
+  parser.add_option("-T", "--seed", dest="seed", type="int",
+                     help="A numpy random number generator seed value.")
 
   # parse input options
   (opts, args) = parser.parse_args()
@@ -320,8 +344,6 @@ the given number of noisy PSD estimates.")
   # injected source options
   dist = opts.dist
   t0 = opts.t0
-  phi0 = opts.phi0
-  psi = opts.psi
   
   if not opts.__dict__['ra']:
     ra = 2.*np.pi*np.random.rand() # generate RA uniformly between 0 and 2pi
@@ -353,6 +375,9 @@ the given number of noisy PSD estimates.")
     scales = [1.]
   else:
     scales = opts.scales
+
+  if opts.__dict__['seed']:
+    np.random.seed(opts.seed) # set the random seed
 
   # check whether to add noise
   addnoise = opts.noise
@@ -472,13 +497,79 @@ the given number of noisy PSD estimates.")
   #  remove burn-in and flatten
   samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))
  
-  import triangle
-  labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
-  truths = [psi, phi0, iota, t0]
+  # output samples to gzipped file
+  samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
+  np.savetxt(samplefile, samples, fmt='%.5f')
+ 
+  # output injection information and scale factor recovery information (JSON format)
+  infofile = os.path.join(outpath, 'info_'+intseed+'.txt')
+  outdict = {} # output dictionary
+  
+  outdict['InjectionParameters'] = {}
+  outdict['InjectionParameters']['psi'] = psi
+  outdict['InjectionParameters']['phi0'] = phi0
+  outdict['InjectionParameters']['iota'] = iota
+  outdict['InjectionParameters']['tc'] = t0
+  outdict['InjectionParameters']['m1'] = m1
+  outdict['InjectionParameters']['m2'] = m2
+  outdict['InjectionParameters']['dist'] = dist
+  outdict['InjectionParameters']['fmin'] = fmin
+  outdict['InjectionParameters']['fmax'] = fmax
+  outdict['InjectionParameters']['deltaF'] = deltaF
+  outdict['InjectionParameters']['scales'] = scales
+  outdict['InjectionParameters']['SNRs'] = SNRs
+ 
+  outdict['Detectors'] = dets
+ 
+  outdict['MCMC'] = {}
+  outdict['MCMC']['Niterations'] = Niter
+  outdict['MCMC']['Nburnin'] = Nburnin
+  outdict['MCMC']['Nensemble'] = Nensemble
+
+  commandline = ''
+  for arg in sys.argv:
+    commandline += arg + ' '
+  outdict['CommandLine'] = commandline
+
+  # get scale factor standard devaitions and 95% credible intervals
+  scstds = []
+  scstdsfrac = []
+  cis = []
+  cisfrac = []
   for i in range(len(dets)):
-    labels.append("$s_{\mathrm{%s}}}$" % dets[i])
-    truths.append(scales[i])
-    print np.std(samples[:,4+i])
+    mean_s = np.mean(samples[:,4+i])
+    std_s = np.std(samples[:,4+i])
+    scstds.append(std_s)
+    scstdsfrac.append(std_s/mean_s)
+    ci = credible_interval(samples[:,4+i], 0.95)
+    cis.append(ci)
+    cisfrac.append(np.diff(ci)[0]/mean_s)
+  
+  outdict['Results'] = {}
+  outdict['Results']['ScaleSigma'] = scstds
+  outdict['Results']['Scale95%CredibleInterval'] = cis
+  outdict['Results']['ScaleSigmaFrac'] = scstdsfrac
+  outdict['Results']['Scale95%CredibleIntervalFrac'] = cisfrac
+ 
+  f = open(infofile, 'w')
+  json.dump(outdict, f, indent=2)
+  f.close()
+ 
+  if opts.plot:
+    try:
+      import triangle
+    except:
+      print >> sys.stderr, "Can't load triangle.py, so no plot will be produced"
+      sys.exit(0)
+      
+    labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
+    truths = [psi, phi0, iota, t0]
+    for i in range(len(dets)):
+      labels.append("$s_{\mathrm{%s}}}$" % dets[i])
+      truths.append(scales[i])
+      print np.std(samples[:,4+i])
     
-  fig = triangle.corner(samples, labels=labels, truths=truths)
-  fig.savefig("test"+intseed+".png")
+    fig = triangle.corner(samples, labels=labels, truths=truths)
+    
+    plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.png')
+    fig.savefig(plotfile)
