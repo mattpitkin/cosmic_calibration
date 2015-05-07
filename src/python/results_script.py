@@ -63,11 +63,15 @@ for i, d in enumerate(dirs):
     info = json.load(fo)
     fo.close()
 
-    relsf.append(info['Results']['ScaleSigmaFrac'])
+    relsf.append(info['Results']['Scale68%CredibleInterval'])
     
   nprelsf = np.array(relsf)
   print nprelsf.shape
-   
+  
+  nprelsf[:,0] = nprelsf[:,0]/info['InjectionParameters']['scales'][0]
+  nprelsf[:,1] = nprelsf[:,1]/info['InjectionParameters']['scales'][1] 
+  nprelsf[:,2] = nprelsf[:,2]/info['InjectionParameters']['scales'][2]
+  
   # plot output
   #ax[0].hist(nprelsf[:,0], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
   #ax[1].hist(nprelsf[:,1], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
