@@ -36,7 +36,7 @@ pl.rc('text', usetex=True)
 pl.rc('font', family='serif')
 pl.rc('font', size=14)
 
-dists = [50, 100, 150, 200, 250, 300, 450]
+dists = [50, 100, 150, 200, 250, 300, 350, 400, 450]
 colours = ['r', 'm', 'c', 'g', 'b', 'p', 'k']
 
 prefix = '/home/sismp2/projects/cosmic_calibration/no_noise/distances'
@@ -63,7 +63,11 @@ for i, d in enumerate(dirs):
     info = json.load(fo)
     fo.close()
 
-    relsf.append(info['Results']['Scale68%CredibleInterval'])
+    vals = []
+    for k in range(len(info['InjectionParameters']['scales'])):
+      vals.append(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])
+
+    relsf.append(vals)
     
   nprelsf = np.array(relsf)
   print nprelsf.shape
@@ -71,7 +75,7 @@ for i, d in enumerate(dirs):
   nprelsf[:,0] = nprelsf[:,0]/info['InjectionParameters']['scales'][0]
   nprelsf[:,1] = nprelsf[:,1]/info['InjectionParameters']['scales'][1] 
   nprelsf[:,2] = nprelsf[:,2]/info['InjectionParameters']['scales'][2]
-  
+
   # plot output
   #ax[0].hist(nprelsf[:,0], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
   #ax[1].hist(nprelsf[:,1], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
