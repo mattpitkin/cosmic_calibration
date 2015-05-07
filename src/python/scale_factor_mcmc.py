@@ -533,24 +533,34 @@ the given number of noisy PSD estimates.")
 
   # get scale factor standard devaitions and 95% credible intervals
   scstds = []
-  scstdsfrac = []
-  cis = []
-  cisfrac = []
+  cis95 = []
+  cis90 = []
+  cis68 = []
+  scmeans = []
+  scmedians = []
+  schists = []
   for i in range(len(dets)):
-    mean_s = np.mean(samples[:,4+i])
+    scmeans.append(np.mean(samples[:,4+i]))
+    scmedians.append(np.median(samples[:,4+i]))
     std_s = np.std(samples[:,4+i])
     scstds.append(std_s)
-    scstdsfrac.append(std_s/mean_s)
+    n, binedges = np.histogram(samples[:,4+i], bins=100)
+    schists.append((n, binedges))
     ci = credible_interval(samples[:,4+i], 0.95)
-    cis.append(ci)
-    cisfrac.append(np.diff(ci)[0]/mean_s)
-  
+    cis95.append(ci)
+    ci = credible_interval(samples[:,4+i], 0.90)
+    cis90.append(ci)
+    ci = credible_interval(samples[:,4+i], 0.68)
+    cis68.append(ci)
+    
   outdict['Results'] = {}
+  outdict['Results']['ScaleMean'] = means
   outdict['Results']['ScaleSigma'] = scstds
-  outdict['Results']['Scale95%CredibleInterval'] = cis
-  outdict['Results']['ScaleSigmaFrac'] = scstdsfrac
-  outdict['Results']['Scale95%CredibleIntervalFrac'] = cisfrac
- 
+  outdict['Results']['Scale95%CredibleInterval'] = cis95
+  outdict['Results']['Scale90%CredibleInterval'] = cis90
+  outdict['Results']['Scale68%CredibleInterval'] = cis68
+  outdict['Results']['ScaleHist'] = schists
+  
   f = open(infofile, 'w')
   json.dump(outdict, f, indent=2)
   f.close()
