@@ -554,7 +554,7 @@ the given number of noisy PSD estimates.")
     cis68.append(ci)
     
   outdict['Results'] = {}
-  outdict['Results']['ScaleMean'] = means
+  outdict['Results']['ScaleMean'] = scmeans
   outdict['Results']['ScaleSigma'] = scstds
   outdict['Results']['Scale95%CredibleInterval'] = cis95
   outdict['Results']['Scale90%CredibleInterval'] = cis90
