@@ -72,21 +72,29 @@ for i, d in enumerate(dirs):
   #ax[0].hist(nprelsf[:,0], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
   #ax[1].hist(nprelsf[:,1], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
   #ax[2].hist(nprelsf[:,2], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
-  ci1 = credible_interval(nprelsf[:,0], 0.95)
-  ci2 = credible_interval(nprelsf[:,1], 0.95)
-  ci3 = credible_interval(nprelsf[:,2], 0.95)
+  ci1 = credible_interval(nprelsf[:,0], 0.90)
+  ci2 = credible_interval(nprelsf[:,1], 0.90)
+  ci3 = credible_interval(nprelsf[:,2], 0.90)
+  
+  pl.plot(dists[i]-7.5, np.mean(nprelsf[:,0]), 'bo', lw=2, ms=6)
+  pl.plot(dists[i], np.mean(nprelsf[:,1]), 'ro', lw=2, ms=6)
+  pl.plot(dists[i]+7.5, np.mean(nprelsf[:,2]), 'go', lw=2, ms=6)
+  
+  pl.plot(dists[i]-7.5, np.median(nprelsf[:,0]), 'bx', lw=2, ms=6)
+  pl.plot(dists[i], np.median(nprelsf[:,1]), 'rx', lw=2, ms=6)
+  pl.plot(dists[i]+7.5, np.median(nprelsf[:,2]), 'gx', lw=2, ms=6)
   
   if i == 0:
-    pl.plot([dists[i]-5, dists[i]-5], ci1, 'b', label='H1', lw=2)
+    pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', label='H1', lw=2)
     pl.plot([dists[i], dists[i]], ci2, 'r', label='L1', lw=2)
-    pl.plot([dists[i]+5, dists[i]+5], ci3, 'g', label='V1', lw=2)
+    pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', label='V1', lw=2)
   else:
-    pl.plot([dists[i]-5, dists[i]-5], ci1, 'b', lw=2)
+    pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
     pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
-    pl.plot([dists[i]+5, dists[i]+5], ci3, 'g', lw=2)
+    pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
   
 pl.legend(loc='best')
 pl.xlabel('distance (Mpc)')
-pl.ylabel('95\% $\sigma_{\\textrm{frac}}$')
+pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
   
 fig.savefig('relative_error.png')
