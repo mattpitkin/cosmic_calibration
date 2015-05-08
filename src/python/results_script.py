@@ -22,6 +22,8 @@ parser = OptionParser( usage = usage )
 
 parser.add_option("-o", "--outfile", dest="outfile", help="The output plot file")
 
+parser.add_option("-i", "--indir", dest="indir", help="The input directory", metavar="DIR")
+
 # parse input options
 (opts, args) = parser.parse_args()
 
@@ -32,6 +34,19 @@ if not opts.__dict__['outfile']:
   sys.exit(0)
 else:
   outfile = opts.outfile
+
+# check that output path has been given
+  if not opts.__dict__['indir']:
+    print >> sys.stderr, "Must specify an input path"
+    parser.print_help()
+    sys.exit(0)
+  else:
+    indir = opts.indir
+    
+    if not os.path.isdir(indir):
+      print >> sys.stderr, "Must specify an input path"
+      parser.print_help()
+      sys.exit(0)
 
 # a function to get the credible intervals using a greedy binning method
 def credible_interval(dsamples, ci):
@@ -58,7 +73,7 @@ pl.rc('font', size=14)
 dists = [50, 100, 150, 200, 250, 300, 350, 400, 450]
 colours = ['r', 'm', 'c', 'g', 'b', 'p', 'k']
 
-prefix = '/home/sismp2/projects/cosmic_calibration/no_noise/distances'
+prefix = indir
 
 # directories
 dirs = [os.path.join(prefix, '%dMpc' % dist) for dist in dists]
