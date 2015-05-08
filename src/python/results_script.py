@@ -9,10 +9,29 @@ can be recovered for different distance.
 import json
 import sys
 import os
+import sys
+
+from optparse import OptionParser
 
 import numpy as np
 from matplotlib import pyplot as pl
 
+usage = "Usage: %prog [options]"
+
+parser = OptionParser( usage = usage )
+
+parser.add_option("-o", "--outfile", dest="outfile", help="The output plot file")
+
+# parse input options
+(opts, args) = parser.parse_args()
+
+# check that output path has been given
+if not opts.__dict__['outfile']:
+  print >> sys.stderr, "Must specify an output file"
+  parser.print_help()
+  sys.exit(0)
+else:
+  outfile = opts.outfile
 
 # a function to get the credible intervals using a greedy binning method
 def credible_interval(dsamples, ci):
@@ -104,5 +123,9 @@ for i, d in enumerate(dirs):
 pl.legend(loc='best')
 pl.xlabel('distance (Mpc)')
 pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
-  
-fig.savefig('relative_error.png')
+
+try:
+  fig.savefig(outfile)
+except:
+  print >> sys.stderr, "Cannot create plot!"
+  sys.exit(0)
