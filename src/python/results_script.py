@@ -84,6 +84,8 @@ fnpre = 'info_'
 #fig, ax = pl.subplots(3, figsize=(7,14), dpi=200)
 fig = pl.figure(figsize=(7,5), dpi=200)
 
+data = []
+
 for i, d in enumerate(dirs):
   print d
 
@@ -110,34 +112,37 @@ for i, d in enumerate(dirs):
   nprelsf[:,1] = nprelsf[:,1]/info['InjectionParameters']['scales'][1] 
   nprelsf[:,2] = nprelsf[:,2]/info['InjectionParameters']['scales'][2]
 
+  data.append(nprelsf[:,0])
+  data.append(nprelsf[:,1])
+  data.append(nprelsf[:,2])
+
   # plot output
-  #ax[0].hist(nprelsf[:,0], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
-  #ax[1].hist(nprelsf[:,1], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
-  #ax[2].hist(nprelsf[:,2], bins=20, histtype='step', normed=True, label='%d Mpc'%dists[i])
-  ci1 = credible_interval(nprelsf[:,0], 0.90)
-  ci2 = credible_interval(nprelsf[:,1], 0.90)
-  ci3 = credible_interval(nprelsf[:,2], 0.90)
+  #ci1 = credible_interval(nprelsf[:,0], 0.90)
+  #ci2 = credible_interval(nprelsf[:,1], 0.90)
+  #ci3 = credible_interval(nprelsf[:,2], 0.90)
   
-  pl.plot(dists[i]-7.5, np.mean(nprelsf[:,0]), 'bo', lw=2, ms=6)
-  pl.plot(dists[i], np.mean(nprelsf[:,1]), 'ro', lw=2, ms=6)
-  pl.plot(dists[i]+7.5, np.mean(nprelsf[:,2]), 'go', lw=2, ms=6)
+  #pl.plot(dists[i]-7.5, np.mean(nprelsf[:,0]), 'bo', lw=2, ms=6)
+  #pl.plot(dists[i], np.mean(nprelsf[:,1]), 'ro', lw=2, ms=6)
+  #pl.plot(dists[i]+7.5, np.mean(nprelsf[:,2]), 'go', lw=2, ms=6)
   
-  pl.plot(dists[i]-7.5, np.median(nprelsf[:,0]), 'bx', lw=2, ms=6)
-  pl.plot(dists[i], np.median(nprelsf[:,1]), 'rx', lw=2, ms=6)
-  pl.plot(dists[i]+7.5, np.median(nprelsf[:,2]), 'gx', lw=2, ms=6)
+  #pl.plot(dists[i]-7.5, np.median(nprelsf[:,0]), 'bx', lw=2, ms=6)
+  #pl.plot(dists[i], np.median(nprelsf[:,1]), 'rx', lw=2, ms=6)
+  #pl.plot(dists[i]+7.5, np.median(nprelsf[:,2]), 'gx', lw=2, ms=6)
   
-  if i == 0:
-    pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', label='H1', lw=2)
-    pl.plot([dists[i], dists[i]], ci2, 'r', label='L1', lw=2)
-    pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', label='V1', lw=2)
-  else:
-    pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
-    pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
-    pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
+  #if i == 0:
+  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', label='H1', lw=2)
+  #  pl.plot([dists[i], dists[i]], ci2, 'r', label='L1', lw=2)
+  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', label='V1', lw=2)
+  #else:
+  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
+  #  pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
+  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
   
-pl.legend(loc='best')
-pl.xlabel('distance (Mpc)')
-pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
+pl.boxplot(data, notch=0, sym='+', vert=1, whis=[5, 95]) 
+  
+#pl.legend(loc='best')
+#pl.xlabel('distance (Mpc)')
+#pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
 
 try:
   fig.savefig(outfile)
