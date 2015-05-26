@@ -148,13 +148,15 @@ def lnprob(theta, y, dd, iotaprior, tccentre, m1, m2, dist, fmin, fmax, deltaF, 
 # define the log prior function
 def lnprior(theta, iotawidth, tccentre, ndets):
   # unpack theta
-  psi, phi0, iota, tc = theta[0:4]
+  #psi, phi0, iota, tc = theta[0:4]
+  psi, phi0, ciota, tc = theta[0:4]
   ss = theta[-ndets:]
 
   lp = 0. # logprior
 
   # outside prior ranges
-  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01:
+  #if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
+  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -1. <= ciota <= 1.:
     lp = 0.
   else:
     return -np.inf
@@ -167,7 +169,9 @@ def lnprior(theta, iotawidth, tccentre, ndets):
       return -np.inf
   
   # add iota prior
-  lp = lp - 0.5*(iota/iotawidth)**2
+  #lp = lp - 0.5*(iota/iotawidth)**2
+  iotan = np.arccos(ciota)
+  lp = lp - 0.5*(iotan/iotawidth)**2 - np.log(np.sin(iotan))
 
   return lp
 
@@ -175,14 +179,16 @@ def lnprior(theta, iotawidth, tccentre, ndets):
 # define the log likelihood function
 def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
   # unpack theta
-  psi, phi0, iota, tc = theta[0:4]
+  #psi, phi0, iota, tc = theta[0:4]
+  psi, phi0, ciota, tc = theta[0:4]
   ss = theta[-len(resps):]
   
   spsi = np.sin(2.*psi)
   cpsi = np.cos(2.*psi)
   
   # generate waveform
-  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
+  #hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
+  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, np.arccos(ciota))
 
   L = 0. # log likelihood
 
@@ -276,8 +282,12 @@ from a uniform distribution on the sky")
 a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
 
   parser.add_option("-w", "--iotawidth", dest="iotawidth", type="float",
-                    help="Width of iota simulation distribution (rads) [default: %default]",
+                    help="Width of iota simulation, and prior, distribution (rads) [default: %default]",
                     default=0.1)
+
+  parser.add_option("-F", "--flatiota", dest="flatiota", default=False, action="store_true",
+                    help="If this flag is set prior on iota will be flat (although the simulation \
+distribution will not be flat).")
 
   parser.add_option("-t", "--t0", dest="t0", type="float",
                     help="Time of coalescence (GPS) [default: %default]", default=900000000.)
@@ -311,6 +321,9 @@ the given number of noisy PSD estimates.")
 
   parser.add_option("-T", "--seed", dest="seed", type="int",
                      help="A numpy random number generator seed value.")
+  
+  parser.add_option("-c", "--threads", dest="threads", type="int", default=1,
+                     help="Number of CPU threads to use [default: %default].")
 
   # parse input options
   (opts, args) = parser.parse_args()
@@ -345,6 +358,10 @@ the given number of noisy PSD estimates.")
   dist = opts.dist
   t0 = opts.t0
   
+
+  if opts.__dict__['seed']:
+    np.random.seed(opts.seed) # set the random seed
+
   if not opts.__dict__['ra']:
     ra = 2.*np.pi*np.random.rand() # generate RA uniformly between 0 and 2pi
   else:
@@ -354,7 +371,7 @@ the given number of noisy PSD estimates.")
     dec = -(np.pi/2.) + np.arccos(2.*np.random.rand()-1.)
   else:
     dec = opts.dec
-    
+
   iotawidth = opts.iotawidth
   if not opts.__dict__['iota']:
     iota = np.random.randn()*iotawidth
@@ -365,7 +382,7 @@ the given number of noisy PSD estimates.")
     psi = 0.5*np.pi*np.random.rand() # draw from between 0 and pi/2
   else:
     psi = opts.psi
-    
+
   if not opts.__dict__['phi0']:
     phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
   else:
@@ -376,12 +393,9 @@ the given number of noisy PSD estimates.")
   else:
     scales = opts.scales
 
-  if opts.__dict__['seed']:
-    np.random.seed(opts.seed) # set the random seed
-
   # check whether to add noise
   addnoise = opts.noise
-  
+
   # check whether to calculate the PSD from noisy data
   psdnoise = opts.psdnoise
 
@@ -407,7 +421,7 @@ the given number of noisy PSD estimates.")
   for i in range(len(dets)):
     apt, act = antenna_response( t0, ra, dec, psi, dets[i] )
     H.append((hp*apt + hc*act)*scales[i])
-    
+
     # save response function for psi=0 for further computations
     apt, act = antenna_response( t0, ra, dec, 0.0, dets[i] )
     resps.append([apt, act])
@@ -419,16 +433,16 @@ the given number of noisy PSD estimates.")
   asds = []
   SNRs = []
   dd = [] # the data cross product
-  
+
   for i in range(len(dets)):
     if dets[i] in ['H1', 'L1']:
       ret = lalsimulation.SimNoisePSDaLIGODesignSensitivityP1200087(psd, fmin)
       psd.data.data[psd.data.data == 0.] = np.inf
     elif dets[i] in 'V1':
       ret = lalsimulation.SimNoisePSDAdVDesignSensitivityP1200087(psd, fmin)
-    
+
     psd.data.data[psd.data.data == 0.] = np.inf
-    
+
     if psdnoise:
       # get average of 32 noise realisations for PSD
       psdav = np.zeros(len(hp))
@@ -436,34 +450,34 @@ the given number of noisy PSD estimates.")
         noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
         psdav = psdav + 2.*deltaF*np.abs(noisevals)**2
       psdav = psdav/float(psdnoise)
-      
+
       psdav[psdav == 0.] = np.inf
-      
+
       asds.append(np.sqrt(psdav)*scales[i])
     else:
       asds.append(np.sqrt(psd.data.data)*scales[i])
-   
+
     freqs = np.linspace(0., deltaF*(len(hp)-1.), len(hp))
     #pl.plot(freqs, np.sqrt(psd.data.data), colours[i])
     #pl.plot(freqs, np.abs(H[i]), colours[i])
-    
+
     # get htmp for snr calculation
     htmp = H[i]/asds[i]
     #htmp[~np.isfinite(htmp)] = 0.
     snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
     SNRs.append(snr)
     print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
-    
+
     # create additive noise
     if addnoise:
       noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
       #pl.plot(freqs, np.abs(noisevals), colours[i])
 
       H[i] = H[i] + noisevals*scales[i]
-      
+
     H[i] = H[i]/asds[i]
     #H[i][~np.isfinite(H[i])] = 0.
-    
+
     dd.append(np.vdot(H[i], H[i]).real)
  
   #pl.show()
@@ -476,21 +490,31 @@ the given number of noisy PSD estimates.")
     psiini = np.random.rand()*np.pi*0.5 # psi
     phi0ini = np.random.rand()*2.*np.pi # phi0
     iotaini = iotawidth*np.random.randn() # iota
+    while not -0.5*np.pi < iotaini < 0.5*np.pi:
+      iotaini = iotawidth*np.random.randn()
+    ciotaini = np.cos(iotaini)
     tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
     sfs = 0.01 + (10.-0.01)*np.random.rand(len(scales)) # scale factors
     
-    thispos = [psiini, phi0ini, iotaini, tcini]
+    #thispos = [psiini, phi0ini, iotaini, tcini]
+    thispos = [psiini, phi0ini, ciotaini, tcini]
     for s in sfs:
       thispos.append(s)
     
     pos.append(np.array(thispos))
   
   ndim = len(pos[0])
+  
+  if opts.flatiota:
+    # to simulate a flat iota prior just make iotawidth really, really wide
+    iotawidth = 1.e20
+  
   # Multiprocessing version
-  #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2, 
-  #                                dist, fmin, fmax, deltaF, resps, asds), threads=3)
-  sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2,
-                                  dist, fmin, fmax, deltaF, resps, asds))
+  sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2, 
+                                  dist, fmin, fmax, deltaF, resps, asds), threads=opts.threads)
+  
+  #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2,
+  #                                dist, fmin, fmax, deltaF, resps, asds))
   
   sampler.run_mcmc(pos, Niter+Nburnin)
   
@@ -552,7 +576,7 @@ the given number of noisy PSD estimates.")
     cis90.append(ci)
     ci = credible_interval(samples[:,4+i], 0.68)
     cis68.append(ci)
-    
+
   outdict['Results'] = {}
   outdict['Results']['ScaleMean'] = scmeans
   outdict['Results']['ScaleSigma'] = scstds
@@ -560,26 +584,28 @@ the given number of noisy PSD estimates.")
   outdict['Results']['Scale90%CredibleInterval'] = cis90
   outdict['Results']['Scale68%CredibleInterval'] = cis68
   outdict['Results']['ScaleHist'] = schists
-  
+
   f = open(infofile, 'w')
   json.dump(outdict, f, indent=2)
   f.close()
- 
+
   if opts.plot:
     try:
       import triangle
     except:
       print >> sys.stderr, "Can't load triangle.py, so no plot will be produced"
       sys.exit(0)
-      
-    labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
-    truths = [psi, phi0, iota, t0]
+
+    #labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
+    #truths = [psi, phi0, iota, t0]
+    labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$"]
+    truths = [psi, phi0, np.cos(iota), t0]
     for i in range(len(dets)):
       labels.append("$s_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
       print np.std(samples[:,4+i])
-    
+
     fig = triangle.corner(samples, labels=labels, truths=truths)
-    
+
     plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.png')
     fig.savefig(plotfile)
