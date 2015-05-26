@@ -81,8 +81,7 @@ print dirs
 # file name prefix
 fnpre = 'info_'
 
-#fig, ax = pl.subplots(3, figsize=(7,14), dpi=200)
-fig = pl.figure(figsize=(7,5), dpi=200)
+fig, ax = pl.subplots(figsize=(8,5))
 
 data = []
 
@@ -108,9 +107,10 @@ for i, d in enumerate(dirs):
   nprelsf = np.array(relsf)
   print nprelsf.shape
   
-  nprelsf[:,0] = nprelsf[:,0]/info['InjectionParameters']['scales'][0]
-  nprelsf[:,1] = nprelsf[:,1]/info['InjectionParameters']['scales'][1] 
-  nprelsf[:,2] = nprelsf[:,2]/info['InjectionParameters']['scales'][2]
+  # divide by two to get the half widths
+  nprelsf[:,0] = nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
+  nprelsf[:,1] = nprelsf[:,1]/(2.*info['InjectionParameters']['scales'][1]) 
+  nprelsf[:,2] = nprelsf[:,2]/(2.*:qinfo['InjectionParameters']['scales'][2])
 
   data.append(nprelsf[:,0])
   data.append(nprelsf[:,1])
@@ -137,11 +137,60 @@ for i, d in enumerate(dirs):
   #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
   #  pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
   #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
+
+positions = []
+for dist in dists:
+  positions.append(dist-10)
+  positions.append(dist)
+  positions.append(dist+10)
+ 
+bp = pl.boxplot(data, notch=0, sym='+', positions=positions, widths=8) 
+
+pl.setp(bp['boxes'], color='black')
+pl.setp(bp['whiskers'], color='black')
+pl.setp(bp['fliers'], color='black')
+
+# Now fill the boxes with desired colors
+from matplotlib.patches import Polygon
+boxColors = ['b', 'r', 'g']
+numBoxes = len(data)
+medians = range(numBoxes)
+for i in range(numBoxes):
+  box = bp['boxes'][i]
+  boxX = []
+  boxY = []
+  for j in range(5):
+    boxX.append(box.get_xdata()[j])
+    boxY.append(box.get_ydata()[j])
+  boxCoords = zip(boxX,boxY)
   
-pl.boxplot(data, notch=0, sym='+', vert=1, whis=[5, 95]) 
+  k = i % 3
+  boxPolygon = Polygon(boxCoords, facecolor=boxColors[k])
+  ax.add_patch(boxPolygon)
   
+  # pl.setp(bp['fliers'][i], markerfacecolor=boxColors[k]) # this line doesn't work!
+
+  # Now draw the median lines back over what we just filled in
+  med = bp['medians'][i]
+  medianX = []
+  medianY = []
+  for j in range(2):
+      medianX.append(med.get_xdata()[j])
+      medianY.append(med.get_ydata()[j])
+      pl.plot(medianX, medianY, 'k')
+      medians[i] = medianY[0]
+  # Finally, overplot the sample averages, with horizontal alignment
+  # in the center of each box
+  pl.plot([np.average(med.get_xdata())], [np.average(data[i])],
+           color='w', marker='*', markeredgecolor='k')
+
+ax.set_xticklabels(dists)
+ax.set_xticks(dists)
+
+ax.set_xlim((0, 500))
+
 #pl.legend(loc='best')
-#pl.xlabel('distance (Mpc)')
+pl.xlabel('distance (Mpc)')
 #pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
 
 try:
