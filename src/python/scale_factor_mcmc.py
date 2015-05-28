@@ -262,6 +262,9 @@ if __name__=='__main__':
                     "name will be created here that contains the pulsar "
                     "information)", metavar="DIR")
 
+  parser.add_option("-O", "--output-samples", dest="outsamps", help="If this flag "
+                    "is set then the samples will be output.", default=False, action="store_true",)
+
   parser.add_option("-g", "--det", dest="dets",
                     help="An interferometer to be used (multiple interferometers can be set \
 with multiple uses of this flag, e.g. \"-g H1 -g L1 -g V1\") [default: H1]", 
@@ -550,8 +553,9 @@ the given number of noisy PSD estimates.")
   samples = samples[lnprob > np.max(lnprob)-50.,:]
  
   # output samples to gzipped file
-  samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
-  np.savetxt(samplefile, samples, fmt='%.5f')
+  if opts.outsamps:
+    samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
+    np.savetxt(samplefile, samples, fmt='%.5f')
  
   # output injection information and scale factor recovery information (JSON format)
   infofile = os.path.join(outpath, 'info_'+intseed+'.txt')
