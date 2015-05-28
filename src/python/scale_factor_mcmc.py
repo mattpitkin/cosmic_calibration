@@ -128,43 +128,49 @@ def frequency_noise_from_psd(psd, deltaF, seed = None):
 #  - dd - the data cross product conj(d)*d for each detector
 #  - iotawidth - the width (standard deviation) of a Gaussian prior to use for iota
 #  - tccentre - the centre of the prior range on coalescence time
-#  - m1 - mass 1
-#  - m2 - mass 2
 #  - dist - distance
 #  - fmin - the lower frequency range
 #  - fmax - the upper frequency range
 #  - deltaF - the frequency bin size
 #  - resps - the antenna respsonse functions
 #  - asds - the detector noise ASDs
-def lnprob(theta, y, dd, iotaprior, tccentre, m1, m2, dist, fmin, fmax, deltaF, resps, asds): 
+def lnprob(theta, y, dd, iotaprior, tccentre, dist, fmin, fmax, deltaF, resps, asds): 
   lp = lnprior(theta, iotaprior, tccentre, len(resps))
   
   if not np.isfinite(lp):
     return -np.inf
   
-  return lp + lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds)
+  return lp + lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds)
 
 
 # define the log prior function
 def lnprior(theta, iotawidth, tccentre, ndets):
   # unpack theta
   #psi, phi0, iota, tc = theta[0:4]
-  psi, phi0, ciota, tc = theta[0:4]
+  psi, phi0, ciota, tc, mC, q = theta[0:6]
   ss = theta[-ndets:]
 
   lp = 0. # logprior
 
+  if 0. < q < 1.:
+    lp = 0.
+  else:
+    return -np.inf
+
+  # convert chirp mass and q into m1 and m2
+  m1, m2 = McQ2Masses(mC, q)
+
   # outside prior ranges
   #if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
-  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -1. <= ciota <= 1.:
+  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -1. <= ciota <= 1. and 0.9 < m1 < 2. and 0.9 < m2 < 2.:
     lp = 0.
   else:
     return -np.inf
   
-  # Jeffrey's prior of scale factor within range 0.01 to 10
+  # work in log scale factors so a Jeffrey's prior of scale factor within range 0.1 to 10 is flat in log space
   for s in ss:
-    if 0.01 < s < 10.:
-      lp = lp - np.log(s)
+    if np.log(0.1) < s < np.log(10.):
+      lp = 0.
     else:
       return -np.inf
   
@@ -173,21 +179,29 @@ def lnprior(theta, iotawidth, tccentre, ndets):
   iotan = np.arccos(ciota)
   lp = lp - 0.5*(iotan/iotawidth)**2 - np.log(np.sin(iotan))
 
+  # add prior on chirp mass and q equivlant to a flat prior in m1 and m2
+  #lp = lp + np.log(m1**2/mC)
+
+  # add prior on m1 and m2 - Gaussian about 1.35 solar masses with standard deviation of 0.13
+  lp += -0.5*(((m1-1.35)/0.13)**2 + ((m2-1.35)/0.13)**2) + np.log(m1**2/mC)
+
   return lp
 
 
 # define the log likelihood function
-def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
+def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
   # unpack theta
   #psi, phi0, iota, tc = theta[0:4]
-  psi, phi0, ciota, tc = theta[0:4]
+  psi, phi0, ciota, tc, mC, q = theta[0:6]
   ss = theta[-len(resps):]
   
   spsi = np.sin(2.*psi)
   cpsi = np.cos(2.*psi)
   
+  # convert chirp mass and q into m1 and m2
+  m1, m2 = McQ2Masses(mC, q)
+  
   # generate waveform
-  #hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
   hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, np.arccos(ciota))
 
   L = 0. # log likelihood
@@ -196,11 +210,10 @@ def lnlike(theta, y, dd, m1, m2, dist, fmin, fmax, deltaF, resps, asds):
   for i in range(len(resps)):
     Ap, Ac = resps[i]
 
-    H = (hp*(Ap*cpsi + Ac*spsi) + hc*(Ac*cpsi - Ap*spsi))*ss[i]
+    H = (hp*(Ap*cpsi + Ac*spsi) + hc*(Ac*cpsi - Ap*spsi))*np.exp(ss[i])
 
     Hs = H/asds[i]
-    
-    # Hs[~np.isfinite(Hs)] = 0.
+    Hs[~np.isfinite(Hs)] = 0.
     
     dh = np.vdot(y[i], Hs)
     hh = np.vdot(Hs, Hs)
@@ -227,6 +240,15 @@ def credible_interval(dsamples, ci):
             break
 
     return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
+
+
+# function to convert chirp mass and assymetric mass ratio (q=m2/m1, where m1 > m2) into m1 and m2
+def McQ2Masses(mC, q):
+  factor = mC * (1. + q)**(1./5.)
+  m1 = factor * q**(-3./5.)
+  m2 = factor * q**(2./5.)
+
+  return m1, m2
 
 
 if __name__=='__main__':
@@ -407,12 +429,12 @@ the given number of noisy PSD estimates.")
       sys.exit(0)
 
   # create a simulated waveform in each detector
-  # the masses will both be fixed at 1.4 solar masses
-  m1 = 1.4
-  m2 = 1.4
+  # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
+  m1inj = 1.35 + 0.13*np.random.randn()
+  m2inj = 1.35 + 0.13*np.random.randn()
 
   # waveform
-  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
+  hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota)
 
   resps = [] # list to hold detector plus polarisation responses
   H = [] # the strain
@@ -458,12 +480,10 @@ the given number of noisy PSD estimates.")
       asds.append(np.sqrt(psd.data.data)*scales[i])
 
     freqs = np.linspace(0., deltaF*(len(hp)-1.), len(hp))
-    #pl.plot(freqs, np.sqrt(psd.data.data), colours[i])
-    #pl.plot(freqs, np.abs(H[i]), colours[i])
 
     # get htmp for snr calculation
     htmp = H[i]/asds[i]
-    #htmp[~np.isfinite(htmp)] = 0.
+    htmp[~np.isfinite(htmp)] = 0.
     snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
     SNRs.append(snr)
     print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
@@ -471,18 +491,14 @@ the given number of noisy PSD estimates.")
     # create additive noise
     if addnoise:
       noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
-      #pl.plot(freqs, np.abs(noisevals), colours[i])
 
       H[i] = H[i] + noisevals*scales[i]
 
     H[i] = H[i]/asds[i]
-    #H[i][~np.isfinite(H[i])] = 0.
+    H[i][~np.isfinite(H[i])] = 0.
 
     dd.append(np.vdot(H[i], H[i]).real)
- 
-  #pl.show()
-  #sys.exit(0)
- 
+
   # set up MCMC
   # get initial seed points
   pos = []
@@ -494,10 +510,16 @@ the given number of noisy PSD estimates.")
       iotaini = iotawidth*np.random.randn()
     ciotaini = np.cos(iotaini)
     tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
-    sfs = 0.01 + (10.-0.01)*np.random.rand(len(scales)) # scale factors
-    
-    #thispos = [psiini, phi0ini, iotaini, tcini]
-    thispos = [psiini, phi0ini, ciotaini, tcini]
+    m1ini = 1.35 + 0.13*np.random.randn() # mass 1
+    m2ini = 1.35 + 0.13*np.random.randn() # mass 2
+    while m1ini < m2ini: # m1 must be > m2
+      m2ini = 1.35 + 0.13*np.random.randn() # mass 2
+    mCini = ((m1ini*m2ini)**(3./5.)) / (m1ini+m2ini)**(1./5.)
+    qini = m2ini/m1ini
+
+    sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
+
+    thispos = [psiini, phi0ini, ciotaini, tcini, mCini, qini]
     for s in sfs:
       thispos.append(s)
     
@@ -510,16 +532,22 @@ the given number of noisy PSD estimates.")
     iotawidth = 1.e20
   
   # Multiprocessing version
-  sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2, 
+  sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
                                   dist, fmin, fmax, deltaF, resps, asds), threads=opts.threads)
   
-  #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0, m1, m2,
+  #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
   #                                dist, fmin, fmax, deltaF, resps, asds))
   
   sampler.run_mcmc(pos, Niter+Nburnin)
   
   #  remove burn-in and flatten
   samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))
+ 
+  # get posterior probabilities
+  lnprob = sampler.lnprobability[:, Nburnin:].flatten()
+
+  # remove samples that have log probabilities that are > 50 away from the max probability
+  samples = samples[lnprob > np.max(lnprob)-50.,:]
  
   # output samples to gzipped file
   samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
@@ -534,8 +562,8 @@ the given number of noisy PSD estimates.")
   outdict['InjectionParameters']['phi0'] = phi0
   outdict['InjectionParameters']['iota'] = iota
   outdict['InjectionParameters']['tc'] = t0
-  outdict['InjectionParameters']['m1'] = m1
-  outdict['InjectionParameters']['m2'] = m2
+  outdict['InjectionParameters']['m1'] = m1inj
+  outdict['InjectionParameters']['m2'] = m2inj
   outdict['InjectionParameters']['dist'] = dist
   outdict['InjectionParameters']['fmin'] = fmin
   outdict['InjectionParameters']['fmax'] = fmax
@@ -564,17 +592,20 @@ the given number of noisy PSD estimates.")
   scmedians = []
   schists = []
   for i in range(len(dets)):
-    scmeans.append(np.mean(samples[:,4+i]))
-    scmedians.append(np.median(samples[:,4+i]))
-    std_s = np.std(samples[:,4+i])
+    # convert scale factors from log values
+    samples[:,6+i] = np.exp(samples[:,6+i])
+    
+    scmeans.append(np.mean(samples[:,6+i]))
+    scmedians.append(np.median(samples[:,6+i]))
+    std_s = np.std(samples[:,6+i])
     scstds.append(std_s)
-    n, binedges = np.histogram(samples[:,4+i], bins=100)
+    n, binedges = np.histogram(samples[:,6+i], bins=100)
     schists.append([n.tolist(), binedges.tolist()])
-    ci = credible_interval(samples[:,4+i], 0.95)
+    ci = credible_interval(samples[:,6+i], 0.95)
     cis95.append(ci)
-    ci = credible_interval(samples[:,4+i], 0.90)
+    ci = credible_interval(samples[:,6+i], 0.90)
     cis90.append(ci)
-    ci = credible_interval(samples[:,4+i], 0.68)
+    ci = credible_interval(samples[:,6+i], 0.68)
     cis68.append(ci)
 
   outdict['Results'] = {}
@@ -596,14 +627,26 @@ the given number of noisy PSD estimates.")
       print >> sys.stderr, "Can't load triangle.py, so no plot will be produced"
       sys.exit(0)
 
+    mC = (m1inj*m2inj)**(3./5.) / (m1inj+m2inj)**(1./5.)
+    q = m2inj/m1inj
+    # convert mC and q into m1 and m2
+    #for k in range(len(samples)):
+    #  samples[k,4], samples[k,5] = McQ2Masses(samples[k,4], samples[k,5])
+
+    # convert cos(iota) back to iota
+    # samples[:,2] = np.arccos(samples[:,2])
+
     #labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
     #truths = [psi, phi0, iota, t0]
-    labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$"]
-    truths = [psi, phi0, np.cos(iota), t0]
+    
+    #labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$", "$m_1$", "$m_2$"]
+    #truths = [psi, phi0, np.cos(iota), t0, m1inj, m2inj]
+    labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$", "$\mathcal{M}$", "$q$"]
+    truths = [psi, phi0, np.cos(iota), t0, mC, q]
     for i in range(len(dets)):
       labels.append("$s_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
-      print np.std(samples[:,4+i])
+      print np.std(samples[:,6+i])
 
     fig = triangle.corner(samples, labels=labels, truths=truths)
 
