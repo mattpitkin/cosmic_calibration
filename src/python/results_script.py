@@ -173,7 +173,7 @@ if os.path.isdir(ldir):
 
   minH1 = np.min(nprelsf[:,0])
   minL1 = np.min(nprelsf[:,1])
-  minV1 = np.min(nprelsf[:,2])  
+  minV1 = np.min(nprelsf[:,2])
 
 
 positions = []
