@@ -515,8 +515,8 @@ the given number of noisy PSD estimates.")
   # get posterior probabilities
   lnprob = sampler.lnprobability[:, Nburnin:].flatten()
 
-  # remove samples that have log probabilities that are > 100 away from the max probability
-  samples = samples[lnprob > np.max(lnprob)-100.,:]
+  # remove samples that have log probabilities that are > 50 away from the max probability
+  samples = samples[lnprob > np.max(lnprob)-50.,:]
  
   # output samples to gzipped file
   samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
