@@ -19,6 +19,7 @@ import lalsimulation
 # MCMC code
 import emcee
 
+
 # a function to compute the antenna response
 def antenna_response( gpsTime, ra, dec, psi, det ):
   gps = lal.LIGOTimeGPS( gpsTime )
@@ -46,6 +47,7 @@ def antenna_response( gpsTime, ra, dec, psi, det ):
   fp, fc = lal.ComputeDetAMResponse(response, ra, dec, psi, gmst_rad)
 
   return fp, fc
+
 
 """
 a function to generate a frequency domain inspiral waveform (see e.g. 
@@ -146,8 +148,7 @@ def lnprob(theta, y, dd, iotaprior, tccentre, dist, fmin, fmax, deltaF, resps, a
 # define the log prior function
 def lnprior(theta, iotawidth, tccentre, ndets):
   # unpack theta
-  #psi, phi0, iota, tc = theta[0:4]
-  psi, phi0, ciota, tc, mC, q = theta[0:6]
+  psi, phi0, iota, tc, mC, q = theta[0:6]
   ss = theta[-ndets:]
 
   lp = 0. # logprior
@@ -161,8 +162,7 @@ def lnprior(theta, iotawidth, tccentre, ndets):
   m1, m2 = McQ2Masses(mC, q)
 
   # outside prior ranges
-  #if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
-  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -1. <= ciota <= 1. and 0.9 < m1 < 2. and 0.9 < m2 < 2.:
+  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi and 0.9 < m1 < 2. and 0.9 < m2 < 2.:
     lp = 0.
   else:
     return -np.inf
@@ -175,9 +175,7 @@ def lnprior(theta, iotawidth, tccentre, ndets):
       return -np.inf
   
   # add iota prior
-  #lp = lp - 0.5*(iota/iotawidth)**2
-  iotan = np.arccos(ciota)
-  lp = lp - 0.5*(iotan/iotawidth)**2 - np.log(np.sin(iotan))
+  lp -= 0.5*(iota/iotawidth)**2
 
   # add prior on chirp mass and q equivlant to a flat prior in m1 and m2
   #lp = lp + np.log(m1**2/mC)
@@ -191,8 +189,7 @@ def lnprior(theta, iotawidth, tccentre, ndets):
 # define the log likelihood function
 def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
   # unpack theta
-  #psi, phi0, iota, tc = theta[0:4]
-  psi, phi0, ciota, tc, mC, q = theta[0:6]
+  psi, phi0, iota, tc, mC, q = theta[0:6]
   ss = theta[-len(resps):]
   
   spsi = np.sin(2.*psi)
@@ -202,7 +199,7 @@ def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
   m1, m2 = McQ2Masses(mC, q)
   
   # generate waveform
-  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, np.arccos(ciota))
+  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
 
   L = 0. # log likelihood
 
@@ -435,6 +432,8 @@ the given number of noisy PSD estimates.")
   # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
   m1inj = 1.35 + 0.13*np.random.randn()
   m2inj = 1.35 + 0.13*np.random.randn()
+  while m1inj < m2inj: # m1 must be > m2
+    m2inj = 1.35 + 0.13*np.random.randn() # mass 2
 
   # waveform
   hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota)
@@ -511,7 +510,6 @@ the given number of noisy PSD estimates.")
     iotaini = iotawidth*np.random.randn() # iota
     while not -0.5*np.pi < iotaini < 0.5*np.pi:
       iotaini = iotawidth*np.random.randn()
-    ciotaini = np.cos(iotaini)
     tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
     m1ini = 1.35 + 0.13*np.random.randn() # mass 1
     m2ini = 1.35 + 0.13*np.random.randn() # mass 2
@@ -522,7 +520,7 @@ the given number of noisy PSD estimates.")
 
     sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
 
-    thispos = [psiini, phi0ini, ciotaini, tcini, mCini, qini]
+    thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini]
     for s in sfs:
       thispos.append(s)
     
@@ -611,6 +609,7 @@ the given number of noisy PSD estimates.")
     cis90.append(ci)
     ci = credible_interval(samples[:,6+i], 0.68)
     cis68.append(ci)
+    print "%f" % ((ci[1]-ci[0])/2.)
 
   outdict['Results'] = {}
   outdict['Results']['ScaleMean'] = scmeans
@@ -637,20 +636,12 @@ the given number of noisy PSD estimates.")
     #for k in range(len(samples)):
     #  samples[k,4], samples[k,5] = McQ2Masses(samples[k,4], samples[k,5])
 
-    # convert cos(iota) back to iota
-    # samples[:,2] = np.arccos(samples[:,2])
-
-    #labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$"]
-    #truths = [psi, phi0, iota, t0]
-    
-    #labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$", "$m_1$", "$m_2$"]
-    #truths = [psi, phi0, np.cos(iota), t0, m1inj, m2inj]
-    labels = ["$\psi$", "$\phi_0$", "$\cos{\iota}$", "$t_c$", "$\mathcal{M}$", "$q$"]
-    truths = [psi, phi0, np.cos(iota), t0, mC, q]
+    labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
+    truths = [psi, phi0, iota, t0, mC, q]
     for i in range(len(dets)):
       labels.append("$s_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
-      print np.std(samples[:,6+i])
+      #print np.std(samples[:,6+i])
 
     fig = triangle.corner(samples, labels=labels, truths=truths)
 
