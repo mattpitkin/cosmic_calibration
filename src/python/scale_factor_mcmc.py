@@ -109,7 +109,7 @@ def frequency_noise_from_psd(psd, deltaF, seed = None):
     """
     sigma = 0.5 * np.sqrt(psd / deltaF)
     if seed is not None:
-        np.random.seed(seed)
+      np.random.seed(seed)
     
     not_zero = (sigma != 0) & np.isfinite(sigma)
     
@@ -168,12 +168,25 @@ def lnprior(theta, iotawidth, tccentre, ndets):
     return -np.inf
   
   # work in log scale factors so a Jeffrey's prior of scale factor within range 0.1 to 10 is flat in log space
+  #for s in ss:
+  #  if np.log(0.1) < s < np.log(10.):
+  #    lp = 0.
+  #  else:
+  #    return -np.inf
+  
+  # use a log normal prior on the scale factor with a mode of 1 and a standard deviation of 1
+  # (using a standard deviation of 1 means that the probability at 0.1 and 10 will be a factor
+  # of 14.17 less than at 1) - for this I will continue working in log of scale factors
+  lognormalsigma = 1.
+  lognormalmu = 1.
   for s in ss:
-    if np.log(0.1) < s < np.log(10.):
-      lp = 0.
+    #lp += -(s + 0.5*np.log(2.*np.pi*lognormalmu**2)) - 0.5*((s - lognormalmu)**2/lognormalsigma**2)
+    if s > 0.:
+      lns = np.log(s)
+      lp += -(lns + 0.5*np.log(2.*np.pi*lognormalsigma**2)) - 0.5*((lns - lognormalmu)**2/lognormalsigma**2)
     else:
       return -np.inf
-  
+ 
   # add iota prior
   lp -= 0.5*(iota/iotawidth)**2
 
@@ -207,7 +220,8 @@ def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
   for i in range(len(resps)):
     Ap, Ac = resps[i]
 
-    H = (hp*(Ap*cpsi + Ac*spsi) + hc*(Ac*cpsi - Ap*spsi))*np.exp(ss[i])
+    #H = (hp*(Ap*cpsi + Ac*spsi) + hc*(Ac*cpsi - Ap*spsi))*np.exp(ss[i])
+    H = (hp*(Ap*cpsi + Ac*spsi) + hc*(Ac*cpsi - Ap*spsi))*ss[i]
 
     Hs = H/asds[i]
     Hs[~np.isfinite(Hs)] = 0.
@@ -346,6 +360,10 @@ the given number of noisy PSD estimates.")
   
   parser.add_option("-c", "--threads", dest="threads", type="int", default=1,
                      help="Number of CPU threads to use [default: %default].")
+  
+  parser.add_option("-X", "--force-signal", dest="forces", default=False, action="store_true",
+                    help="If this flag is set whatever signal is generate will be used even \
+if it does not fulfill the SNR criterion.")
 
   # parse input options
   (opts, args) = parser.parse_args()
@@ -380,46 +398,46 @@ the given number of noisy PSD estimates.")
   dist = opts.dist
   t0 = opts.t0
   
-
   if opts.__dict__['seed']:
     np.random.seed(opts.seed) # set the random seed
-
-  if not opts.__dict__['ra']:
-    ra = 2.*np.pi*np.random.rand() # generate RA uniformly between 0 and 2pi
-  else:
-    ra = opts.ra
-
-  if not opts.__dict__['dec']:
-    dec = -(np.pi/2.) + np.arccos(2.*np.random.rand()-1.)
-  else:
-    dec = opts.dec
-
-  iotawidth = opts.iotawidth
-  if not opts.__dict__['iota']:
-    iota = np.random.randn()*iotawidth
-  else:
-    iota = opts.iota
-
-  if not opts.__dict__['psi']:
-    psi = 0.5*np.pi*np.random.rand() # draw from between 0 and pi/2
-  else:
-    psi = opts.psi
-
-  if not opts.__dict__['phi0']:
-    phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
-  else:
-    phi0 = opts.phi0
 
   if not opts.__dict__['scales']:
     scales = [1.]
   else:
     scales = opts.scales
 
+  ranotset = True
+  if opts.__dict__['ra']:
+    ra = opts.ra
+    ranotset = False
+
+  decnotset = True
+  if opts.__dict__['dec']:
+    dec = opts.dec
+    decnotset = False
+
+  iotanotset = True
+  if opts.__dict__['iota']:
+    iota = opts.iota
+    iotanotset = False
+
+  psinotset = True
+  if opts.__dict__['psi']:
+    psi = opts.psi
+    psinotset = False
+
+  phi0notset = True
+  if opts.__dict__['phi0']:
+    phi0 = opts.phi0
+    phi0notset = False
+
   # check whether to add noise
   addnoise = opts.noise
 
   # check whether to calculate the PSD from noisy data
   psdnoise = opts.psdnoise
+
+  iotawidth = opts.iotawidth
 
   if len(scales) != len(dets):
     if len(scales) == 1 and scales[0] == 1.: # all scale factors will be one
@@ -428,78 +446,116 @@ the given number of noisy PSD estimates.")
       print >> sys.stderr, "Must specify the same number of calibration scale factors as detectors"
       sys.exit(0)
 
-  # create a simulated waveform in each detector
-  # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
-  m1inj = 1.35 + 0.13*np.random.randn()
-  m2inj = 1.35 + 0.13*np.random.randn()
-  while m1inj < m2inj: # m1 must be > m2
-    m2inj = 1.35 + 0.13*np.random.randn() # mass 2
+  # generate the signal in each detector
+  # - for single detector analysis set the requirement that the SNR > 7.7
+  # - for a multi-detector anlaysis set the requirement that there must be at least two detectors with
+  #   SNR greater than 5.5 (the detection criteria from http://arxiv.org/abs/1111.7314
 
-  # waveform
-  hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota)
+  abortcounter = 0 # set to prevent the loop running forever for very low SNR signals
+  while 1:
+    # create a simulated waveform in each detector
+    if ranotset:
+      ra = 2.*np.pi*np.random.rand() # generate RA uniformly between 0 and 2pi
+    
+    if decnotset:
+      dec = -(np.pi/2.) + np.arccos(2.*np.random.rand()-1.)
 
-  resps = [] # list to hold detector plus polarisation responses
-  H = [] # the strain
+    if iotanotset:
+      iota = np.random.randn()*iotawidth
 
-  # waveforms for each detector (accounting for antenna pattern and calibration scale)
-  for i in range(len(dets)):
-    apt, act = antenna_response( t0, ra, dec, psi, dets[i] )
-    H.append((hp*apt + hc*act)*scales[i])
+    if psinotset:
+      psi = 0.5*np.pi*np.random.rand() # draw from between 0 and pi/2
 
-    # save response function for psi=0 for further computations
-    apt, act = antenna_response( t0, ra, dec, 0.0, dets[i] )
-    resps.append([apt, act])
+    if phi0notset:
+      phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
+    
+    # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
+    m1inj = 1.35 + 0.13*np.random.randn()
+    m2inj = 1.35 + 0.13*np.random.randn()
+    while m1inj < m2inj: # m1 must be > m2
+      m2inj = 1.35 + 0.13*np.random.randn() # mass 2
 
-  # create frequency series for PSDs
-  psd = lal.CreateREAL8FrequencySeries('name', t0, 0., deltaF, lal.Unit(), len(hp))
+    # waveform
+    hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota)
 
-  # generate the ASD esimates (use values from P1200087)
-  asds = []
-  SNRs = []
-  dd = [] # the data cross product
+    resps = [] # list to hold detector plus polarisation responses
+    H = [] # the strain
 
-  for i in range(len(dets)):
-    if dets[i] in ['H1', 'L1']:
-      ret = lalsimulation.SimNoisePSDaLIGODesignSensitivityP1200087(psd, fmin)
+    # waveforms for each detector (accounting for antenna pattern and calibration scale)
+    for i in range(len(dets)):
+      apt, act = antenna_response( t0, ra, dec, psi, dets[i] )
+      H.append((hp*apt + hc*act)*scales[i])
+
+      # save response function for psi=0 for further computations
+      apt, act = antenna_response( t0, ra, dec, 0.0, dets[i] )
+      resps.append([apt, act])
+
+    # create frequency series for PSDs
+    psd = lal.CreateREAL8FrequencySeries('name', t0, 0., deltaF, lal.Unit(), len(hp))
+
+    # generate the ASD esimates (use values from P1200087)
+    asds = []
+    SNRs = []
+    dd = [] # the data cross product
+
+    for i in range(len(dets)):
+      if dets[i] in ['H1', 'L1']:
+        ret = lalsimulation.SimNoisePSDaLIGODesignSensitivityP1200087(psd, fmin)
+        psd.data.data[psd.data.data == 0.] = np.inf
+      elif dets[i] in 'V1':
+        ret = lalsimulation.SimNoisePSDAdVDesignSensitivityP1200087(psd, fmin)
+
       psd.data.data[psd.data.data == 0.] = np.inf
-    elif dets[i] in 'V1':
-      ret = lalsimulation.SimNoisePSDAdVDesignSensitivityP1200087(psd, fmin)
 
-    psd.data.data[psd.data.data == 0.] = np.inf
+      if psdnoise:
+        # get average of 32 noise realisations for PSD
+        psdav = np.zeros(len(hp))
+        for j in range(psdnoise):
+          noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
+          psdav = psdav + 2.*deltaF*np.abs(noisevals)**2
+        psdav = psdav/float(psdnoise)
 
-    if psdnoise:
-      # get average of 32 noise realisations for PSD
-      psdav = np.zeros(len(hp))
-      for j in range(psdnoise):
+        psdav[psdav == 0.] = np.inf
+
+        asds.append(np.sqrt(psdav)*scales[i])
+      else:
+        asds.append(np.sqrt(psd.data.data)*scales[i])
+
+      freqs = np.linspace(0., deltaF*(len(hp)-1.), len(hp))
+
+      # get htmp for snr calculation
+      htmp = H[i]/asds[i]
+      htmp[~np.isfinite(htmp)] = 0.
+      snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
+      SNRs.append(snr)
+      print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
+
+      # create additive noise
+      if addnoise:
         noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
-        psdav = psdav + 2.*deltaF*np.abs(noisevals)**2
-      psdav = psdav/float(psdnoise)
 
-      psdav[psdav == 0.] = np.inf
+        H[i] = H[i] + noisevals*scales[i]
 
-      asds.append(np.sqrt(psdav)*scales[i])
-    else:
-      asds.append(np.sqrt(psd.data.data)*scales[i])
+      H[i] = H[i]/asds[i]
+      H[i][~np.isfinite(H[i])] = 0.
 
-    freqs = np.linspace(0., deltaF*(len(hp)-1.), len(hp))
-
-    # get htmp for snr calculation
-    htmp = H[i]/asds[i]
-    htmp[~np.isfinite(htmp)] = 0.
-    snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
-    SNRs.append(snr)
-    print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
-
-    # create additive noise
-    if addnoise:
-      noisevals = frequency_noise_from_psd(psd.data.data, deltaF)
-
-      H[i] = H[i] + noisevals*scales[i]
-
-    H[i] = H[i]/asds[i]
-    H[i][~np.isfinite(H[i])] = 0.
-
-    dd.append(np.vdot(H[i], H[i]).real)
+      dd.append(np.vdot(H[i], H[i]).real)
+    
+    if opts.forces:
+      break # exit loop anyway
+    
+    if len(SNRs) == 1: # single detector criterion
+      if SNRs[0] > np.sqrt(2.*(5.5**2)):
+        break
+    else: # multidetector criterion
+      if len(np.zeros(len(SNRs))[np.array(SNRs) > 5.5]) > 1:
+        break
+    
+    abortcounter += 1
+    
+    if abortcounter > 100:
+      print >> sys.stderr, "Aborting: Could not generate a signal fulfilling the SNR criterion"
+      sys.exit(0)
 
   # set up MCMC
   # get initial seed points
@@ -518,7 +574,12 @@ the given number of noisy PSD estimates.")
     mCini = ((m1ini*m2ini)**(3./5.)) / (m1ini+m2ini)**(1./5.)
     qini = m2ini/m1ini
 
-    sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
+    #sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
+    lognormalsigma = 1.
+    lognormalmu = 1.
+    # scale factors from a log normal distrbution
+    #sfs = np.log(np.random.lognormal(lognormalmu, lognormalsigma, len(scales)))
+    sfs = np.random.lognormal(lognormalmu, lognormalsigma, len(scales))
 
     thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini]
     for s in sfs:
@@ -545,10 +606,10 @@ the given number of noisy PSD estimates.")
   samples = sampler.chain[:, Nburnin:, :].reshape((-1, ndim))
  
   # get posterior probabilities
-  lnprob = sampler.lnprobability[:, Nburnin:].flatten()
+  lnprobvals = sampler.lnprobability[:, Nburnin:].flatten()
 
-  # remove samples that have log probabilities that are > 50 away from the max probability
-  samples = samples[lnprob > np.max(lnprob)-50.,:]
+  # remove samples that have log probabilities that are > 10 away from the max probability
+  samples = samples[lnprobvals > np.max(lnprobvals)-10.,:]
  
   # output samples to gzipped file
   if opts.outsamps:
@@ -595,7 +656,7 @@ the given number of noisy PSD estimates.")
   schists = []
   for i in range(len(dets)):
     # convert scale factors from log values
-    samples[:,6+i] = np.exp(samples[:,6+i])
+    #samples[:,6+i] = np.exp(samples[:,6+i])
     
     scmeans.append(np.mean(samples[:,6+i]))
     scmedians.append(np.median(samples[:,6+i]))
@@ -643,7 +704,10 @@ the given number of noisy PSD estimates.")
       truths.append(scales[i])
       #print np.std(samples[:,6+i])
 
-    fig = triangle.corner(samples, labels=labels, truths=truths)
+    # plot 1, 2 and 3 sigma contours
+    levels = 1.-np.exp(-0.5*np.array([1., 2., 3.])**2)
+
+    fig = triangle.corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
 
     plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.png')
     fig.savefig(plotfile)
