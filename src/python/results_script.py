@@ -71,7 +71,6 @@ pl.rc('font', family='serif')
 pl.rc('font', size=14)
 
 dists = [50, 100, 150, 200, 250, 300, 350, 400, 450]
-colours = ['r', 'm', 'c', 'g', 'b', 'p', 'k']
 
 prefix = indir
 
@@ -107,10 +106,10 @@ for i, d in enumerate(dirs):
   nprelsf = np.array(relsf)
   print nprelsf.shape
   
-  # divide by two to get the half widths
-  nprelsf[:,0] = nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
-  nprelsf[:,1] = nprelsf[:,1]/(2.*info['InjectionParameters']['scales'][1]) 
-  nprelsf[:,2] = nprelsf[:,2]/(2.*info['InjectionParameters']['scales'][2])
+  # divide by two to get the half widths and convert to percentage
+  nprelsf[:,0] = 100.*nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
+  nprelsf[:,1] = 100.*nprelsf[:,1]/(2.*info['InjectionParameters']['scales'][1]) 
+  nprelsf[:,2] = 100.*nprelsf[:,2]/(2.*info['InjectionParameters']['scales'][2])
 
   data.append(nprelsf[:,0])
   data.append(nprelsf[:,1])
@@ -138,44 +137,6 @@ for i, d in enumerate(dirs):
   #  pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
   #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
 
-
-# check for directory at distance 10000 (i.e. noise only) and if so plot the
-# *minimum* value from that, to show what to expect from noise
-
-minH1 = None
-minL1 = None
-minV1 = None
-
-ldir = os.path.join(prefix, '10000Mpc')
-if os.path.isdir(ldir):
-  relsf = []
-
-  files = [os.path.join(ldir, f) for f in os.listdir(ldir) if os.path.isfile(os.path.join(ldir, f)) and fnpre in f]
-
-  # go through files and extract the relative standard devaition on the scale factors for each detector
-  for f in files:
-    fo = open(f, 'r')
-    info = json.load(fo)
-    fo.close()
-
-    vals = []
-    for k in range(len(info['InjectionParameters']['scales'])):
-      vals.append(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])
-
-    relsf.append(vals)
-
-  nprelsf = np.array(relsf)
-
-  # divide by two to get the half widths
-  nprelsf[:,0] = nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
-  nprelsf[:,1] = nprelsf[:,1]/(2.*info['InjectionParameters']['scales'][1])
-  nprelsf[:,2] = nprelsf[:,2]/(2.*info['InjectionParameters']['scales'][2])
-
-  minH1 = np.min(nprelsf[:,0])
-  minL1 = np.min(nprelsf[:,1])
-  minV1 = np.min(nprelsf[:,2])
-
-
 positions = []
 for dist in dists:
   positions.append(dist-10)
@@ -188,6 +149,8 @@ bp = pl.boxplot(data, notch=0, sym='', positions=positions, widths=8)
 pl.setp(bp['boxes'], color='black')
 pl.setp(bp['whiskers'], color='black')
 pl.setp(bp['fliers'], color='black')
+
+hs = []
 
 # Now fill the boxes with desired colors
 from matplotlib.patches import Polygon
@@ -205,8 +168,8 @@ for i in range(numBoxes):
   
   k = i % 3
   boxPolygon = Polygon(boxCoords, facecolor=boxColors[k])
-  ax.add_patch(boxPolygon)
-  
+  hs.append(ax.add_patch(boxPolygon))
+
   # pl.setp(bp['fliers'][i], markerfacecolor=boxColors[k]) # this line doesn't work!
 
   # Now draw the median lines back over what we just filled in
@@ -223,20 +186,15 @@ for i in range(numBoxes):
   pl.plot([np.average(med.get_xdata())], [np.average(data[i])],
            color='w', marker='*', markeredgecolor='k')
 
-if minH1 is not None and minL1 is not None and minV1 is not None:
-  pl.plot([0., 500], [minH1, minH1], 'b--')
-  pl.plot([0., 500], [minL1, minL1], 'r--')
-  pl.plot([0., 500], [minV1, minV1], 'g--')
-
-
 ax.set_xticklabels(dists)
 ax.set_xticks(dists)
 
 ax.set_xlim((0, 500))
+ax.set_ylim((0, 100))
 
-#pl.legend(loc='best')
+pl.legend(hs, ['H1', 'L1', 'V1'], loc='best')
 pl.xlabel('distance (Mpc)')
-#pl.ylabel('90\% $\sigma_{\\textrm{frac}}$')
+pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
 
 try:
   fig.savefig(outfile)
