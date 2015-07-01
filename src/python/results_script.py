@@ -182,7 +182,8 @@ for dist in dists:
   positions.append(dist)
   positions.append(dist+10)
  
-bp = pl.boxplot(data, notch=0, sym='+', positions=positions, widths=8, showfliers=False) 
+#bp = pl.boxplot(data, notch=0, sym='+', positions=positions, widths=8)
+bp = pl.boxplot(data, notch=0, sym='', positions=positions, widths=8) 
 
 pl.setp(bp['boxes'], color='black')
 pl.setp(bp['whiskers'], color='black')
