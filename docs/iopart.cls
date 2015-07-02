@@ -1092,6 +1092,14 @@ $$\halign to
 \newcommand{\EES}{{\it IOP Conf. Ser.: Earth Environ. Sci.} }
 \newcommand{\MSE}{{\it IOP Conf. Ser.: Mater. Sci. Eng.} }
 
+% Add some more journals and lower case versions of previously defined ones (to match ADS)
+\newcommand{\mnras}{{\it Mon. Not. R. Astron. Soc.} }
+\newcommand{\prd}{{\it Phys. Rev. D} }
+\newcommand{\apj}{\APJ}
+\newcommand{\apjl}{\APJL}
+\newcommand{\prl}{\PRL}
+\newcommand{\pasp}{{\it Publ. Astron. Soc. Pac.} }
+
 % 2012 new option for twocolumn output
 \def\ioptwocol{\setlength\hoffset{-0.5in}\setlength\voffset{-0.5in}\setlength\textwidth{6.75in}
 \setlength\columnsep{0.2in}\setlength\textheight{9.25in}\mathindent=0in\twocolumn}
