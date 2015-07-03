@@ -324,34 +324,26 @@ very good assumption that whatever masses are chosen in these cases they will be
 recovered to high accuracy) and the time of coalescence is fixed.}
  
 % Describe the signal model (Taylor F2 etc...)
-We use the post-Newtonian Taylor F2 waveform approximation for modelling the
-signal whereby the \ac{GW} phase for 2 point-particles of mass $m_{1}$ and
-$m_{2}$ is given by
-%
-\begin{equation}
-\label{eq:gwphase}
-  \Psi(f) = 2\pi f t_\mathrm{c} - \phi_{\mathrm{c}} - \frac{\pi}{4} +
-\frac{3}{128\eta\nu^{5}}\sum\limits_{k=0}^{7}\alpha_{k}\nu^{k}.
-\end{equation}
-%
-Here $\eta=m_{1}m_{2}/M^{2}$ is the symmetric mass-ratio with $M=m_{1}+m_{2}$
-the total mass.  The post-Newtonian expansion parameter is $\nu=(\pi M
-f)^{1/3}$ and the coefficients are $\alpha$.
+We use the TaylorF2 waveform approximation (see e.g.\ \cite{2009PhRvD..80h4043B} and references 
+therein) with a 3.5 post-Newtonian expansion in phase for modelling our signal (in both simulations 
+and signal recovery).  For \ac{BNS} systems we use non-spinning waveforms under the assumption that 
+spins will be negligible. For \ac{NS-BH} system we use a spinning waveform, but in which only the 
+black hole has non-negligible spin and that its rotational angular momentum is aligned with the 
+systems orbital angular momentum.
 
-The frequency-domain polarisation amplitudes are then defined as
+For a non-spinning system the general form of the frequency-domain polarisation amplitudes are
 %
 \begin{eqnarray}\label{eq:signal}
-  \gws_{+}(f) &=& \frac{1+\cos^{2}\iota}{2D_{L}}
-\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
-\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\Psi(f)} \nonumber \\
-  \gws_{\times}(f) &=&
- i\frac{\cos^{2}\iota}{D_{L}}\frac{\mathcal{M}^{5/6}}{\pi^{2/3}}
-\sqrt{\frac{5}{24}}f^{-7/6}e^{-i\Psi(f)}
+  \gws_{+}(f) &\propto \frac{1+\cos^{2}\iota}{D_{L}}
+\mathcal{M}^{5/6}f^{-7/6}e^{-i\Psi(f, \nu, t_\mathrm{c}, \phi_{\mathrm{c}})} \nonumber \\
+  \gws_{\times}(f) &\propto
+ \frac{\cos^{2}\iota}{D_{L}}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \nu, t_\mathrm{c}, 
+\phi_{\mathrm{c}})}
 \end{eqnarray}
 %
-where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$,
-and $\iota$ is the inclination angle.  The \ac{GW} strain measured
-at the $k$'th detector is then given by
+where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$, with 
+$\eta=m_{1}m_{2}/M^{2}$ and $M=m_{1}+m_{2}$, $\iota$ is the inclination angle, and $\nu=(\pi 
+Mf)^{1/3}$.  The \ac{GW} strain measured at the $k^{\textrm{th}}$ detector is then given by
 %
 \begin{equation}
   \label{eq:gravsig}
@@ -401,8 +393,8 @@ the posterior distribution.} We use a Gaussian likelihood function given by
 where $\Delta f$ is the frequency resolution of the data, $S_k$ is the $k^{\rm th}$ detector's one 
 sided noise power spectral density, and the $i$ indices increment over frequency with $i_{f_{\rm 
 low}}$ and $i_{f_{\rm high}}$ corresponding to the lower and upper range in frequencies used for 
-our analysis, which were 20\,Hz to 1600\,Hz respectively. The source parameters, and the 
-unknown scale factor, have been subsumed into a vector $\vec{\theta}$. For a network of detectors, 
+our analysis, which were 30\,Hz to 1600\,Hz respectively. The source parameters, and the 
+unknown scale factor, have been subsumed into a vector $\btheta$. For a network of detectors, 
 the overall likelihood function becomes a product of the likelihoods for each detectors, i.e.\
 \begin{equation}
   \label{eq:mult-likeli}
