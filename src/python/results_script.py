@@ -104,7 +104,6 @@ for i, d in enumerate(dirs):
     relsf.append(vals)
     
   nprelsf = np.array(relsf)
-  print nprelsf.shape
   
   # divide by two to get the half widths and convert to percentage
   nprelsf[:,0] = 100.*nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
@@ -114,6 +113,9 @@ for i, d in enumerate(dirs):
   data.append(nprelsf[:,0])
   data.append(nprelsf[:,1])
   data.append(nprelsf[:,2])
+
+  print np.mean(nprelsf[:,0]), np.mean(nprelsf[:,1]), np.mean(nprelsf[:,2])
+  print np.median(nprelsf[:,0]), np.median(nprelsf[:,1]), np.median(nprelsf[:,2])
 
   # plot output
   #ci1 = credible_interval(nprelsf[:,0], 0.90)
