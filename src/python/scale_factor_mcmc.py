@@ -65,17 +65,18 @@ Inputs are:
  - fmax - the upper bound on frequency (Hz)
  - dist - the source distance (in Mpc)
  - incl - the source inclination angle (rads)
+ - a1spin - dimensionless spin of the more massive component
 
 This function does not apply the antenna pattern to the output.
 """
-def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl):
+def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl, a1spin):
   ampO = 0   # 0 pN order in amplitude
   phaseO = 7 # 3.5 pN order in phase
   approx = lalsimulation.TaylorF2 # Taylor F2 approximant
   fref = fmin
  
   hptilde, hctilde = lalsimulation.SimInspiralChooseFDWaveform(phiref, deltaF,
-    m1*lal.MSUN_SI, m2*lal.MSUN_SI, 0., 0., 0., 0., 0., 0., fmin,
+    m1*lal.MSUN_SI, m2*lal.MSUN_SI, 0., 0., a1spin, 0., 0., 0., fmin,
     fmax, fref, dist*1e6*lal.PC_SI, incl, 0., 0., None, None, ampO, phaseO, approx)
   
   # return the frequency domain plus and cross waveforms
@@ -136,19 +137,23 @@ def frequency_noise_from_psd(psd, deltaF, seed = None):
 #  - deltaF - the frequency bin size
 #  - resps - the antenna respsonse functions
 #  - asds - the detector noise ASDs
-def lnprob(theta, y, dd, iotaprior, tccentre, dist, fmin, fmax, deltaF, resps, asds): 
-  lp = lnprior(theta, iotaprior, tccentre, len(resps))
+#  - nsbh - set whether using a NS-BH system (this has a different mass prior and includes a spin parameter)
+def lnprob(theta, y, dd, iotaprior, tccentre, dist, fmin, fmax, deltaF, resps, asds, nsbh): 
+  lp = lnprior(theta, iotaprior, tccentre, len(resps), nsbh)
   
   if not np.isfinite(lp):
     return -np.inf
   
-  return lp + lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds)
+  return lp + lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds, nsbh)
 
 
 # define the log prior function
-def lnprior(theta, iotawidth, tccentre, ndets):
+def lnprior(theta, iotawidth, tccentre, ndets, nsbh):
   # unpack theta
-  psi, phi0, iota, tc, mC, q = theta[0:6]
+  if nsbh:
+    psi, phi0, iota, tc, mC, q, a1spin = theta[0:7]
+  else:
+    psi, phi0, iota, tc, mC, q = theta[0:6]
   ss = theta[-ndets:]
 
   lp = 0. # logprior
@@ -162,10 +167,21 @@ def lnprior(theta, iotawidth, tccentre, ndets):
   m1, m2 = McQ2Masses(mC, q)
 
   # outside prior ranges
-  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi and 0.9 < m1 < 2. and 0.9 < m2 < 2.:
+  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
     lp = 0.
   else:
     return -np.inf
+  
+  if nsbh: # parameter limits for NS-BH system
+    if 0.9 < m2 < 2. and 2.5 < m1 < 9. and  -1. < a1spin < 1.:
+      lp = 0.
+    else:
+      return -np.inf
+  else:
+    if 0.9 < m1 < 2. and 0.9 < m2 < 2.:
+      lp = 0.
+    else:
+      return -np.inf    
   
   # work in log scale factors so a Jeffrey's prior of scale factor within range 0.1 to 10 is flat in log space
   #for s in ss:
@@ -174,11 +190,11 @@ def lnprior(theta, iotawidth, tccentre, ndets):
   #  else:
   #    return -np.inf
   
-  # use a log normal prior on the scale factor with a mode of 1 and a standard deviation of 1
-  # (using a standard deviation of 1 means that the probability at 0.1 and 10 will be a factor
-  # of 14.17 less than at 1) - for this I will continue working in log of scale factors
-  lognormalsigma = 1.
-  lognormalmu = 1.
+  # use a log normal prior on the scale factor with a mode of 1 and a standard deviation of 1.07
+  # (using a standard deviation of 1.07 means that the probability at 0.1 and 10 will be a factor
+  # of 10 less than at 1) - for this I will continue working in log of scale factors
+  lognormalsigma = 1.0729830131446736
+  lognormalmu = lognormalsigma**2
   for s in ss:
     #lp += -(s + 0.5*np.log(2.*np.pi*lognormalmu**2)) - 0.5*((s - lognormalmu)**2/lognormalsigma**2)
     if s > 0.:
@@ -194,15 +210,22 @@ def lnprior(theta, iotawidth, tccentre, ndets):
   #lp = lp + np.log(m1**2/mC)
 
   # add prior on m1 and m2 - Gaussian about 1.35 solar masses with standard deviation of 0.13
-  lp += -0.5*(((m1-1.35)/0.13)**2 + ((m2-1.35)/0.13)**2) + np.log(m1**2/mC)
+  if nsbh:
+    lp += -0.5*(((m1-5.)/1.)**2 + ((m2-1.35)/0.13)**2) + np.log(m1**2/mC)
+  else:
+    lp += -0.5*(((m1-1.35)/0.13)**2 + ((m2-1.35)/0.13)**2) + np.log(m1**2/mC)
 
   return lp
 
 
 # define the log likelihood function
-def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
+def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds, nsbh):
   # unpack theta
-  psi, phi0, iota, tc, mC, q = theta[0:6]
+  if nsbh:
+    psi, phi0, iota, tc, mC, q, a1spin = theta[0:7]
+  else:
+    psi, phi0, iota, tc, mC, q = theta[0:6]
+    a1spin = 0.
   ss = theta[-len(resps):]
   
   spsi = np.sin(2.*psi)
@@ -212,7 +235,7 @@ def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds):
   m1, m2 = McQ2Masses(mC, q)
   
   # generate waveform
-  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota)
+  hp, hc = fdwaveform(phi0, deltaF, m1, m2, fmin, fmax, dist, iota, a1spin)
 
   L = 0. # log likelihood
 
@@ -314,12 +337,17 @@ from a uniform distribution on the sky")
 from a uniform distribution on the sky")
 
   parser.add_option("-i", "--iota", dest="iota", type="float",
-                    help="Inclination of insprial (rads) - if not specified iota will be drawn from \
+                    help="Inclination of inspiral (degs) - if not specified iota will be drawn from \
 a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
 
+  parser.add_option("-A", "--a1-spin", dest="a1spin", type="float",
+                    help="The spin magnitude of the black hole if using a neutron star-black hole system \
+(the spin of the neutron star will be assumed negligible and the black hoel spin will be aligned with the \
+orbital angular momentum). Values should be between -1 and 1.")
+
   parser.add_option("-w", "--iotawidth", dest="iotawidth", type="float",
-                    help="Width of iota simulation, and prior, distribution (rads) [default: %default]",
-                    default=0.1)
+                    help="Width of iota simulation, and prior, distribution (degs) [default: %default]",
+                    default=20.0)
 
   parser.add_option("-F", "--flatiota", dest="flatiota", default=False, action="store_true",
                     help="If this flag is set prior on iota will be flat (although the simulation \
@@ -337,7 +365,7 @@ a uniform distribution between 0 and 2pi.")
 a uniform distribution between 0 and pi/2.")
 
   parser.add_option("-f", "--fmin", dest="fmin", type="float",
-                    help="Lower frequency bound (Hz) [default: %default]", default=40.)
+                    help="Lower frequency bound (Hz) [default: %default]", default=20.)
   
   parser.add_option("-m", "--fmax", dest="fmax", type="float",
                     help="Upper frequency bound (Hz) [default: %default]", default=1600.)
@@ -360,6 +388,10 @@ the given number of noisy PSD estimates.")
   
   parser.add_option("-c", "--threads", dest="threads", type="int", default=1,
                      help="Number of CPU threads to use [default: %default].")
+  
+  parser.add_option("-H", "--nsbh", dest="nsbh", default=False, action="store_true",
+                    help="If this flag is set it will use a neutron star-black hole system \
+for drawing masses and setting spin (a single spin for the black hole will be used).")
   
   parser.add_option("-X", "--force-signal", dest="forces", default=False, action="store_true",
                     help="If this flag is set whatever signal is generate will be used even \
@@ -402,7 +434,8 @@ if it does not fulfill the SNR criterion.")
     np.random.seed(opts.seed) # set the random seed
 
   if not opts.__dict__['scales']:
-    scales = [1.]
+    # draw scale factors from a Gaussian with a mean of 1 and standard deviation of 0.125 (equivalent to a mean offset of 10%)
+    scales = (1.+0.125*np.random.randn(len(dets))).tolist()
   else:
     scales = opts.scales
 
@@ -418,7 +451,7 @@ if it does not fulfill the SNR criterion.")
 
   iotanotset = True
   if opts.__dict__['iota']:
-    iota = opts.iota
+    iota = np.pi*opts.iota/180. # convert to rads
     iotanotset = False
 
   psinotset = True
@@ -431,13 +464,19 @@ if it does not fulfill the SNR criterion.")
     phi0 = opts.phi0
     phi0notset = False
 
+  a1spinnotset = True
+  if opts.nsbh:
+    if opts.__dict__['a1spin']:
+      a1spin = opts.a1spin
+      a1spinnotset = False
+
   # check whether to add noise
   addnoise = opts.noise
 
   # check whether to calculate the PSD from noisy data
   psdnoise = opts.psdnoise
 
-  iotawidth = opts.iotawidth
+  iotawidth = np.pi*opts.iotawidth/180. # convert to rads
 
   if len(scales) != len(dets):
     if len(scales) == 1 and scales[0] == 1.: # all scale factors will be one
@@ -451,7 +490,7 @@ if it does not fulfill the SNR criterion.")
   # - for a multi-detector anlaysis set the requirement that there must be at least two detectors with
   #   SNR greater than 5.5 (the detection criteria from http://arxiv.org/abs/1111.7314
 
-  abortcounter = 0 # set to prevent the loop running forever for very low SNR signals
+  abortcounter = 1 # set to prevent the loop running forever for very low SNR signals
   while 1:
     # create a simulated waveform in each detector
     if ranotset:
@@ -469,14 +508,26 @@ if it does not fulfill the SNR criterion.")
     if phi0notset:
       phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
     
+    if a1spinnotset:
+      if opts.nsbh:
+        a1spin = -1. + 2.*np.random.rand() # draw uniformly between -1 and 1
+      else:
+        a1spin = 0.
+    
     # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
-    m1inj = 1.35 + 0.13*np.random.randn()
+    if not opts.nsbh:
+      m1inj = 1.35 + 0.13*np.random.randn() # distribution for neutron star
+    else:
+      m1inj = 5. + 1.*np.random.randn() # distribution for black hole (from http://journals.aps.org/prd/pdf/10.1103/PhysRevD.85.082002)
+      while m1inj < 2.5:
+        m1inj = 5. + 1.*np.random.randn() # make sure mass is over 2.5 solar masses
+    
     m2inj = 1.35 + 0.13*np.random.randn()
     while m1inj < m2inj: # m1 must be > m2
       m2inj = 1.35 + 0.13*np.random.randn() # mass 2
 
     # waveform
-    hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota)
+    hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota, a1spin)
 
     resps = [] # list to hold detector plus polarisation responses
     H = [] # the strain
@@ -553,7 +604,7 @@ if it does not fulfill the SNR criterion.")
     
     abortcounter += 1
     
-    if abortcounter > 100:
+    if abortcounter > 1000:
       print >> sys.stderr, "Aborting: Could not generate a signal fulfilling the SNR criterion"
       sys.exit(0)
 
@@ -574,6 +625,9 @@ if it does not fulfill the SNR criterion.")
     mCini = ((m1ini*m2ini)**(3./5.)) / (m1ini+m2ini)**(1./5.)
     qini = m2ini/m1ini
 
+    if opts.nsbh:
+      a1spinini = -1. + 2.*np.random.rand()
+
     #sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
     lognormalsigma = 1.
     lognormalmu = 1.
@@ -581,7 +635,10 @@ if it does not fulfill the SNR criterion.")
     #sfs = np.log(np.random.lognormal(lognormalmu, lognormalsigma, len(scales)))
     sfs = np.random.lognormal(lognormalmu, lognormalsigma, len(scales))
 
-    thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini]
+    if opts.nsbh:
+      thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini, a1spinini]
+    else:
+      thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini]
     for s in sfs:
       thispos.append(s)
     
@@ -595,7 +652,7 @@ if it does not fulfill the SNR criterion.")
   
   # Multiprocessing version
   sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
-                                  dist, fmin, fmax, deltaF, resps, asds), threads=opts.threads)
+                                  dist, fmin, fmax, deltaF, resps, asds, opts.nsbh), threads=opts.threads)
   
   #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
   #                                dist, fmin, fmax, deltaF, resps, asds))
@@ -627,6 +684,7 @@ if it does not fulfill the SNR criterion.")
   outdict['InjectionParameters']['tc'] = t0
   outdict['InjectionParameters']['m1'] = m1inj
   outdict['InjectionParameters']['m2'] = m2inj
+  outdict['InjectionParameters']['a1'] = a1spin
   outdict['InjectionParameters']['dist'] = dist
   outdict['InjectionParameters']['fmin'] = fmin
   outdict['InjectionParameters']['fmax'] = fmax
@@ -635,6 +693,8 @@ if it does not fulfill the SNR criterion.")
   outdict['InjectionParameters']['SNRs'] = SNRs
  
   outdict['Detectors'] = dets
+ 
+  outdict['Attempts'] = abortcounter # output number of attempts required to genrate signal
  
   outdict['MCMC'] = {}
   outdict['MCMC']['Niterations'] = Niter
@@ -654,21 +714,23 @@ if it does not fulfill the SNR criterion.")
   scmeans = []
   scmedians = []
   schists = []
+  if opts.nsbh:
+    firstidx = 7
+  else:
+    firstidx = 6
+  
   for i in range(len(dets)):
-    # convert scale factors from log values
-    #samples[:,6+i] = np.exp(samples[:,6+i])
-    
-    scmeans.append(np.mean(samples[:,6+i]))
-    scmedians.append(np.median(samples[:,6+i]))
-    std_s = np.std(samples[:,6+i])
+    scmeans.append(np.mean(samples[:,firstidx+i]))
+    scmedians.append(np.median(samples[:,firstidx+i]))
+    std_s = np.std(samples[:,firstidx+i])
     scstds.append(std_s)
-    n, binedges = np.histogram(samples[:,6+i], bins=100)
+    n, binedges = np.histogram(samples[:,firstidx+i], bins=100)
     schists.append([n.tolist(), binedges.tolist()])
-    ci = credible_interval(samples[:,6+i], 0.95)
+    ci = credible_interval(samples[:,firstidx+i], 0.95)
     cis95.append(ci)
-    ci = credible_interval(samples[:,6+i], 0.90)
+    ci = credible_interval(samples[:,firstidx+i], 0.90)
     cis90.append(ci)
-    ci = credible_interval(samples[:,6+i], 0.68)
+    ci = credible_interval(samples[:,firstidx+i], 0.68)
     cis68.append(ci)
     print "%f" % ((ci[1]-ci[0])/2.)
 
@@ -693,16 +755,16 @@ if it does not fulfill the SNR criterion.")
 
     mC = (m1inj*m2inj)**(3./5.) / (m1inj+m2inj)**(1./5.)
     q = m2inj/m1inj
-    # convert mC and q into m1 and m2
-    #for k in range(len(samples)):
-    #  samples[k,4], samples[k,5] = McQ2Masses(samples[k,4], samples[k,5])
 
-    labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
-    truths = [psi, phi0, iota, t0, mC, q]
+    if opts.nsbh:
+      labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$", "$a_1$"]
+      truths = [psi, phi0, iota, t0, mC, q, a1spin]
+    else:
+      labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
+      truths = [psi, phi0, iota, t0, mC, q]
     for i in range(len(dets)):
       labels.append("$s_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
-      #print np.std(samples[:,6+i])
 
     # plot 1, 2 and 3 sigma contours
     levels = 1.-np.exp(-0.5*np.array([1., 2., 3.])**2)
