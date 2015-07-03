@@ -173,7 +173,7 @@ def lnprior(theta, iotawidth, tccentre, ndets, nsbh):
     return -np.inf
   
   if nsbh: # parameter limits for NS-BH system
-    if 0.9 < m2 < 2. and 2.5 < m1 < 9. and  -1. < a1spin < 1.:
+    if 0.9 < m2 < 2. and m1 > 0. and -1. < a1spin < 1.:
       lp = 0.
     else:
       return -np.inf
@@ -618,7 +618,12 @@ if it does not fulfill the SNR criterion.")
     while not -0.5*np.pi < iotaini < 0.5*np.pi:
       iotaini = iotawidth*np.random.randn()
     tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
-    m1ini = 1.35 + 0.13*np.random.randn() # mass 1
+    if opts.nsbh:
+      m1ini = 5. + 1.*np.random.randn() # distribution for black hole (from http://journals.aps.org/prd/pdf/10.1103/PhysRevD.85.082002)
+      while m1ini < 2.5:
+        m1ini = 5. + 1.*np.random.randn() # make sure mass is over 2.5 solar masses
+    else:
+      m1ini = 1.35 + 0.13*np.random.randn() # mass 1
     m2ini = 1.35 + 0.13*np.random.randn() # mass 2
     while m1ini < m2ini: # m1 must be > m2
       m2ini = 1.35 + 0.13*np.random.randn() # mass 2
