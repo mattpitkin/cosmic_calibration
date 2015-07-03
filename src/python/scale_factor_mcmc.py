@@ -365,7 +365,7 @@ a uniform distribution between 0 and 2pi.")
 a uniform distribution between 0 and pi/2.")
 
   parser.add_option("-f", "--fmin", dest="fmin", type="float",
-                    help="Lower frequency bound (Hz) [default: %default]", default=20.)
+                    help="Lower frequency bound (Hz) [default: %default]", default=30.)
   
   parser.add_option("-m", "--fmax", dest="fmax", type="float",
                     help="Upper frequency bound (Hz) [default: %default]", default=1600.)
