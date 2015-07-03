@@ -471,9 +471,9 @@ we therefore use a log-normal distribution as our prior
 \begin{equation}
  p(s|I) = \frac{1}{s\sigma\sqrt{2\pi}}\exp{\left( -\frac{(\ln{s} - \mu)^2}{2\sigma^2} \right)},
 \end{equation}
-where we chose $\sigma = 1$, which in turn means that having the mode at unity gives $\mu = 1$. 
-With these parameters the prior probability density at 0.1 and 10 is $\sim 1/14$ of that at 1. 
-Note that this prior does not provide produce a symmetric amount of probability about unity, but 
+where we chose $\sigma = 1.07$, which in turn means that having the mode at unity gives $\mu = 
+1.15$. With these parameters the prior probability density at 0.1 and 10 is one tenth of that at 
+1. Note that this prior does not provide produce a symmetric amount of probability about unity, but 
 given our simulation criterion described below in Section~\ref{sec:simulations} we find that the 
 likelihood generally overwhelms the prior. As $s$ is a scale factor we also have the further 
 constraint that it must be positive.
@@ -501,8 +501,9 @@ the total coherent network SNR is greater than 12). This generally means that as
 distances our population of sources that fulfil this criterion will not be uniformly distributed
 over the sky, and will generally be closer to being circularly polarised.
 
-For each source we applied a fixed calibration scale factor of 1.2, 0.8 and 1.3 for H1, L1 and V1 
-respectively.
+For each simulation the calibration scale factor for each detector has been drawn from a Gaussian 
+distribution with a mean of unity and a standard deviation of 0.125 (equivalent to the detectors 
+having on average a $\pm 10\%$ amplitude calibration error).
 
 These simulations allow us to assess how well on average we would be able to constrain the 
 calibration scale for a given CBC-GRB coincidence.
