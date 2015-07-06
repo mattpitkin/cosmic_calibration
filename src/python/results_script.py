@@ -70,7 +70,7 @@ pl.rc('text', usetex=True)
 pl.rc('font', family='serif')
 pl.rc('font', size=14)
 
-dists = [50, 100, 150, 200, 250, 300, 350, 400, 450]
+dists = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
 
 prefix = indir
 
@@ -83,11 +83,13 @@ fnpre = 'info_'
 fig, ax = pl.subplots(figsize=(8,5))
 
 data = []
+meanvfrac = []
 
 for i, d in enumerate(dirs):
   print d
 
   relsf = []
+  vfrac = []
   
   files = [os.path.join(d, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and fnpre in f]
   
@@ -102,7 +104,10 @@ for i, d in enumerate(dirs):
       vals.append(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])
 
     relsf.append(vals)
-    
+
+    vfrac.append(1./info['Attempts'])
+  
+  meanvfrac.append(np.mean(np.array(vfrac)))
   nprelsf = np.array(relsf)
   
   # divide by two to get the half widths and convert to percentage
@@ -191,12 +196,17 @@ for i in range(numBoxes):
 ax.set_xticklabels(dists)
 ax.set_xticks(dists)
 
-ax.set_xlim((0, 500))
+ax.set_xlim((0, 550))
 ax.set_ylim((0, 100))
 
 pl.legend(hs, ['H1', 'L1', 'V1'], loc='best')
 pl.xlabel('distance (Mpc)')
 pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
+
+ax2 = ax.twinx()
+ax2.plot(dists, 100.*np.array(meanvfrac), 'ko--', markerfacecolor='None', markeredgecolor='k')
+ax2.set_ylabel('\% of total signals observed')
+ax2.set_xlim((0, 550))
 
 try:
   fig.savefig(outfile)
