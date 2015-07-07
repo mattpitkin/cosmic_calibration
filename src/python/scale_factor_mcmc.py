@@ -7,7 +7,7 @@ import numpy as np
 import copy
 import sys
 import os
-from optparse import OptionParser
+import argparse
 import json
 
 from matplotlib import pyplot as pl
@@ -259,7 +259,7 @@ def lnlike(theta, y, dd, dist, fmin, fmax, deltaF, resps, asds, nsbh):
 
 # a function to get the credible intervals using a greedy binning method
 def credible_interval(dsamples, ci):
-    n, binedges = np.histogram(dsamples, bins=100)
+    n, binedges = np.histogram(dsamples, bins=250)
     dbins = binedges[1]-binedges[0] # width of a histogram bin
     bins = binedges[0:-1]+dbins/2. # centres of bins
 
@@ -271,6 +271,7 @@ def credible_interval(dsamples, ci):
         frac += float(n[i])/float(len(dsamples))
         j = j+1
         if frac >= ci:
+            #print frac
             break
 
     return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
@@ -287,196 +288,205 @@ def McQ2Masses(mC, q):
 
 if __name__=='__main__':
   
-  usage = "Usage: %prog [options]"
+  parser = argparse.ArgumentParser( formatter_class=argparse.ArgumentDefaultsHelpFormatter )
 
-  parser = OptionParser( usage = usage )
+  parser.add_argument("-o", "--outpath", dest="outpath", help="The path for \
+the analysis output (a sub-directory based on the pulsar name will be created here that \
+contains the pulsar information)", metavar="DIR")
 
-  parser.add_option("-o", "--outpath", dest="outpath", help="The path for "
-                    "the analysis output (a sub-directory based on the pulsar "
-                    "name will be created here that contains the pulsar "
-                    "information)", metavar="DIR")
-
-  parser.add_option("-O", "--output-samples", dest="outsamps", help="If this flag "
+  parser.add_argument("-O", "--output-samples", dest="outsamps", help="If this flag "
                     "is set then the samples will be output.", default=False, action="store_true",)
 
-  parser.add_option("-g", "--det", dest="dets",
-                    help="An interferometer to be used (multiple interferometers can be set \
-with multiple uses of this flag, e.g. \"-g H1 -g L1 -g V1\") [default: H1]", 
-                    action="append")
+  parser.add_argument("-g", "--det", dest="dets", type=str,
+                      help="An interferometer to be used (multiple interferometers can be set \
+with multiple uses of this flag, e.g. \"-g H1 -g L1 -g V1\")", action="append")
 
-  parser.add_option("-S", "--scalefac", dest="scales", action="append", type="float",
-                    help="The simulation calibration scale factors for each detector \
+  parser.add_argument("-S", "--scalefac", dest="scales", action="append", type=float,
+                      help="The simulation calibration scale factors for each detector \
 - unless the value is 1 for all detectors there must be the same number of these values \
-set as detectors given [default: 1.]")
+set as detectors given")
 
-  parser.add_option("-N", "--Niter", dest="Niter",
-                    help="Number of MCMC iterations [default: %default]", type="int",
-                    default=10000)
+  parser.add_argument("-N", "--Niter", dest="Niter",
+                      help="Number of MCMC iterations", type=int, default=1000)
   
-  parser.add_option("-B", "--Nburnin", dest="Nburnin",
-                    help="Number of MCMC burn-in iterations [default: %default]", type="int",
-                    default=5000)
+  parser.add_argument("-B", "--Nburnin", dest="Nburnin",
+                      help="Number of MCMC burn-in iterations", type=int, default=1000)
 
-  parser.add_option("-E", "--Nensemble", dest="Nensemble",
-                    help="Number of MCMC ensemble points [default: %default]", type="int",
-                    default=20)
+  parser.add_argument("-E", "--Nensemble", dest="Nensemble",
+                      help="Number of MCMC ensemble points", type=int, default=100)
 
-  parser.add_option("-s", "--intseed", dest="intseed",
-                    help="A unique integer for use in output generation [default: %default].",
-                    default="0")
+  parser.add_argument("-s", "--intseed", dest="intseed",
+                      help="A unique integer for use in output generation", default="0")
 
-  parser.add_option("-D", "--dist", dest="dist", type="float",
-                    help="Inspiral distance in Mpc [default: %default]", default=10.)
+  parser.add_argument("-D", "--dist", dest="dist", type=float,
+                      help="Inspiral distance in Mpc", default=10.)
   
-  parser.add_option("-r", "--ra", dest="ra", type="float",
-                    help="Right ascension (rads) - if not specified the RA will be drawn randomly \
+  parser.add_argument("-q", "--m1", dest="m1", type=float,
+                      help="Mass of component 1 - if not specified the mass will be drawn randomly \
+from a Gaussian distribution (with the distribution dependent on whether using a BNS or NSBH)")
+
+  parser.add_argument("-Q", "--m2", dest="m2", type=float,
+                      help="Mass of component 2 - if not specified the mass will be drawn randomly \
+from a Gaussian distribution (with the distribution dependent on whether using a BNS or NSBH)")
+
+  parser.add_argument("-r", "--ra", dest="ra", type=float,
+                      help="Right ascension (rads) - if not specified the RA will be drawn randomly \
 from a uniform distribution on the sky")
   
-  parser.add_option("-d", "--dec", dest="dec", type="float",
-                    help="Declination (rads) - if not specified the dec will be drawn randomly \
+  parser.add_argument("-d", "--dec", dest="dec", type=float,
+                      help="Declination (rads) - if not specified the dec will be drawn randomly \
 from a uniform distribution on the sky")
 
-  parser.add_option("-i", "--iota", dest="iota", type="float",
-                    help="Inclination of inspiral (degs) - if not specified iota will be drawn from \
+  parser.add_argument("-i", "--iota", dest="iota", type=float,
+                      help="Inclination of inspiral (degs) - if not specified iota will be drawn from \
 a Gaussian with zero mean and standard devaition specified by \"iotawidth\"")
 
-  parser.add_option("-A", "--a1-spin", dest="a1spin", type="float",
-                    help="The spin magnitude of the black hole if using a neutron star-black hole system \
+  parser.add_argument("-A", "--a1-spin", dest="a1spin", type=float,
+                      help="The spin magnitude of the black hole if using a neutron star-black hole system \
 (the spin of the neutron star will be assumed negligible and the black hoel spin will be aligned with the \
 orbital angular momentum). Values should be between -1 and 1.")
 
-  parser.add_option("-w", "--iotawidth", dest="iotawidth", type="float",
-                    help="Width of iota simulation, and prior, distribution (degs) [default: %default]",
-                    default=20.0)
+  parser.add_argument("-w", "--iotawidth", dest="iotawidth", type=float,
+                      help="Width of iota simulation, and prior, distribution (degs)", default=20.0)
 
-  parser.add_option("-F", "--flatiota", dest="flatiota", default=False, action="store_true",
-                    help="If this flag is set prior on iota will be flat (although the simulation \
+  parser.add_argument("-F", "--flatiota", dest="flatiota", default=False, action="store_true",
+                      help="If this flag is set prior on iota will be flat (although the simulation \
 distribution will not be flat).")
 
-  parser.add_option("-t", "--t0", dest="t0", type="float",
-                    help="Time of coalescence (GPS) [default: %default]", default=900000000.)
+  parser.add_argument("-t", "--t0", dest="t0", type=float,
+                      help="Time of coalescence (GPS)", default=900000000.)
 
-  parser.add_option("-p", "--phi0", dest="phi0", type="float",
-                    help="The phase at coalescence (rads) - if not specified phi0 will be drawn from \
+  parser.add_argument("-p", "--phi0", dest="phi0", type=float,
+                      help="The phase at coalescence (rads) - if not specified phi0 will be drawn from \
 a uniform distribution between 0 and 2pi.")
 
-  parser.add_option("-a", "--psi", dest="psi", type="float",
-                    help="The polarisation angle (rads) - if not specified psi will be drawn from \
+  parser.add_argument("-a", "--psi", dest="psi", type=float,
+                      help="The polarisation angle (rads) - if not specified psi will be drawn from \
 a uniform distribution between 0 and pi/2.")
 
-  parser.add_option("-f", "--fmin", dest="fmin", type="float",
-                    help="Lower frequency bound (Hz) [default: %default]", default=30.)
+  parser.add_argument("-f", "--fmin", dest="fmin", type=float,
+                      help="Lower frequency bound (Hz)", default=30.)
   
-  parser.add_option("-m", "--fmax", dest="fmax", type="float",
-                    help="Upper frequency bound (Hz) [default: %default]", default=1600.)
+  parser.add_argument("-m", "--fmax", dest="fmax", type=float,
+                      help="Upper frequency bound (Hz)", default=1600.)
 
-  parser.add_option("-x", "--deltaF", dest="deltaF", type="float",
-                    help="Frequency bins size (Hz) [default: %default]", default=2.)
+  parser.add_argument("-x", "--deltaF", dest="deltaF", type=float,
+                      help="Frequency bins size (Hz)", default=2.)
 
-  parser.add_option("-z", "--noise", dest="noise", default=False, action="store_true",
-                    help="If this flag is set a noise spectrum is added to the data")
+  parser.add_argument("-z", "--noise", dest="noise", default=False, action="store_true",
+                      help="If this flag is set a noise spectrum is added to the data")
 
-  parser.add_option("-k", "--psd-noise", dest="psdnoise", default=0, type="int",
-                     help="If this flag is non-zero the PSD is estimated as the average of \
+  parser.add_argument("-k", "--psd-noise", dest="psdnoise", default=0, type=int,
+                      help="If this flag is non-zero the PSD is estimated as the average of \
 the given number of noisy PSD estimates.")
   
-  parser.add_option("-P", "--plot", dest="plot", default=False, action="store_true",
-                    help="If this flag is set the posteriors will be plotted (requires triangle.py).")
+  parser.add_argument("-P", "--plot", dest="plot", default=False, action="store_true",
+                      help="If this flag is set the posteriors will be plotted (requires triangle.py).")
 
-  parser.add_option("-T", "--seed", dest="seed", type="int",
-                     help="A numpy random number generator seed value.")
+  parser.add_argument("-T", "--seed", dest="seed", type=int,
+                      help="A numpy random number generator seed value.")
   
-  parser.add_option("-c", "--threads", dest="threads", type="int", default=1,
-                     help="Number of CPU threads to use [default: %default].")
+  parser.add_argument("-c", "--threads", dest="threads", type=int, default=1,
+                      help="Number of CPU threads to use")
   
-  parser.add_option("-H", "--nsbh", dest="nsbh", default=False, action="store_true",
-                    help="If this flag is set it will use a neutron star-black hole system \
+  parser.add_argument("-H", "--nsbh", dest="nsbh", default=False, action="store_true",
+                      help="If this flag is set it will use a neutron star-black hole system \
 for drawing masses and setting spin (a single spin for the black hole will be used).")
   
-  parser.add_option("-X", "--force-signal", dest="forces", default=False, action="store_true",
-                    help="If this flag is set whatever signal is generate will be used even \
+  parser.add_argument("-X", "--force-signal", dest="forces", default=False, action="store_true",
+                      help="If this flag is set whatever signal is generate will be used even \
 if it does not fulfill the SNR criterion.")
 
   # parse input options
-  (opts, args) = parser.parse_args()
+  args = parser.parse_args()
 
   # check that output path has been given
-  if not opts.__dict__['outpath']:
+  if args.outpath == None:
     print >> sys.stderr, "Must specify an output path"
     parser.print_help()
     sys.exit(0)
   else:
-    outpath = opts.outpath
+    outpath = args.outpath
 
-  intseed = opts.intseed
+  intseed = args.intseed
 
   # MCMC options
-  Niter = opts.Niter
-  Nburnin = opts.Nburnin
-  Nensemble = opts.Nensemble
+  Niter = args.Niter
+  Nburnin = args.Nburnin
+  Nensemble = args.Nensemble
 
   # detectors
-  if not opts.__dict__['dets']:
+  if args.dets == None:
     dets = ['H1']
   else:
-    dets = opts.dets
+    dets = args.dets
 
   # integration options
-  fmin = opts.fmin
-  fmax = opts.fmax
-  deltaF = opts.deltaF
+  fmin = args.fmin
+  fmax = args.fmax
+  deltaF = args.deltaF
 
   # injected source options
-  dist = opts.dist
-  t0 = opts.t0
+  dist = args.dist
+  t0 = args.t0
   
-  if opts.__dict__['seed']:
-    np.random.seed(opts.seed) # set the random seed
+  if args.seed != None:
+    np.random.seed(args.seed) # set the random seed
 
-  if not opts.__dict__['scales']:
+  if args.scales == None:
     # draw scale factors from a Gaussian with a mean of 1 and standard deviation of 0.125 (equivalent to a mean offset of 10%)
     scales = (1.+0.125*np.random.randn(len(dets))).tolist()
   else:
-    scales = opts.scales
+    scales = args.scales
 
   ranotset = True
-  if opts.__dict__['ra']:
-    ra = opts.ra
+  if args.ra != None:
+    ra = args.ra
     ranotset = False
 
   decnotset = True
-  if opts.__dict__['dec']:
-    dec = opts.dec
+  if args.dec != None:
+    dec = args.dec
     decnotset = False
 
   iotanotset = True
-  if opts.__dict__['iota']:
-    iota = np.pi*opts.iota/180. # convert to rads
+  if args.iota != None:
+    iota = np.pi*args.iota/180. # convert to rads
     iotanotset = False
 
   psinotset = True
-  if opts.__dict__['psi']:
-    psi = opts.psi
+  if args.psi != None:
+    psi = args.psi
     psinotset = False
 
   phi0notset = True
-  if opts.__dict__['phi0']:
-    phi0 = opts.phi0
+  if args.phi0 != None:
+    phi0 = args.phi0
     phi0notset = False
 
+  m1notset = True
+  if args.m1 != None:
+    m1inj = args.m1
+    m1notset = False
+  
+  m2notset = True
+  if args.m2 != None:
+    m2inj = args.m2
+    m2notset = False
+
   a1spinnotset = True
-  if opts.nsbh:
-    if opts.__dict__['a1spin']:
-      a1spin = opts.a1spin
+  if args.nsbh:
+    if args.a1spin != None:
+      a1spin = args.a1spin
       a1spinnotset = False
 
   # check whether to add noise
-  addnoise = opts.noise
+  addnoise = args.noise
 
   # check whether to calculate the PSD from noisy data
-  psdnoise = opts.psdnoise
+  psdnoise = args.psdnoise
 
-  iotawidth = np.pi*opts.iotawidth/180. # convert to rads
+  iotawidth = np.pi*args.iotawidth/180. # convert to rads
 
   if len(scales) != len(dets):
     if len(scales) == 1 and scales[0] == 1.: # all scale factors will be one
@@ -509,22 +519,29 @@ if it does not fulfill the SNR criterion.")
       phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
     
     if a1spinnotset:
-      if opts.nsbh:
+      if args.nsbh:
         a1spin = -1. + 2.*np.random.rand() # draw uniformly between -1 and 1
       else:
         a1spin = 0.
     
     # the masses will drawn from Gaussian with mean of 1.35 and standard devaition of 0.13
-    if not opts.nsbh:
-      m1inj = 1.35 + 0.13*np.random.randn() # distribution for neutron star
-    else:
-      m1inj = 5. + 1.*np.random.randn() # distribution for black hole (from http://journals.aps.org/prd/pdf/10.1103/PhysRevD.85.082002)
-      while m1inj < 2.5:
-        m1inj = 5. + 1.*np.random.randn() # make sure mass is over 2.5 solar masses
+    if m1notset:
+      if not args.nsbh:
+        m1inj = 1.35 + 0.13*np.random.randn() # distribution for neutron star
+      else:
+        m1inj = 5. + 1.*np.random.randn() # distribution for black hole (from http://journals.aps.org/prd/pdf/10.1103/PhysRevD.85.082002)
+        while m1inj < 2.5:
+          m1inj = 5. + 1.*np.random.randn() # make sure mass is over 2.5 solar masses
     
-    m2inj = 1.35 + 0.13*np.random.randn()
-    while m1inj < m2inj: # m1 must be > m2
-      m2inj = 1.35 + 0.13*np.random.randn() # mass 2
+    if m2notset:
+      m2inj = 1.35 + 0.13*np.random.randn()
+      while m1inj < m2inj: # m1 must be > m2
+        m2inj = 1.35 + 0.13*np.random.randn() # mass 2
+
+    if not m2notset or not m1notset:
+      if m1inj < m2inj:
+        print "Input values of m1 should be greater than m2"
+        sys.exit(0)
 
     # waveform
     hp, hc = fdwaveform(phi0, deltaF, m1inj, m2inj, fmin, fmax, dist, iota, a1spin)
@@ -592,7 +609,7 @@ if it does not fulfill the SNR criterion.")
 
       dd.append(np.vdot(H[i], H[i]).real)
     
-    if opts.forces:
+    if args.forces:
       break # exit loop anyway
     
     if len(SNRs) == 1: # single detector criterion
@@ -618,7 +635,7 @@ if it does not fulfill the SNR criterion.")
     while not -0.5*np.pi < iotaini < 0.5*np.pi:
       iotaini = iotawidth*np.random.randn()
     tcini = -0.01 + 2.*0.01*np.random.rand() + t0 # time of coalescence
-    if opts.nsbh:
+    if args.nsbh:
       m1ini = 5. + 1.*np.random.randn() # distribution for black hole (from http://journals.aps.org/prd/pdf/10.1103/PhysRevD.85.082002)
       while m1ini < 2.5:
         m1ini = 5. + 1.*np.random.randn() # make sure mass is over 2.5 solar masses
@@ -630,7 +647,7 @@ if it does not fulfill the SNR criterion.")
     mCini = ((m1ini*m2ini)**(3./5.)) / (m1ini+m2ini)**(1./5.)
     qini = m2ini/m1ini
 
-    if opts.nsbh:
+    if args.nsbh:
       a1spinini = -1. + 2.*np.random.rand()
 
     #sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
@@ -640,7 +657,7 @@ if it does not fulfill the SNR criterion.")
     #sfs = np.log(np.random.lognormal(lognormalmu, lognormalsigma, len(scales)))
     sfs = np.random.lognormal(lognormalmu, lognormalsigma, len(scales))
 
-    if opts.nsbh:
+    if args.nsbh:
       thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini, a1spinini]
     else:
       thispos = [psiini, phi0ini, iotaini, tcini, mCini, qini]
@@ -651,13 +668,13 @@ if it does not fulfill the SNR criterion.")
   
   ndim = len(pos[0])
   
-  if opts.flatiota:
+  if args.flatiota:
     # to simulate a flat iota prior just make iotawidth really, really wide
     iotawidth = 1.e20
   
   # Multiprocessing version
   sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
-                                  dist, fmin, fmax, deltaF, resps, asds, opts.nsbh), threads=opts.threads)
+                                  dist, fmin, fmax, deltaF, resps, asds, args.nsbh), threads=args.threads)
   
   #sampler = emcee.EnsembleSampler(Nensemble, ndim, lnprob, args=(H, dd, iotawidth, t0,
   #                                dist, fmin, fmax, deltaF, resps, asds))
@@ -674,7 +691,7 @@ if it does not fulfill the SNR criterion.")
   samples = samples[lnprobvals > np.max(lnprobvals)-10.,:]
  
   # output samples to gzipped file
-  if opts.outsamps:
+  if args.outsamps:
     samplefile = os.path.join(outpath, 'samples_'+intseed+'.txt.gz')
     np.savetxt(samplefile, samples, fmt='%.5f')
  
@@ -719,7 +736,7 @@ if it does not fulfill the SNR criterion.")
   scmeans = []
   scmedians = []
   schists = []
-  if opts.nsbh:
+  if args.nsbh:
     firstidx = 7
   else:
     firstidx = 6
@@ -737,7 +754,7 @@ if it does not fulfill the SNR criterion.")
     cis90.append(ci)
     ci = credible_interval(samples[:,firstidx+i], 0.68)
     cis68.append(ci)
-    print "%f" % ((ci[1]-ci[0])/2.)
+    print "%f" % ((ci[1]-ci[0])/(2.*scales[i]))
 
   outdict['Results'] = {}
   outdict['Results']['ScaleMean'] = scmeans
@@ -751,7 +768,7 @@ if it does not fulfill the SNR criterion.")
   json.dump(outdict, f, indent=2)
   f.close()
 
-  if opts.plot:
+  if args.plot:
     try:
       import triangle
     except:
@@ -761,7 +778,7 @@ if it does not fulfill the SNR criterion.")
     mC = (m1inj*m2inj)**(3./5.) / (m1inj+m2inj)**(1./5.)
     q = m2inj/m1inj
 
-    if opts.nsbh:
+    if args.nsbh:
       labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$", "$a_1$"]
       truths = [psi, phi0, iota, t0, mC, q, a1spin]
     else:
