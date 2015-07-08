@@ -63,14 +63,14 @@ Inputs are:
 
 This function does not apply the antenna pattern to the output.
 """
-def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl):
+def fdwaveform(phiref, deltaF, m1, m2, fmin, fmax, dist, incl, a1spin):
   ampO = 0   # 0 pN order in amplitude
   phaseO = 7 # 3.5 pN order in phase
   approx = lalsimulation.TaylorF2 # Taylor F2 approximant
   fref = fmin
  
   hptilde, hctilde = lalsimulation.SimInspiralChooseFDWaveform(phiref, deltaF,
-    m1*lal.MSUN_SI, m2*lal.MSUN_SI, 0., 0., 0., 0., 0., 0., fmin,
+    m1*lal.MSUN_SI, m2*lal.MSUN_SI, 0., 0., a1spin, 0., 0., 0., fmin,
     fmax, fref, dist*1e6*lal.PC_SI, incl, 0., 0., None, None, ampO, phaseO, approx)
   
   # return the frequency domain plus and cross waveforms
@@ -172,7 +172,17 @@ a uniform distribution between 0 and pi/2.")
   parser.add_option("-k", "--psd-noise", dest="psdnoise", default=0, type="int",
                      help="If this flag is non-zero the PSD is estimated as the average of \
 the given number of noisy PSD estimates.")
+  
+  parser.add_option("-s", "--a1spin", dest="a1spin", type="float",
+                    help="If using a NS-BH system this will set the aligned spin magnitude of \
+the black hole (a number between -1 and 1).")
+  
+  parser.add_option("-H", "--nsbh", dest="nsbh", default=False, action="store_true",
+                    help="If this flag is set it will use a neutron star-black hole system \
+for drawing masses and setting spin (a single spin for the black hole will be used).")
  
+  parser.add_option("-w", "--iotawidth", dest="iotawidth", type="float",
+                      help="Width of iota simulation, and prior, distribution (degs)")
 
   # parse input options
   (opts, args) = parser.parse_args()
@@ -205,10 +215,15 @@ the given number of noisy PSD estimates.")
   else:
     decs = opts.dec*np.ones(Nsim)
 
-  if not opts.__dict__['iota']:
-    cosiotas = -1. + 2.*np.random.rand(Nsim)
+  if opts.__dict__['iotawidth'] == None:
+    if not opts.__dict__['iota']:
+      cosiotas = -1. + 2.*np.random.rand(Nsim)
+    else:
+      cosiotas = np.cos(opts.iota)*np.ones(Nsim)
+      
+    iotas = np.arccos(cosiotas)
   else:
-    cosiotas = np.cos(opts.iota)*np.ones(Nsim)
+    iotas = opts.iotawidth*(np.pi/180.)*np.random.randn(Nsim)
 
   if not opts.__dict__['psi']:
     psis = 0.5*np.pi*np.random.rand(Nsim) # draw from between 0 and pi/2
@@ -220,13 +235,45 @@ the given number of noisy PSD estimates.")
   else:
     phi0s = opts.phi0*np.ones(Nsim)
 
+  if opts.__dict__['a1spin'] != None and opts.nsbh:
+    a1spin = opts.a1spin
+  elif opts.nsbh:
+    a1spin = -1.+np.random.rand(Nsim)*2.
+  else:
+    a1spin = np.zeros(Nsim)
+
   # check whether to calculate the PSD from noisy data
   psdnoise = opts.psdnoise
 
   # create a simulated waveform in each detector
   # the masses will both be fixed at 1.4 solar masses
-  m1 = 1.4
-  m2 = 1.4
+  #m1 = 1.4*np.ones(Nsim)
+  #m2 = 1.4*np.ones(Nsim)
+
+  m2mean = 1.35
+  m2sigma = 0.13
+  if opts.nsbh:
+    m1mean = 5.
+    m1sigma = 1.
+  else:
+    m1mean = 1.35
+    m1sigma = 0.13
+
+  m1list = []
+  m2list = []
+  for i in range(Nsim):
+    m1tmp = m1mean + m1sigma*np.random.randn()
+    if opts.nsbh:
+      while m1tmp < 2.5:
+        m1tmp = m1mean + m1sigma*np.random.randn()
+    m2tmp = m2mean + m2sigma*np.random.randn()
+    while m2tmp > m1tmp:
+      m2tmp = m2mean + m2sigma*np.random.randn()
+    m1list.append(m1tmp)
+    m2list.append(m2tmp)
+
+  m1 = np.array(m1list)
+  m2 = np.array(m2list)
 
   indSNRs = []
   netSNRs = []
@@ -234,6 +281,8 @@ the given number of noisy PSD estimates.")
   asds = []
   # create frequency series for PSDs
   psd = lal.CreateREAL8FrequencySeries('name', t0, 0., deltaF, lal.Unit(), 1+int(fmax/deltaF))
+
+  accepted = 0. # values above threshold
 
   for i in range(len(dets)):
     if dets[i] in ['H1', 'L1']:
@@ -260,12 +309,12 @@ the given number of noisy PSD estimates.")
 
   for i in range(Nsim):
     # waveform
-    hp, hc = fdwaveform(phi0s[i], deltaF, m1, m2, fmin, fmax, dist, np.arccos(cosiotas[i]))
+    hp, hc = fdwaveform(phi0s[i], deltaF, m1[i], m2[i], fmin, fmax, dist, iotas[i], a1spin[i])
 
     snrs = []
     netsnr = 0.
 
-    # waveforms for each detector (accounting for antenna pattern and calibration scale)
+    # waveforms for each detector (accounting for antenna pattern)
     for j in range(len(dets)):
       apt, act = antenna_response( t0, ras[i], decs[i], psis[i], dets[j] )
       H = (hp*apt + hc*act)
@@ -275,13 +324,22 @@ the given number of noisy PSD estimates.")
       snrs.append(snr)
       netsnr = netsnr + snr**2
  
+    if len(dets) == 1:
+      if snr > np.sqrt(2.*(5.5**2)):
+        accepted += 1.
+    else:
+      if len(np.zeros(len(snrs))[np.array(snrs) > 5.5]) > 1:
+        accepted += 1.
+ 
     indSNRs.append(snrs)
     netSNRs.append(np.sqrt(netsnr))
- 
+
   # plot histogram of SNRs
   fig = pl.figure(figsize=(6,5), dpi=200)
- 
+
   print np.mean(netSNRs), np.std(netSNRs)
+  print "Percentage above SNR threshold %.2f %%" % (100.*accepted/Nsim)
+
   pl.hist(netSNRs, bins=20, histtype='step', normed=True)
   ax = pl.gca()
   pl.plot([np.mean(netSNRs), np.mean(netSNRs)], [0., ax.get_ylim()[1]], 'k--')

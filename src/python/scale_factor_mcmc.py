@@ -596,7 +596,7 @@ if it does not fulfill the SNR criterion.")
       htmp[~np.isfinite(htmp)] = 0.
       snr = np.sqrt(4.*deltaF*np.vdot(htmp, htmp).real)
       SNRs.append(snr)
-      print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr) 
+      print >> sys.stderr, "%s: SNR = %.2f" % (dets[i], snr)
 
       # create additive noise
       if addnoise:
