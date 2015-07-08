@@ -83,16 +83,17 @@ fnpre = 'info_'
 fig, ax = pl.subplots(figsize=(8,5))
 
 data = []
-meanvfrac = []
+rates = []
 
 for i, d in enumerate(dirs):
   print d
 
   relsf = []
-  vfrac = []
   
   files = [os.path.join(d, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and fnpre in f]
   
+  totaltime = 0.
+
   # go through files and extract the relative standard devaition on the scale factors for each detector
   for f in files:
     fo = open(f, 'r')
@@ -105,9 +106,9 @@ for i, d in enumerate(dirs):
 
     relsf.append(vals)
 
-    vfrac.append(1./info['Attempts'])
+    totaltime += info['Attempts']
   
-  meanvfrac.append(np.mean(np.array(vfrac)))
+  rates.append(100.*len(files)/totaltime)
   nprelsf = np.array(relsf)
   
   # divide by two to get the half widths and convert to percentage
@@ -204,8 +205,8 @@ pl.xlabel('distance (Mpc)')
 pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
 
 ax2 = ax.twinx()
-ax2.plot(dists, 100.*np.array(meanvfrac), 'ko--', markerfacecolor='None', markeredgecolor='k')
-ax2.set_ylabel('\% of total signals observed')
+ax2.plot(dists, rates, 'mo--', markerfacecolor='None', markeredgecolor='m')
+ax2.set_ylabel('\% of source distribution detectable')
 ax2.set_xlim((0, 550))
 
 try:
