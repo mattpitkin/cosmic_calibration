@@ -102,7 +102,8 @@ for i, d in enumerate(dirs):
 
     vals = []
     for k in range(len(info['InjectionParameters']['scales'])):
-      vals.append(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])
+      # divide by two to get the half widths and convert to percentage
+      vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
 
     relsf.append(vals)
 
@@ -110,11 +111,6 @@ for i, d in enumerate(dirs):
   
   rates.append(100.*len(files)/totaltime)
   nprelsf = np.array(relsf)
-  
-  # divide by two to get the half widths and convert to percentage
-  nprelsf[:,0] = 100.*nprelsf[:,0]/(2.*info['InjectionParameters']['scales'][0])
-  nprelsf[:,1] = 100.*nprelsf[:,1]/(2.*info['InjectionParameters']['scales'][1]) 
-  nprelsf[:,2] = 100.*nprelsf[:,2]/(2.*info['InjectionParameters']['scales'][2])
 
   data.append(nprelsf[:,0])
   data.append(nprelsf[:,1])
