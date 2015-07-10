@@ -11,6 +11,7 @@ from optparse import OptionParser
 import json
 
 from matplotlib import pyplot as pl
+import triangle
 
 # swig lal modules for signal generation
 import lal
@@ -335,13 +336,21 @@ for drawing masses and setting spin (a single spin for the black hole will be us
     netSNRs.append(np.sqrt(netsnr))
 
   # plot histogram of SNRs
-  fig = pl.figure(figsize=(6,5), dpi=200)
+  #fig = pl.figure(figsize=(6,5), dpi=200)
 
   print np.mean(netSNRs), np.std(netSNRs)
   print "Percentage above SNR threshold %.2f %%" % (100.*accepted/Nsim)
 
-  pl.hist(netSNRs, bins=20, histtype='step', normed=True)
-  ax = pl.gca()
-  pl.plot([np.mean(netSNRs), np.mean(netSNRs)], [0., ax.get_ylim()[1]], 'k--')
-  pl.show()
-  fig.savefig('SNRhist_%.2fMpc.png' % dist)
+  #pl.hist(netSNRs, bins=20, histtype='step', normed=True)
+  #ax = pl.gca()
+  #pl.plot([np.mean(netSNRs), np.mean(netSNRs)], [0., ax.get_ylim()[1]], 'k--')
+  #pl.show()
+  #fig.savefig('SNRhist_%.2fMpc.png' % dist)
+  if opts.nsbh:
+    trdata = np.array([netSNRs, iotas, m1, m2, a1spin, ras, decs]).T
+    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$a_1$", "$\\alpha$", "$\delta$"]
+  else:
+    trdata = np.array([netSNRs, iotas, m1, m2, ras, decs]).T
+    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$\\alpha$", "$\delta$"]
+  fig = triangle.corner(trdata, labels=labels, data_kwargs={'color': 'darkblue', 'ms': 2}, plot_density=False, no_fill_contours=False, plot_contours=False)
+  pl.show(fig)
