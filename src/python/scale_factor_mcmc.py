@@ -651,8 +651,8 @@ if it does not fulfill the SNR criterion.")
       a1spinini = -1. + 2.*np.random.rand()
 
     #sfs = np.log(0.1 + (2.-0.5)*np.random.rand(len(scales))) # log scale factors
-    lognormalsigma = 1.
-    lognormalmu = 1.
+    lognormalsigma = 1.0729830131446736
+    lognormalmu = lognormalsigma**2
     # scale factors from a log normal distrbution
     #sfs = np.log(np.random.lognormal(lognormalmu, lognormalsigma, len(scales)))
     sfs = np.random.lognormal(lognormalmu, lognormalsigma, len(scales))
