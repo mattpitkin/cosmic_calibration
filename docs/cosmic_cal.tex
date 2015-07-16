@@ -89,6 +89,8 @@
 \acrodef{sGRB}[sGRB]{short gamma-ray burst}
 \acrodef{CBC}[CBC]{compact binary coalescence}
 \acrodef{EM}[EM]{electro-magnetic}
+\acrodef{aLIGO}[aLIGO]{Advanced LIGO}
+\acrodef{AdV}[AdV]{Advanced Virgo}
 
 %Uncomment for PACS numbers title message
 %\pacs{00.00, 20.00, 42.10}
@@ -175,7 +177,7 @@ essentially a control loop feedback system in which the difference output (in
 GW detectors, this is the distance the mirrors move due to the GW) and the the
 output set is reduced to the highest degree of certainty. This is just a brief
 overview of the calibration method currently used, and is an extensive study in
-itself, see \cite{Vitale:2012} and references therein. For advanced LIGO and Virgo,
+itself, see \cite{Vitale:2012} and references therein. For \ac{aLIGO} and \ac{AdV},
 at the frequency range used in this project, the error in the calibration using
 the `hardware injection method' is roughly $10\%$ \cite{Vitale:2012}. This is a
 benchmark set for the error estimation using the proposed new method in this
@@ -283,7 +285,7 @@ For a non-spinning system the general form of the frequency-domain polarisation 
 %
 where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$, with 
 $\eta=m_{1}m_{2}/M^{2}$ and $M=m_{1}+m_{2}$, $\iota$ is the inclination angle, and $\nu=(\pi 
-Mf)^{1/3}$.  The \ac{GW} strain measured at the $k^{\textrm{th}}$ detector is then given by
+Mf)^{1/3}$.  The \ac{GW} strain measured at the $k^{\rm{th}}$ detector is then given by
 %
 \begin{equation}
   \label{eq:gravsig}
@@ -390,7 +392,7 @@ polarised (face-on) the phase and polarisation angle will be degenerate meaning 
 combination of them will have very little effect of the result.
 
 For the spinning \ac{NSBH} systems we use a uniform prior on the dimensionless spin magnitude of 
-the black hole between $-1$ and 1. 
+the black hole between $-1$ and 1.
 
 Finally, we require a prior on the calibration scale factors for each detector. We make the 
 assumption that in general the calibration will be correct, so want to use a prior that is peaked 
@@ -409,33 +411,31 @@ constraint that it must be positive.
 
 \subsection{Simulations}\label{sec:simulations}
 
-To estimate how well we can constrain the calibration scaling each detector in an advanced 
+To estimate how well we can constrain the calibration scaling for each detector in an advanced 
 detector network we have performed simulations with injected \ac{BNS} and \ac{NSBH} signals at a 
 range of distances (50\,Mpc to 500\,Mpc with 50\,Mpc increments for the \ac{BNS} signals and 
 100\,Mpc to 1000\,Mpc with 100\,Mpc increments for the \ac{NSBH} signals). The simulations use the 
 two Advanced LIGO detectors (one at Hanford -- H1 -- and one at Livingston -- L1) and the Advanced 
 Virgo detector (V1). The simulations are all performed in the freqeuncy domain and span a frequency 
 range from 20\,Hz to 400\,Hz. We assume all detectors are expected to be operating at their design
-sensitivity.
+sensitivity (as given by Figure 1 of \cite{2013arXiv1304.0670L}). As such we add noise to each 
+simulation based on the sensitivity curve, but scaled with the associated calibration scale factor.
 
 % Describe the ensemble of simulations used
-As described in Section~\ref{sec:priors} we had two different scenarios for the prior distribution 
-of source system inclination angles, so we have produced separate simulations for both cases. In 
-each case 1000 sources were created with distributions on the inclination, component masses,
-reference phase and polarisation angle drawn from their respective prior distributions. For the 
-time of coalescence the times were held fixed within the centre of the prior window. When drawing 
-the sky position points were drawn uniformly over the sky. However, with all these an additional 
-constraint was imposed based on the fact that we require a distributions sources that could 
-actually have been detected. We therefore include the requirement from \cite{2012PhRvD..85h2002A} 
-that their be at least two detectors in the network for which the SNR is $\gtrsim 5.5$ (as these 
-would be signals coincident with a GRB we do not include the often used further constraint that 
-the total coherent network SNR is greater than 12). This generally means that as we go to larger
-distances our population of sources that fulfil this criterion will not be uniformly distributed
-over the sky, and will generally be closer to being circularly polarised.
-
-For each simulation the calibration scale factor for each detector has been drawn from a Gaussian 
-distribution with a mean of unity and a standard deviation of 0.125 (equivalent to the detectors 
-having on average a $\pm 10\%$ amplitude calibration error).
+Separately for the \ac{BNS} and \ac{NSBH} systems we have performed 2000 simulations at each 
+distance value. For proposing injections for each simulation the source parameters were randomly 
+drawn from the prior distributions given in Section~\ref{sec:priors}, with the sky position being 
+drawn randomly from a uniform distribution, and with the scaling factors for each detector drawn 
+from a Gaussian distribution with a mean of one and standard deviation of $0.125$ (equivalent to a 
+mean fractional offset of 10\%). However, in accepting a proposed injection as one to be analysed 
+we introduced a criteria that the signal be ``detectable'', based on it having an SNR of $\geq 5.5$ 
+in at least two detectors as used in \cite{2012PhRvD..85h2002A} (as these would be signals 
+coincident with a GRB we do not include the often used further constraint that the total coherent 
+network SNR is greater than 12). The coalescence times for all injections were held fixed 
+within the centre of the prior window. This criteria means that as we go to larger distances our 
+population of injected sources will not be uniformly distributed over the sky, and will generally 
+be closer to being circularly polarised. For the \ac{NSBH} systems it also means that at larger 
+distances we will have more sources with larger mass ratios \MP{Check this}.
 
 These simulations allow us to assess how well on average we would be able to constrain the 
 calibration scale for a given CBC-GRB coincidence.
@@ -444,26 +444,64 @@ calibration scale for a given CBC-GRB coincidence.
 
 \section{Results}\label{sec:results}
 
-For each of the simulated sources we have calculated the 68\% credible region on the scale factors 
-for each detector (for a Gaussian distribution this is equivalent to the region bounded by 
-$1\sigma$ intervals). For all the signals in each distance increment we have produced the 
-distribution of the half widths (i.e.\ $1\sigma$) of these scale factors. These are shown in 
-figures~\ref{fig:narrowdist} and \ref{fig:widedist} for the case with the inclination distribution 
-with a width of $5^{\circ}$ and $20^{\circ}$ respectively.
+For each of the simulated sources we have used the {\tt emcee} python MCMC package to perform 
+parameter estimation over the unknown source parameters using the prior as discussed in 
+Section~\ref{sec:priors}. In each case we use an estimate of the noise PSD based on the design 
+sensitivity, but simulated as if estimated by averaging 64 separate PSD estimates and scaled with 
+the same factor as applied to the injection and noise\footnote{We do not account for there being 
+a difference between the estimated PSD and the actual PSD of the analysed section of data. This 
+difference would be very much correlated with the scale factor, so in reality our estimate of the 
+scale factor would be a combination of the calibration offset and the difference in the PSD. As 
+such our results on real data would be an upper limit on the calibration scale factor.}. This has 
+provided posterior probability distributions on the calibration scale factors for each detector 
+\MP{Show an example for both source types}. From these we have calculated the 68\% credible region 
+on the scale factors for each detector (if these were Gaussian distributions this is equivalent to 
+the region bounded by $1\sigma$ intervals). For all the signals at each distance increment we have 
+produced the distribution of the fractional half widths (i.e.\ $1\sigma$) of these scale factors 
+confidence intervals compared to the actual value. These are shown as boxplots in 
+figures~\ref{fig:bnsresults} and \ref{fig:nsbhresults} for the \ac{BNS} and \ac{NSBH} systems 
+respectively. The boxes show the extent from the lower to upper quartile of the values, whilst the 
+whiskers represent range of values. The black line within each box gives the median value and the 
+star gives the mean value. Also shown on each plot as the dashed magenta line is the percentage of 
+proposed injections that actually fulfilled the detection criterion.
 
 \begin{figure}
  \begin{center}
-  \includegraphics[width=1.0\textwidth]{scale_factors_5degs_boxplot.png}
+  \includegraphics[width=1.0\textwidth]{scale_factor.pdf}
  \end{center}
- \caption{\label{fig:narrowdist} Add caption!}
+ \caption{\label{fig:bnsresults} Distribution of the percentage accuracy at which the calibration 
+scale factor can be determined for a three detector network if assuming \ac{BNS} systems (provided 
+a coincident GRB is observed and can yield a distance estimate). The boxplots span the lower to 
+upper quartile range of the distributions, with the median value shown as a horizontal line within 
+the box and the mean shown as a star. The dashed magenta line shows the percentage of source drawn 
+from the prior distribution that would be detectable at each distance value.}
 \end{figure}
 
 \begin{figure}
  \begin{center}
-  \includegraphics[width=1.0\textwidth]{scale_factors_20degs_boxplot.png}
+  \includegraphics[width=1.0\textwidth]{scale_factor_nsbh.pdf}
  \end{center}
- \caption{\label{fig:widedist} Add caption!}
+ \caption{\label{fig:nsbhresults} Distribution of the percentage accuracy at which the calibration 
+scale factor can be determined for a three detector network if assuming \ac{NSBH} systems (provided 
+a coincident GRB is observed and can yield a distance estimate). The plot contents are the same as 
+in figure~\ref{fig:bnsresults}.}
 \end{figure}
+
+In figure~\ref{fig:bnsresults} we see that unsurprisingly on average the scale factor can be 
+recovered to equivalent precision in both \ac{aLIGO} detectors, with uncertainties generally within 
+the 10\% range for sources at 100\,Mpc. An interesting feature that we see is that for distances 
+$\gtrsim 250$\,Mpc the upper extent of the uncertainty hits a maximum at $\sim 25\mbox{--}30\%$, 
+whilst the width of boxes narrows. This is due to our ``detectability'' criteria, in that for all 
+distances we will only be seeing those sources with high enough SNR that we would consider them 
+detectable. There will therefore be fewer sources with SNR higher than this criteria at large 
+distances, giving us a narrower range, and we automatically exclude those with SNR that are too 
+small thus truncating our uncertainty distribution at the upper range. However, this does show that 
+on average for sources that are detectable out to 450\,Mpc we would be able to constrain the 
+calibration scale factor uncertainty to $\sim 20\%$. As the detection criteria will generally come 
+from the SNR being high enough within the two \ac{aLIGO} instruments this means that the SNR in 
+\ac{AdV} can be small and thus the ability to constrain the scale factor for it becomes poor 
+(although it still provides information that the calibration is not grossly inaccurate).
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,10 +535,7 @@ detectors was also shown.
 The main results obtained in this project were from analysing randomly chosen
 sky positions from the entire field of view for the detector. Through these
 simulations, it was shown that this new method of calibration can reach and
-surpass the current method in terms of accuracy. The results in
-figure~\ref{fig:std-rndsp} show that for half of the randomly chosen sky
-positions relate to an estimation of $s$ within a range comparable with the
-current methods.
+surpass the current method in terms of accuracy.
 
 These results are reassuring for parameter estimation of the defining GW signal
 and would help in reducing the uncertainty in a direct detection. This project
