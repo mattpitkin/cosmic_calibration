@@ -356,26 +356,28 @@ the GRB can provide a very tight constraint on the source distance\footnote{For 
 measured GRB redshift and distance is simple and our luminosity distance will be negligably 
 effected by the choice of cosmology \MP{Check this?}.}. In this analysis we therefore assume that 
 the source distance is known (i.e.\ has a $\delta$-function prior). Another piece of information 
-that we can use from having a coincident GRB is that the system must be close to face-on, which 
-allows us to place prior constraints on the system inclination angle. In our analysis we take two 
-scenarios: the first use a 
-prior on the beam opening angle (half-width of the beam) with a Gaussian distribution with zero mean 
-and $\sigma = 5^{\circ}$, whilst the second uses $\sigma = 20^{\circ}$. Beam opening angles for 
-short GRBs are relatively poorly constrained as they are based on only a few jet break detection, 
-however \cite{2014ApJ...780..118F} give a median opening angle value of $\sim 10^{\circ}$. If we 
-assume that the beam opening angle is a half-normal distribution, for which the median is given by 
-$\sqrt{2}\erf{}^{-1}(1/2)\sigma \sim 0.67\sigma$, then a median of $\sim 10^{\circ}$ corresponds to 
-$\sigma \sim 14.8^{\circ}$.
+that we can use from having a coincident GRB is that the system is likely to be relatively close to 
+face-on (an therefore nearly circularly polarised), which allows us to place prior constraints on 
+the system inclination angle. Beam opening angles for short GRBs are relatively poorly constrained 
+as they are based on only a few jet break detections, however \cite{2014ApJ...780..118F} give a 
+median opening angle value of $\sim 10^{\circ}$. If we assume that the beam opening angle is a 
+half-normal distribution, for which the median is given by $\sqrt{2}\erf{}^{-1}(1/2)\sigma \sim 
+0.67\sigma$, then a median of $\sim 10^{\circ}$ corresponds to $\sigma \sim 14.8^{\circ}$. We 
+therefore place a Gaussian prior on the inclination angle with zero mean and $\sigma=14.8^{\circ}$.
 
-As we have assumed that the GRB progenitor is a binary neutron star system the prior we use for the 
-system component masses is a Gaussian distribution for both components with means 
-of $1.35\,\textrm{M}_{\odot}$ and standard deviations of $0.13\,\textrm{M}_{\odot}$ 
-\MP{(reference)}. In reality, for all the systems we use in our study, the chirp mass, which 
-we see from equation~\ref{eq:signal} plays a role in the overall signal amplitude, is very well 
-constrained by the systems phase evolution, so our prior could be expanded with minimal effect on 
-the results. In the future neutron star-black hole systems could be included, although this add the 
-complication of having to include the black hole spin (by using BNS systems we have assumed that 
-the spins are small enough that they will introduce only a negligible effect).
+Our prior on the system component masses is dependent on whether we are considering the source 
+being a \ac{BNS} system or a \ac{NSBH}. For the former case the prior we use is a Gaussian 
+distribution for both components with means of $1.35\,\textrm{M}_{\odot}$ and standard deviations 
+of $0.13\,\textrm{M}_{\odot}$ \MP{(reference)}. In reality, for all the systems we use in our 
+study, the chirp mass, which we see from equation~\ref{eq:signal} plays a role in the overall 
+signal amplitude, is very well constrained by the systems phase evolution, so our prior could be 
+expanded with minimal effect on the results. In the case of \ac{NSBH} systems we use the same 
+prior as above for the neutron star, but for the black hole we use a prior based on the 
+canonical masss distribution used for the rate results in \cite{2012PhRvD..85h2002A} with a mean of 
+$5\,\textrm{M}_{\odot}$ and a standard deviation of $1\,\textrm{M}_{\odot}$. For the \ac{NSBH}
+systems we also require a prior on the black hole spin (for \ac{BNS} systems we have assumed that 
+the spins are small enough that they will be negligible). We use a uniform prior on the 
+normalised aligned spin magnitude between $-1$ and $1$.
 
 The final important piece of information that we can make use of from the GRB observation is the 
 sky position of the source, which we take to be known precisely.
