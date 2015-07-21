@@ -778,12 +778,15 @@ if it does not fulfill the SNR criterion.")
     mC = (m1inj*m2inj)**(3./5.) / (m1inj+m2inj)**(1./5.)
     q = m2inj/m1inj
 
+    # set t0 to 0
+    samples[:,3] = samples[:,3] - t0
+
     if args.nsbh:
       labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$", "$a_1$"]
-      truths = [psi, phi0, iota, t0, mC, q, a1spin]
+      truths = [psi, phi0, iota, 0.0, mC, q, a1spin]
     else:
       labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
-      truths = [psi, phi0, iota, t0, mC, q]
+      truths = [psi, phi0, iota, 0.0, mC, q]
     for i in range(len(dets)):
       labels.append("$s_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
@@ -793,5 +796,5 @@ if it does not fulfill the SNR criterion.")
 
     fig = triangle.corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
 
-    plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.png')
+    plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.pdf')
     fig.savefig(plotfile)
