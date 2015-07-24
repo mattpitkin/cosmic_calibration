@@ -444,6 +444,12 @@ calibration scale for a given CBC-GRB coincidence.
 
 \section{Results}\label{sec:results}
 
+A simple assumption that one could make would be that the uncertainties on the calibration scale 
+factors (if they are independent of other parameters and have a Gaussian probability distribtuion) 
+should be given by $\sim 1/{\rm SNR}$ for each detector. As we will show below this assumption is 
+reasonable, but correlations do exist between parameters meaning that it does not completely hold, 
+especially in the case on \ac{NSBH} systems with a spinning component.
+
 For each of the simulated sources we have used the {\tt emcee} python MCMC package to perform 
 parameter estimation over the unknown source parameters using the prior as discussed in 
 Section~\ref{sec:priors}. In each case we use an estimate of the noise PSD based on the design 
@@ -454,17 +460,20 @@ difference would be very much correlated with the scale factor, so in reality ou
 scale factor would be a combination of the calibration offset and the difference in the PSD. As 
 such our results on real data would be an upper limit on the calibration scale factor.}. This has 
 provided posterior probability distributions on the calibration scale factors for each detector 
-\MP{Show an example for both source types}. An example of the marginalised posterior probablil From 
-these we have calculated the 68\% credible region 
-on the scale factors for each detector (if these were Gaussian distributions this is equivalent to 
-the region bounded by $1\sigma$ intervals). For all the signals at each distance increment we have 
+\MP{Show an example for both source types}. Examples of the marginalised posterior probabilities
+for a \ac{BNS} system and a \ac{NSBH} system observed with the three detector network are shown in 
+figures~\ref{fig:bnspost} and \ref{fig:nsbhpost} respectively.
+
+From these posterior distributions we have calculated the 68\% credible region on the scale factors 
+for each detector (if these were Gaussian distributions this is equivalent to the region bounded by 
+$1\sigma$ intervals). For all the signals at each distance increment we have 
 produced the distribution of the fractional half widths (i.e.\ $1\sigma$) of these scale factors 
 confidence intervals compared to the actual value. These are shown as boxplots in 
 figures~\ref{fig:bnsresults} and \ref{fig:nsbhresults} for the \ac{BNS} and \ac{NSBH} systems 
 respectively. The boxes show the extent from the lower to upper quartile of the values, whilst the 
-whiskers represent range of values. The black line within each box gives the median value and the 
-star gives the mean value. Also shown on each plot as the dashed magenta line is the percentage of 
-proposed injections that actually fulfilled the detection criterion.
+whiskers represent the range of values. The black line within each box gives the median value and 
+the star gives the mean value. Also shown on each plot as the dashed magenta line is the percentage 
+of proposed injections that actually fulfilled the detection criterion.
 
 \begin{figure}
  \begin{center}
@@ -472,8 +481,20 @@ proposed injections that actually fulfilled the detection criterion.
  \end{center}
  \caption{\label{fig:bnspost} The marginalised posterior probability distributions for the unknown
  parameters of a \ac{BNS} system including calibration scaling factors for the three detectors (H1, 
-L1 and V1). The injected signal had \ac{SNR} of 8.7, 10.9 and 4.1 and percentage uncertainties in 
-the calibration scale factors of 14\%, 11\% and 27\% for each of the detectors respectively.}
+L1 and V1). The injected signal was at a distance of 250\,Mpc, had \ac{SNR} of 8.7, 10.9 and 4.1 
+and percentage uncertainties in the calibration scale factors of 14\%, 11\% and 27\% for each of 
+the detectors respectively.}
+\end{figure}
+
+\begin{figure}
+ \begin{center}
+  \includegraphics[width=1.0\textwidth]{nsbh_post_fig.pdf}
+ \end{center}
+ \caption{\label{fig:nsbhpost} The marginalised posterior probability distributions for the unknown
+ parameters of a \ac{NSBH} system including calibration scaling factors for the three detectors 
+(H1, L1 and V1). The injected signal was at a distance of 450\,Mpc, had \ac{SNR} of 7.7, 10.9 and 
+4.2 and percentage uncertainties in the calibration scale factors of 17\%, 14\% and 34\% for each of 
+the detectors respectively.}
 \end{figure}
 
 \begin{figure}
@@ -511,9 +532,14 @@ on average for sources that are detectable out to 450\,Mpc we would be able to c
 calibration scale factor uncertainty to $\sim 20\%$. As the detection criteria will generally come 
 from the SNR being high enough within the two \ac{aLIGO} instruments this means that the SNR in 
 \ac{AdV} can be small and thus the ability to constrain the scale factor for it becomes poor 
-(although it still provides information that the calibration is not grossly inaccurate).
+(although it still provides information that the calibration is not grossly inaccurate). We also 
+see that true uncertainties achievable for recovering the calibration scale factors are indeed very 
+similar to the simple assumption that they would be given by $sim 1/{\rm SNR}$. Although, they are 
+probably slightly poorer due to their still be correlations with $\iota$ even within the 
+constrained prior range, and slight correlation between the scale factors for H1 and L1 as seen in 
+figure~\ref{fig:bnspost}.
 
-In figure~\ref{fig:bnsresults} we see slightly different results. Despite the generally higher SNR 
+In figure~\ref{fig:nsbhresults} we see slightly different results. Despite the generally higher SNR 
 for the \ac{NSBH} systems we find that on averge that the scale factor uncertainty is still roughly 
 20\% at distances to 400--500\,Mpc. The range of uncertainty values is also far broader at all 
 distances and there is not the plateau and upper limit seen for the \ac{BNS} systems. \MP{This 
@@ -542,25 +568,6 @@ without EM counterparts.}
 \section{Discussion\label{sec:discussion}}
 
 \cm{What did we learn.}
-
-This paper has shown that for differing levels of SNR, the error in the
-calibration is resolved within a certain accuracy range. Initial simulations
-used a bad sky position, resulting a low SNR which created larger uncertainty
-in resolving $s$. It was shown that for this sky position, the calibration
-scale factor estimation was recovered with an accuracy of roughly a $27\%$ for
-$D_{L} = 200\,Mpc$ for LIGO Hanford. The resolution of $s$ for a network of
-detectors was also shown.
-
-The main results obtained in this project were from analysing randomly chosen
-sky positions from the entire field of view for the detector. Through these
-simulations, it was shown that this new method of calibration can reach and
-surpass the current method in terms of accuracy.
-
-These results are reassuring for parameter estimation of the defining GW signal
-and would help in reducing the uncertainty in a direct detection. This project
-was; however, time constrained. There are many, many things that could be done
-with this project. A true noise realisation with each frequency bin having a
-random Gaussian noise would be the next step in calibration error estimation.
 
 This project is only the beginning in testing this new method of calibration.
 More rigorous testing has to be carried out for a number of different systems.
