@@ -203,6 +203,7 @@ pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
 ax2 = ax.twinx()
 ax2.plot(dists, rates, 'mo--', markerfacecolor='None', markeredgecolor='m')
 ax2.set_ylabel('\% of source distribution detectable')
+ax2.yaxis.label.set_color('magenta')
 ax2.set_xlim((0, 550))
 
 try:
