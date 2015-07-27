@@ -94,7 +94,6 @@ for i, d in enumerate(dirs):
   files = [os.path.join(d, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and fnpre in f]
   
   # go through files and extract the relative standard devaition on the scale factors for each detector
-  count = 0
   for f in files:
     fo = open(f, 'r')
     info = json.load(fo)
@@ -116,6 +115,7 @@ for i, d in enumerate(dirs):
 
     if len(vals) == 3:
       relsf.append(vals)
+
     totaltime += info['Attempts']   
 
   rates.append(100.*len(files)/totaltime)
@@ -127,28 +127,6 @@ for i, d in enumerate(dirs):
 
   print np.mean(nprelsf[:,0]), np.mean(nprelsf[:,1]), np.mean(nprelsf[:,2])
   print np.median(nprelsf[:,0]), np.median(nprelsf[:,1]), np.median(nprelsf[:,2])
-
-  # plot output
-  #ci1 = credible_interval(nprelsf[:,0], 0.90)
-  #ci2 = credible_interval(nprelsf[:,1], 0.90)
-  #ci3 = credible_interval(nprelsf[:,2], 0.90)
-  
-  #pl.plot(dists[i]-7.5, np.mean(nprelsf[:,0]), 'bo', lw=2, ms=6)
-  #pl.plot(dists[i], np.mean(nprelsf[:,1]), 'ro', lw=2, ms=6)
-  #pl.plot(dists[i]+7.5, np.mean(nprelsf[:,2]), 'go', lw=2, ms=6)
-  
-  #pl.plot(dists[i]-7.5, np.median(nprelsf[:,0]), 'bx', lw=2, ms=6)
-  #pl.plot(dists[i], np.median(nprelsf[:,1]), 'rx', lw=2, ms=6)
-  #pl.plot(dists[i]+7.5, np.median(nprelsf[:,2]), 'gx', lw=2, ms=6)
-  
-  #if i == 0:
-  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', label='H1', lw=2)
-  #  pl.plot([dists[i], dists[i]], ci2, 'r', label='L1', lw=2)
-  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', label='V1', lw=2)
-  #else:
-  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
-  #  pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
-  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
 
 positions = []
 for dist in dists:

@@ -102,10 +102,20 @@ for i, d in enumerate(dirs):
 
     vals = []
     for k in range(len(info['InjectionParameters']['scales'])):
-      # divide by two to get the half widths and convert to percentage
-      vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
+      # check whether chain looks like it's converged with a simple check of the histogram
+      histd = info['Results']['ScaleHist'][k]
+      histd = np.array(histd)
+      # get number of nonzero values
+      nonzero = np.zeros(len(histd[0]))[np.array(histd[0]) > 0]
+      
+      # say converged chain must have more than 75% of posterior points being non-zero
+      # and the standard deviation of the points must be within a sixth of the width of the histogram
+      if float(len(nonzero))/float(len(histd[0])) > 0.75 and info['Results']['ScaleSigma'][k] < (histd[1][-1]-histd[1][0])/6.:
+        # divide by two to get the half widths and convert to percentage
+        vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
 
-    relsf.append(vals)
+    if len(vals) == 3:
+      relsf.append(vals)
 
     totaltime += info['Attempts']
   
@@ -118,28 +128,6 @@ for i, d in enumerate(dirs):
 
   print np.mean(nprelsf[:,0]), np.mean(nprelsf[:,1]), np.mean(nprelsf[:,2])
   print np.median(nprelsf[:,0]), np.median(nprelsf[:,1]), np.median(nprelsf[:,2])
-
-  # plot output
-  #ci1 = credible_interval(nprelsf[:,0], 0.90)
-  #ci2 = credible_interval(nprelsf[:,1], 0.90)
-  #ci3 = credible_interval(nprelsf[:,2], 0.90)
-  
-  #pl.plot(dists[i]-7.5, np.mean(nprelsf[:,0]), 'bo', lw=2, ms=6)
-  #pl.plot(dists[i], np.mean(nprelsf[:,1]), 'ro', lw=2, ms=6)
-  #pl.plot(dists[i]+7.5, np.mean(nprelsf[:,2]), 'go', lw=2, ms=6)
-  
-  #pl.plot(dists[i]-7.5, np.median(nprelsf[:,0]), 'bx', lw=2, ms=6)
-  #pl.plot(dists[i], np.median(nprelsf[:,1]), 'rx', lw=2, ms=6)
-  #pl.plot(dists[i]+7.5, np.median(nprelsf[:,2]), 'gx', lw=2, ms=6)
-  
-  #if i == 0:
-  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', label='H1', lw=2)
-  #  pl.plot([dists[i], dists[i]], ci2, 'r', label='L1', lw=2)
-  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', label='V1', lw=2)
-  #else:
-  #  pl.plot([dists[i]-7.5, dists[i]-7.5], ci1, 'b', lw=2)
-  #  pl.plot([dists[i], dists[i]], ci2, 'r', lw=2)
-  #  pl.plot([dists[i]+7.5, dists[i]+7.5], ci3, 'g', lw=2)
 
 positions = []
 for dist in dists:
