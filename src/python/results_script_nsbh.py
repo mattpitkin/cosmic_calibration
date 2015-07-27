@@ -70,7 +70,7 @@ pl.rc('text', usetex=True)
 pl.rc('font', family='serif')
 pl.rc('font', size=14)
 
-dists = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+dists = [100, 200, 300, 400, 500, 600, 700, 800, 900] #, 1000]
 
 prefix = indir
 
@@ -94,6 +94,7 @@ for i, d in enumerate(dirs):
   files = [os.path.join(d, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and fnpre in f]
   
   # go through files and extract the relative standard devaition on the scale factors for each detector
+  count = 0
   for f in files:
     fo = open(f, 'r')
     info = json.load(fo)
@@ -101,10 +102,20 @@ for i, d in enumerate(dirs):
 
     vals = []
     for k in range(len(info['InjectionParameters']['scales'])):
-      # divide by two to get the half widths and convert to percentage
-      vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
+      # check whether chain looks like it's converged with a simple check of the histogram
+      histd = info['Results']['ScaleHist'][k]
+      histd = np.array(histd)
+      # get number of nonzero values
+      nonzero = np.zeros(len(histd[0]))[np.array(histd[0]) > 0]
 
-    relsf.append(vals)
+      # say converged chain must have more than 75% of posterior points being non-zero
+      # and the standard deviation of the points must be within a sixth of the width of the histogram
+      if float(len(nonzero))/float(len(histd[0])) > 0.75 and info['Results']['ScaleSigma'][k] < (histd[1][-1]-histd[1][0])/6.:
+        # divide by two to get the half widths and convert to percentage
+        vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
+
+    if len(vals) == 3:
+      relsf.append(vals)
     totaltime += info['Attempts']   
 
   rates.append(100.*len(files)/totaltime)
@@ -200,6 +211,7 @@ pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
 ax2 = ax.twinx()
 ax2.plot(dists, rates, 'mo--', markerfacecolor='None', markeredgecolor='m')
 ax2.set_ylabel('\% of source distribution detectable')
+ax2.yaxis.label.set_color('magenta')
 ax2.set_xlim((0, 1100))
 
 try:
