@@ -10,7 +10,9 @@ import os
 import argparse
 import json
 
-from matplotlib import pyplot as pl
+import matplotlib
+#matplotlib.use("Agg")
+#from matplotlib import pyplot as pl
 
 # swig lal modules for signal generation
 import lal
@@ -158,6 +160,28 @@ def lnprior(theta, iotawidth, tccentre, ndets, nsbh):
 
   lp = 0. # logprior
 
+  # wrap psi at pi/2 range, but also increment phi0 by pi/2 to compensate
+  nmod = 0.
+  if psi > np.pi/2.:
+    nmod = np.floor(psi/(np.pi/2.))
+    psi = np.fmod(psi, np.pi/2.)
+  elif psi < 0.:
+    nmod = np.ceil(-psi/(np.pi/2.))
+    psi += nmod*(np.pi/2.)
+ 
+  phi0 += nmod*(np.pi/2.)
+ 
+  # wrap phi0 in the 0->pi range
+  if phi0 < 0.:
+    nmod = np.ceil(-phi0/np.pi)
+    phi0 += nmod*np.pi
+  elif phi0 > np.pi:
+    phi0 = np.fmod(phi0, np.pi)
+ 
+  # convert parameters in theta
+  theta[0] = psi
+  theta[1] = phi0
+
   if 0. < q < 1.:
     lp = 0.
   else:
@@ -167,11 +191,12 @@ def lnprior(theta, iotawidth, tccentre, ndets, nsbh):
   m1, m2 = McQ2Masses(mC, q)
 
   # outside prior ranges
-  if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
+  #if 0. < psi < np.pi/2. and 0. < phi0 < 2.*np.pi and tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
+  if tccentre-0.01 < tc < tccentre+0.01 and -0.5*np.pi < iota < 0.5*np.pi:
     lp = 0.
   else:
     return -np.inf
-  
+ 
   if nsbh: # parameter limits for NS-BH system
     if 0.9 < m2 < 2. and m1 > 0. and -1. < a1spin < 1.:
       lp = 0.
@@ -516,7 +541,8 @@ if it does not fulfill the SNR criterion.")
       psi = 0.5*np.pi*np.random.rand() # draw from between 0 and pi/2
 
     if phi0notset:
-      phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
+      #phi0 = 2.*np.pi*np.random.rand() # draw from between 0 and 2pi
+      phi0 = np.pi*np.random.rand() # draw from between 0 and pi
     
     if a1spinnotset:
       if args.nsbh:
@@ -630,7 +656,8 @@ if it does not fulfill the SNR criterion.")
   pos = []
   for i in range(Nensemble):
     psiini = np.random.rand()*np.pi*0.5 # psi
-    phi0ini = np.random.rand()*2.*np.pi # phi0
+    #phi0ini = np.random.rand()*2.*np.pi # phi0
+    phi0ini = np.random.rand()*np.pi # phi0
     iotaini = iotawidth*np.random.randn() # iota
     while not -0.5*np.pi < iotaini < 0.5*np.pi:
       iotaini = iotawidth*np.random.randn()
@@ -689,6 +716,8 @@ if it does not fulfill the SNR criterion.")
 
   # remove samples that have log probabilities that are > 10 away from the max probability
   samples = samples[lnprobvals > np.max(lnprobvals)-10.,:]
+ 
+  #print np.corrcoef(samples[:50:,:])
  
   # output samples to gzipped file
   if args.outsamps:
