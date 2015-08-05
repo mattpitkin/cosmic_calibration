@@ -93,6 +93,7 @@ for i, d in enumerate(dirs):
   files = [os.path.join(d, f) for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and fnpre in f]
   
   totaltime = 0.
+  accepted = 0
 
   # go through files and extract the relative standard devaition on the scale factors for each detector
   for f in files:
@@ -108,14 +109,15 @@ for i, d in enumerate(dirs):
       # get number of nonzero values
       nonzero = np.zeros(len(histd[0]))[np.array(histd[0]) > 0]
       
-      # say converged chain must have more than 75% of posterior points being non-zero
+      # say converged chain must have more than 90% of posterior points being non-zero
       # and the standard deviation of the points must be within a sixth of the width of the histogram
-      if float(len(nonzero))/float(len(histd[0])) > 0.75 and info['Results']['ScaleSigma'][k] < (histd[1][-1]-histd[1][0])/6.:
+      if float(len(nonzero))/float(len(histd[0])) > 0.9 and info['Results']['ScaleSigma'][k] < (histd[1][-1]-histd[1][0])/6.:
         # divide by two to get the half widths and convert to percentage
         vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
 
     if len(vals) == 3:
       relsf.append(vals)
+      accepted += 1
 
     totaltime += info['Attempts']
   
@@ -126,6 +128,7 @@ for i, d in enumerate(dirs):
   data.append(nprelsf[:,1])
   data.append(nprelsf[:,2])
 
+  print accepted
   print np.mean(nprelsf[:,0]), np.mean(nprelsf[:,1]), np.mean(nprelsf[:,2])
   print np.median(nprelsf[:,0]), np.median(nprelsf[:,1]), np.median(nprelsf[:,2])
 
