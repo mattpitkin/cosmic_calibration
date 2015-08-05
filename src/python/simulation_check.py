@@ -185,6 +185,10 @@ for drawing masses and setting spin (a single spin for the black hole will be us
   parser.add_option("-w", "--iotawidth", dest="iotawidth", type="float",
                       help="Width of iota simulation, and prior, distribution (degs)")
 
+  parser.add_option("-A", "--above-threshold", dest="abovethresh", default=False,
+                    action="store_true", help="If this flag is set only above detection \
+threshold events will be used")
+
   # parse input options
   (opts, args) = parser.parse_args()
 
@@ -260,30 +264,9 @@ for drawing masses and setting spin (a single spin for the black hole will be us
     m1mean = 1.35
     m1sigma = 0.13
 
-  m1list = []
-  m2list = []
-  for i in range(Nsim):
-    m1tmp = m1mean + m1sigma*np.random.randn()
-    if opts.nsbh:
-      while m1tmp < 2.5:
-        m1tmp = m1mean + m1sigma*np.random.randn()
-    m2tmp = m2mean + m2sigma*np.random.randn()
-    while m2tmp > m1tmp:
-      m2tmp = m2mean + m2sigma*np.random.randn()
-    m1list.append(m1tmp)
-    m2list.append(m2tmp)
-
-  m1 = np.array(m1list)
-  m2 = np.array(m2list)
-
-  indSNRs = []
-  netSNRs = []
-
   asds = []
   # create frequency series for PSDs
   psd = lal.CreateREAL8FrequencySeries('name', t0, 0., deltaF, lal.Unit(), 1+int(fmax/deltaF))
-
-  accepted = 0. # values above threshold
 
   for i in range(len(dets)):
     if dets[i] in ['H1', 'L1']:
@@ -308,6 +291,33 @@ for drawing masses and setting spin (a single spin for the black hole will be us
     else:
       asds.append(np.sqrt(psd.data.data))
 
+  m1list = []
+  m2list = []
+  for i in range(Nsim):
+    m1tmp = m1mean + m1sigma*np.random.randn()
+    if opts.nsbh:
+      while m1tmp < 2.5:
+        m1tmp = m1mean + m1sigma*np.random.randn()
+    m2tmp = m2mean + m2sigma*np.random.randn()
+    while m2tmp > m1tmp:
+      m2tmp = m2mean + m2sigma*np.random.randn()
+    m1list.append(m1tmp)
+    m2list.append(m2tmp)
+
+  m1 = np.array(m1list)
+  m2 = np.array(m2list)
+
+  M = m1+m2
+  eta = m1*m2/M**2
+  mC = M*eta**(3./5.)
+
+  indSNRs = []
+  netSNRs = []
+
+  accepted = 0. # values above threshold
+
+  abovet = np.ones(Nsim, dtype=np.bool)
+
   for i in range(Nsim):
     # waveform
     hp, hc = fdwaveform(phi0s[i], deltaF, m1[i], m2[i], fmin, fmax, dist, iotas[i], a1spin[i])
@@ -328,9 +338,15 @@ for drawing masses and setting spin (a single spin for the black hole will be us
     if len(dets) == 1:
       if snr > np.sqrt(2.*(5.5**2)):
         accepted += 1.
+      else:
+        if opts.abovethresh:
+          abovet[i] = False
     else:
       if len(np.zeros(len(snrs))[np.array(snrs) > 5.5]) > 1:
         accepted += 1.
+      else:
+        if opts.abovethresh:
+          abovet[i] = False
  
     indSNRs.append(snrs)
     netSNRs.append(np.sqrt(netsnr))
@@ -338,7 +354,12 @@ for drawing masses and setting spin (a single spin for the black hole will be us
   # plot histogram of SNRs
   #fig = pl.figure(figsize=(6,5), dpi=200)
 
-  print np.mean(netSNRs), np.std(netSNRs)
+  # print out mean and standard deviation of the individual detector SNRs
+  indSNRs = np.array(indSNRs)
+  for i, det in enumerate(dets):
+    print "%s - mean = %.2f, sigma = %.2f" % (det, np.mean(indSNRs[abovet,i]),  np.std(indSNRs[abovet,i]))
+
+  print np.mean(np.array(netSNRs)[abovet]), np.std(np.array(netSNRs)[abovet])
   print "Percentage above SNR threshold %.2f %%" % (100.*accepted/Nsim)
 
   #pl.hist(netSNRs, bins=20, histtype='step', normed=True)
@@ -347,10 +368,10 @@ for drawing masses and setting spin (a single spin for the black hole will be us
   #pl.show()
   #fig.savefig('SNRhist_%.2fMpc.png' % dist)
   if opts.nsbh:
-    trdata = np.array([netSNRs, iotas, m1, m2, a1spin, ras, decs]).T
-    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$a_1$", "$\\alpha$", "$\delta$"]
+    trdata = np.array([netSNRs, iotas, m1, m2, mC, a1spin, ras, decs]).T[abovet,:]
+    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$\mathcal{M}$", "$a_1$", "$\\alpha$", "$\delta$"]
   else:
-    trdata = np.array([netSNRs, iotas, m1, m2, ras, decs]).T
-    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$\\alpha$", "$\delta$"]
+    trdata = np.array([netSNRs, iotas, m1, m2, mC, ras, decs]).T[abovet,:]
+    labels = ["SNR", "$\iota$", "$m_1$", "$m_2$", "$\mathcal{M}$", "$\\alpha$", "$\delta$"]
   fig = triangle.corner(trdata, labels=labels, data_kwargs={'color': 'darkblue', 'ms': 2}, plot_density=False, no_fill_contours=False, plot_contours=False)
   pl.show(fig)
