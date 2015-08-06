@@ -137,7 +137,7 @@ for dist in dists:
   positions.append(dist)
   positions.append(dist+20)
 
-bp = pl.boxplot(data, notch=0, sym='', positions=positions, widths=16) 
+bp = pl.boxplot(data, whis=[5, 95], notch=0, sym='', positions=positions, widths=16) 
 #bp = pl.boxplot(data, notch=0, sym='x', positions=positions, widths=16)
 
 pl.setp(bp['boxes'], color='black')
