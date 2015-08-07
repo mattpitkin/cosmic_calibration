@@ -817,7 +817,7 @@ if it does not fulfill the SNR criterion.")
       labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
       truths = [psi, phi0, iota, 0.0, mC, q]
     for i in range(len(dets)):
-      labels.append("$s_{\mathrm{%s}}}$" % dets[i])
+      labels.append("$\mathcal{C}_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
 
     # plot 1, 2 and 3 sigma contours
