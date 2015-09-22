@@ -80,6 +80,7 @@ calibration of gravitational wave detector outputs through the use of standard
 
 % acronym definitions
 \acrodef{GW}[GW]{gravitational wave}
+\acrodef{NS}[NS]{neutron star}
 \acrodef{BNS}[BNS]{binary neutron star}
 \acrodef{MWEG}[MWEG]{Milky Way equivalent galaxies}
 \acrodef{BBH}[BBH]{binary black hole}
@@ -94,6 +95,7 @@ calibration of gravitational wave detector outputs through the use of standard
 \acrodef{AdV}[AdV]{Advanced Virgo}
 \acrodef{PSD}[PSD]{power spectral density}
 \acrodef{MCMC}[MCMC]{Markov chain Monte Carlo}
+\acrodef{ET}[ET]{Einstein Telescope}
 
 %Uncomment for PACS numbers title message
 %\pacs{00.00, 20.00, 42.10}
@@ -194,15 +196,102 @@ in a similar way to the method of \cite{2013PhRvD..88h4044L} used for fitting di
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Binary neutron star standard sirens\label{sec:sirens}}
 
-We should explain what this means starting with reference
-to~\cite{1986Natur.323..310S}.
+% Standard siren basics
+The idea of \ac{GW} standard sirens is directly analogous to the concept of
+standard candles in \ac{EM} astronomy and was first proposed
+in~\cite{1986Natur.323..310S}. Unlike the primary \ac{EM} standard candle
+event, Type 1a Supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
+not only a function of distance. It also depends upon the chirp mass (a
+function of the component masses) and the binary orientation with respect to
+the detector network. However, measurement of the phase evolution of such an
+event allows accurate determination of the chirp mass~\footnote{In reality it
+is the redshifted chirp mass that is measured.}. Timing information from the
+different signal arrival times at each detector in the network allows
+reasonably accurate sky position determination.  Finally, amplitude variation
+between differently oriented interferometers allows some (weaker) level of
+determination of the binary system orientation.  A great help to this final
+stage for this project is the assumption that the source has an \ac{sGRB}
+counterpart.  It follows that we therefore have a well constrained prior belief
+on the inclination of the source orbit with respect to the line-of-sight based
+on the expected level of beaming in the \ac{sGRB} emission.
+
+% The classic use of sirens
+Standard sirens are clearly a very powerful tool for \ac{GW} cosmology since
+they give us a direct measure of the absolute luminosty distance to sources.
+This is distinct from Type 1a Supernovae standard candles that only provide
+relative luminosty distance measures and require calibration via other methods
+as part of the cosmological distance ladder. At first sight the missing
+component for standard sirens is a complementary measurement of the source
+redshift which would allow each event to inform the distance-redshift
+relationship and hence obtain cosmological parameter estimates.  However, it
+was not thought possible (until recently) that redshift measurements could be
+obtained from \ac{GW} observations. In~\cite{DelPozzo:2011uf} (building on the
+original idea proposed in~\cite{1986Natur.323..310S} the idea of identifying
+host galaxies within the sky position uncertainty region was developed. Each
+galaxy would provide a redshift measure and would contribute to a disparate mix
+of possible cosmological parameters. However, by combining multiple (${\sim}20$)
+detections, the true set of cosmological parameters emerges with an expected
+${\sim}5\%$ uncertainty on the Hubble constant. 
+
+% continued use of sirens
+The use of \ac{GW} events with \ac{sGRB} counterparts was investigated
+in~\cite{2010CQGra..27u5006S} and~\cite{2011PhRvD..83b3005Z} with respect to
+the 3rd generation \ac{GW} interferometer, the \ac{ET}. It was
+assumed in both studies that 1000 coincident events would be observed and
+cosmological parameter estimation ability was compared with current \ac{EM}
+results with focus on dark energy parameters. Other methods for cosmological
+inference (see~\cite{1996PhRvD..53.2878F},~\cite{2012PhRvD..85b3535T},
+and~\cite{2012PhRvD..86b3502T}) have been proposed for \ac{BNS} systems that do
+not rely on any redshift measurements and instead use the distribution of
+measured \acp{SNR} combined with some assumptions regarding the \ac{NS} mass
+and spatial distributions. Finally we mention that for \ac{BNS} systems it has
+been shown in~\cite{Messenger:2011ux} and~\cite{2013arXiv1312.1862M} that features
+of the tidal and post-merger hyper-massive \ac{NS} stages of the \ac{GW}
+waveform can allow the measurement of the source redshift if the \ac{NS}
+equation-of-state is sufficiently well known. This development, and seperately, the method
+based on \ac{SNR} distributions will allow \ac{GW} cosmological inference
+without the need for complementary \ac{EM} observations.
+
+% put this in context with calibration
+To put the existing work on \ac{GW} cosmology in context with the study
+described in this manuscript we are essentially turning the standard
+cosmological problem upside-down. We assume that the existing \ac{EM}
+cosmological parameter estimation (specifically for the Hubble constant) is
+accurately determined and therefore a known quantity. We then assume that the
+unknown in our analysis is the absolute amplitude calibration of the
+interferometers in the global \ac{GW} detector network. The issue of
+calibration has largely been ignored in \ac{GW} cosmological inference studies
+and in Sec.~\ref{sec:discussion} we discuss some of the implications of
+combining these issues in future analyses.     
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{GRB counterparts\label{sec:GRB}}
 
 % what are sGRBs 
-\cm{What are sGRBs?}\\
+It is believed that \acp{sGRB} (those \acp{GRB} with duration ${<}2$ sec) are
+emitted during the merger of
+\acp{BNS}~\cite{1989Natur.340..126E},~\cite{1992ApJ...395L..83N}. The emmission
+from these events is highly beamed along the binary rotation axis and hence
+only potentially observable for a fraction of \ac{BNS} mergers. The distances
+to these objects are obtained via identification of 
+
+The observed redshift range is from about 0.2 to 2 for short GRBs (sGRBs), with
+a mean of about 0.4. The XRT commonly observes sGRBs up to z ≃ 0.5 but in 10.5
+yr of operation Swift has not seen one with a measured redshift z < 0.1, i.e.,
+the NS-NS merger aLIGO target GW horizon ∼400 Mpc, suggesting that such events
+may be quite rare.
+Estimates for jet beaming are θj ∼ 5◦ for lGRBs and θj ∼ 5 − 15◦ for sGRBs
+(Burrows et al. 2006, Grupe et al. 2006, Fong et al. 2012). Beaming angles for
+sGRBs are still highly uncertain. The beaming factors fb = 1 − cos θj ≃ θj2/2
+are roughly 1/300 for lGRBs and 1/30 for sGRBs. Based on the observed rate of
+sGRBs by Swift, Coward et al. (2012) estimate a LVC detection rateof∼3−30yr−1
+forθj ≃ 15◦. Chen&Holz(2013)claim3−7yr−1 forGRBGW+EM detections. Kelley et al.
+(2013) estimate the rate of Swift or Fermi observations joint with LVC
+detections to be ∼0.07 yr−1. Siellez, Boe ̈r, & Gendre (2014) consider current
+and future high energy missions and estimate a rate of simultaneous GW+EM
+detections of ∼0.1 − 4 yr−1 in the LVC era. Wanderman & Piran (2015) estimate a
+co-detection rate LVC+Fermi of 0.1 − 1 yr−1 and LVC+Swift of 0.02 − 0.14 yr−1.
 
 % discuss joint-event rates
 \cm{Discuss the expected rate of joint detections}\\
