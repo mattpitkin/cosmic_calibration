@@ -1,50 +1,35 @@
-\documentclass[10pt]{iopart}
+\IfFileExists{revtex4-1.cls}{\documentclass[prd, twocolumn, lengthcheck,
+superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4-1}}{
+\IfFileExists{revtex4.cls}{\documentclass[prd, twocolumn, lengthcheck,
+superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
+}
+
 \usepackage{latexsym}
 \usepackage{graphicx}
-\usepackage{iopams}
+
 \usepackage{color}
 
-%\usepackage {amsmath}
-%\usepackage {amssymb}
-%\usepackage {amsfonts}
-%\usepackage {amsthm}
-%\usepackage {mathrsfs}
-%\usepackage {natbib}
-%\usepackage {latexsym}
-%\usepackage {graphicx}
-%\usepackage {dsfont}
-%\usepackage {times}
-%\usepackage {txfonts}
-%\usepackage {rotating}
-%\usepackage {wasysym}
-%\usepackage {multirow}
-%\usepackage {hhline}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{hyperref}
-%\usepackage {color}
 \usepackage{bm}
-%\usepackage{appendix}
 \usepackage{acronym}
-%\usepackage{dcolumn}   % needed for some tables
 \usepackage{url}
 \usepackage[normalem]{ulem}   % temporal one in draft.
 \usepackage{xspace}
 
-%\usepackage{harvard}
 \usepackage{amsopn} % for using DeclareMathOperator
 
 % variable shortcuts 
 \newcommand{\Hub}{H_{0}}
 \newcommand{\DL}{D_{\mathrm{L}}}
 \newcommand{\lam}{\bm{\lambda}}
-%\newcommand{\data}{\bm{d}}
-%\newcommand{\sigpar}{\bm{\theta}}
-%\newcommand{\nuispar}{\bm{\lambda}}
-%\newcommand{\globpar}{\bm{\gamma}}
-%\newcommand{\model}{\mathcal{H}}
 
 \newcommand{\curlH}{\mathcal{H}}
 \newcommand{\gws}{\tilde{h}}
 \newcommand{\scf}{\ensuremath{\mathcal{C}}}
+
+\newcommand{\btheta}{\mathbf{\theta}}
 
 %% ----- input git-version tag
 \input{tag.tex}
@@ -56,14 +41,24 @@
 
 \DeclareMathOperator{\erf}{erf}
 
+% define macro for PASP from aas_macros.sty
+\newcommand\pasp{PASP}
+
 \begin{document}
 
 \title{Astrophysical calibration of gravitational-wave detectors}
 
-\author{L.~Wright$^1$, M.~Pitkin$^1$ \& C.~Messenger$^1$}
-\address{$^1$ SUPA, School of Physics and Astronomy, University of
+\author{L.~Wright}\affiliation{SUPA, School of Physics and Astronomy, University of
   Glasgow, Glasgow G12 8QQ, United Kingdom}
-\eads{\mailto{matthew.pitkin@glasgow.ac.uk}, \mailto{christopher.messenger@glasgow.ac.uk}}
+\author{M.~Pitkin}\affiliation{SUPA, School of Physics and Astronomy, University of
+  Glasgow, Glasgow G12 8QQ, United Kingdom}
+\author{C.~Messenger}\affiliation{SUPA, School of Physics and Astronomy, University of
+  Glasgow, Glasgow G12 8QQ, United Kingdom}
+
+\email{matthew.pitkin@glasgow.ac.uk}
+\email{christopher.messenger@glasgow.ac.uk}
+
+\date{\today}
 
 \begin{abstract}
   We present an investigation into the potential of assessing the validity of the 
@@ -77,6 +72,11 @@ calibration of gravitational wave detector outputs through the use of standard
   the direct comparison with the estimated value.  Discrepancies can
   then be used to correct the original calibration.~\cm{Update at end}
 \end{abstract}
+
+\pacs{04.80.Nn, 95.55.Ym}
+\preprint{LIGO-P15XXXXX}
+
+\maketitle
 
 % acronym definitions
 \acrodef{GW}[GW]{gravitational wave}
@@ -94,16 +94,6 @@ calibration of gravitational wave detector outputs through the use of standard
 \acrodef{AdV}[AdV]{Advanced Virgo}
 \acrodef{PSD}[PSD]{power spectral density}
 \acrodef{MCMC}[MCMC]{Markov chain Monte Carlo}
-
-%Uncomment for PACS numbers title message
-%\pacs{00.00, 20.00, 42.10}
-% Keywords required only for MST, PB, PMB, PM, JOA, JOB? 
-%\vspace{2pc}
-%\noindent{\it Keywords}: Article preparation, IOP journals
-% Uncomment for Submitted to journal title message
-%\submitto{\JPA}
-% Comment out if separate title page not required
-\maketitle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -297,16 +287,16 @@ marginal posterior probability distribution functions (pdf). We use Bayes' theor
 need to define a likelihood function and prior pdfs on the signal parameters being estimated. In 
 this analysis we use the Markov chain Monte Carlo code {\tt emcee} \cite{2013PASP..125..306F} to 
 sample the posterior distribution. We use a Gaussian likelihood function given by
-%
+\begin{widetext}
 \begin{equation}
-\fl p(\bi{d} | \btheta, \vec{\scf}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm 
+p(\bm{d} | \btheta, \vec{\scf}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm 
 det}}
   \sum_{i=i_{f_{\rm low}}}^{i_{f_{\rm high}}}\frac{\Re{\left\{ \tilde{d}^{*}_{k,i} 
 \scf_{k}\gws_{k,i}(\btheta) - \frac{1}{2}\left(\scf_k^2 \gws^*_{k,i}(\btheta)\gws_{k,i}(\btheta) + 
 \tilde{d}^*_{k,i}\tilde{d}_{k,i}\right) \right\}}}{S_{k,i}}\right]}
 \end{equation}
-% 
-where $\bi{d}$ is an array containing the data for all detectors, $\Delta f$ is the frequency 
+\end{widetext}
+where $\bm{d}$ is an array containing the data for all detectors, $\Delta f$ is the frequency 
 resolution, $S_k$ is the $k^{\rm th}$ detector's measured one sided noise \ac{PSD} (and as such 
 will contain the effect of the calibration scale factor), and the $i$ indices increment over 
 frequency with $i_{f_{\rm low}}$ and $i_{f_{\rm high}}$ corresponding to the lower 
@@ -446,7 +436,7 @@ line within each box gives the median value and the star gives the mean value. A
 plot as the dashed magenta line is the percentage of signals drawn from the prior distribution that 
 fulfil the detection criterion.
 
-\begin{figure}
+\begin{figure*}
  \begin{center}
   \includegraphics[width=1.0\textwidth]{bns_post_fig.pdf}
  \end{center}
@@ -455,9 +445,9 @@ fulfil the detection criterion.
 (H1, L1 and V1). The injected signal was at a distance of 250\,Mpc, had \ac{SNR} of 8.7, 10.9 and 
 4.1 and percentage uncertainties in the calibration scale factors of 14\%, 11\% and 27\% for each 
 of the detectors respectively.}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
  \begin{center}
   \includegraphics[width=1.0\textwidth]{nsbh_post_fig.pdf}
  \end{center}
@@ -466,9 +456,9 @@ of the detectors respectively.}
 (H1, L1 and V1). The injected signal was at a distance of 450\,Mpc, had \ac{SNR} of 7.7, 10.9 and 
 4.2 and percentage uncertainties in the calibration scale factors of 17\%, 14\% and 34\% for each of 
 the detectors respectively.}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
  \begin{center}
   \includegraphics[width=1.0\textwidth]{scale_factor.pdf}
  \end{center}
@@ -478,9 +468,9 @@ a coincident \ac{GRB} is observed and can yield a distance estimate). The boxplo
 to upper quartile range of the distributions, with the median value shown as a horizontal line 
 within the box and the mean shown as a star. The dashed magenta line shows the percentage of source 
 drawn from the prior distribution that would be detectable at each distance value.}
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+\begin{figure*}
  \begin{center}
   \includegraphics[width=1.0\textwidth]{scale_factor_nsbh.pdf}
  \end{center}
@@ -488,7 +478,7 @@ drawn from the prior distribution that would be detectable at each distance valu
 scale factors can be determined for a three detector network if assuming \ac{NSBH} systems 
 (provided a coincident \ac{GRB} is observed and can yield a distance estimate). The plot contents 
 are the same as in figure~\ref{fig:bnsresults}.}
-\end{figure}
+\end{figure*}
 
 In figure~\ref{fig:bnsresults} we see that on average the scale factor can be recovered to 
 equivalent precision in both \ac{aLIGO} detectors, as would be expected, with uncertainties 
@@ -596,16 +586,12 @@ the method described in \cite{2013PhRvD..88h4044L}, may provide a natural way to
 analysis. Indeed these methods, and those of \cite{Vitale:2012} are already being used for 
 marginalising over calibration uncertainties, but do not attempt to estimate it.
 
-\ack
+\acknowledgements
 
 We would like to acknowledge the useful discussions with a whole bunch of people. LW was part 
 funded for this work through a Royal Astronomical Society Undergraduate Research Bursary.
 MP is funded by the STFC under grant number ST/L000946/1.
 
-\section*{References}
-
-%\biaxbliographystyle{jphysicsB}
-\bibliographystyle{iopart-num}
 \bibliography{masterbib}
 \end{document}
 
