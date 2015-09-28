@@ -29,7 +29,7 @@ superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
 \newcommand{\gws}{\tilde{h}}
 \newcommand{\scf}{\ensuremath{\mathcal{C}}}
 
-\newcommand{\btheta}{\mathbf{\theta}}
+\newcommand{\btheta}{\bm{\theta}}
 
 %% ----- input git-version tag
 \input{tag.tex}
@@ -138,8 +138,8 @@ In this paper we investigate the feasibility of this approach for single coincid
 Sec.~\ref{sec:calibration} we briefly summarize the existing experimental technique for \ac{GW} 
 detector calibration and its expected accuracy.  We then review the concept of \ac{GW} standard 
 sirens and their proposed coincident \ac{EM} signatures, the \acp{sGRB} in
-Secs.~\ref{sec:sirens} and~\ref{sec:GRB}. In Sec.~\ref{sec:cosmo} we show the likely accuracy of 
-\ac{sGRB} distances obtained from their host galaxy redshift and in Sec.~\ref{sec:discussion} we 
+Secs.~\ref{sec:sirens} and~\ref{sec:GRB}. In Secs.~\ref{sec:analysis} and \ref{sec:results} we 
+discuss out analysis method and the results, and in Sec.~\ref{sec:discussion} we 
 conclude.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,14 +147,15 @@ conclude.
 \section{Gravitational wave detector calibration\label{sec:calibration}}
 
 The technique used throughout \ac{GW} research in calibrating the detectors is carried out through 
-a complicated system of physical manipulations of the Fabret-Perot Michelson interferometer; where 
+a complicated system of physical manipulations of the Fabry-P\'{e}rot Michelson interferometer; 
+where 
 an elaborate feedback system is used to sustain a defined measurement in arm length difference 
 between the moving mirrors. A comprehensive description of the calibration procedure (in particular 
 for the LIGO detectors during their fifth science run) can be found in \cite{2010NIMPA.624..223A}, 
 and a brief description is giving in \cite{Vitale:2012} and references therein. For \ac{aLIGO} 
 and \ac{AdV}, at the frequency range used in this project, the error in the amplitude calibration 
 using the `hardware injection method' is roughly $10\%$ \cite{Vitale:2012}. This is a benchmark set 
-for the error estimation using the proposed new method in this project.
+for the error estimation using the proposed method in this project.
 
 % Describe our model for the calibration
 The \ac{GW} strain is measured through the differential arm length, $\Delta L$, changes of the 
@@ -166,7 +167,7 @@ This relation is known as the length response function, $R(f)$, defined such tha
 \end{equation}
 where where we assume $R$ varies only slowly in time (in comparison to transient signal 
 time-scales). Calculation of $R$ requires the measurement of various functions within a control 
-feedback loop (see \cite{2010NIMPA.624..223A}, which are subject to uncertainties. In this 
+feedback loop (see \cite{2010NIMPA.624..223A}), which are subject to uncertainties. In this 
 study we will assume an estimate of $R$ is available (although in theory we could take on the role 
 of estimating $R$ itself), but that it differs from the truth through some unknown scale factor, 
 $\scf$, so that
@@ -176,7 +177,7 @@ $\scf$, so that
 where $h(f)$ is the true strain and $h_{\rm m}(f)$ is the measured strain. With this definition it
 means that if $\scf > 1$ then a signal would appear to have a larger amplitude (e.g.\ be 
 closer) than in reality\footnote{However, the \ac{SNR} would be the correct value as the signal and 
-the noise will both contain the scale factor}, whereas if $\scf < 1$ it would appear to have a 
+the noise will both contain the scale factor.}, whereas if $\scf < 1$ it would appear to have a 
 lower amplitude than reality. In this analysis we will simplify the situation by assuming that 
 $\scf$ is a constant with respect to frequency, but in future studies that assumption could be 
 dropped and $\scf$ could take some functional form, or piece-wise fit, with respect to $f$ (e.g.\ 
@@ -191,7 +192,7 @@ in a similar way to the method of \cite{2013PhRvD..88h4044L} used for fitting di
 The idea of \ac{GW} standard sirens is directly analogous to the concept of
 standard candles in \ac{EM} astronomy and was first proposed
 in~\cite{1986Natur.323..310S}. Unlike the primary \ac{EM} standard candle
-event, Type 1a Supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
+event, Type Ia Supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
 not only a function of distance. It also depends upon the chirp mass (a
 function of the component masses) and the binary orientation with respect to
 the detector network. However, measurement of the phase evolution of such an
@@ -209,7 +210,7 @@ on the expected level of beaming in the \ac{sGRB} emission.
 % The classic use of sirens
 Standard sirens are clearly a very powerful tool for \ac{GW} cosmology since
 they give us a direct measure of the absolute luminosty distance to sources.
-This is distinct from Type 1a Supernovae standard candles that only provide
+This is distinct from Type Ia Supernovae standard candles that only provide
 relative luminosty distance measures and require calibration via other methods
 as part of the cosmological distance ladder. At first sight the missing
 component for standard sirens is a complementary measurement of the source
@@ -217,7 +218,7 @@ redshift which would allow each event to inform the distance-redshift
 relationship and hence obtain cosmological parameter estimates.  However, it
 was not thought possible (until recently) that redshift measurements could be
 obtained from \ac{GW} observations. In~\cite{DelPozzo:2011uf} (building on the
-original idea proposed in~\cite{1986Natur.323..310S} the idea of identifying
+original idea proposed in~\cite{1986Natur.323..310S}) the idea of identifying
 host galaxies within the sky position uncertainty region was developed. Each
 galaxy would provide a redshift measure and would contribute to a disparate mix
 of possible cosmological parameters. However, by combining multiple (${\sim}20$)
@@ -262,14 +263,14 @@ combining these issues in future analyses.
 % what are sGRBs 
 It is believed that \acp{sGRB} (those \acp{GRB} with duration ${<}2$ sec) are
 emitted during the merger of
-\acp{BNS}~\cite{1989Natur.340..126E},~\cite{1992ApJ...395L..83N}. The emmission
+\ac{BNS} or \ac{NSBH} systems ~\cite{1989Natur.340..126E,1992ApJ...395L..83N}. The emission
 from these events is highly beamed along the binary rotation axis and hence
-only potentially observable for a fraction of \ac{BNS} mergers. If the event
+only potentially observable for a fraction of the mergers. If the event
 exhibits an optical afterglow then the host galaxy can be identified from which
 a redshift can be obtained.  The fraction of events with associated redshifts
 is ${\sim}1/3$. The range to which the \emph{Swift} \ac{XRT} has detected
 \acp{sGRB} is $z{\sim}2$ and the nearest event with associated redshift is at
-$z{sim}0.1$~\cite{2015GCN..17278...1C} which is approximately equal to the
+$z{\sim}0.1$~\cite{2015GCN..17278...1C} which is approximately equal to the
 horizon range of the advanced \ac{GW} detector network.    
 
 % discuss joint-event rates
@@ -295,18 +296,19 @@ trigger lists with known \ac{sGRB} events.  The likelihood of being able to foll
 events using gamma-ray telescopes with low enough latency to catch a \ac{sGRB} is low.  Compounding 
 this issue is the relatively large \ac{GW} sky error-box giving a field-of-view for the \ac{EM} 
 observatories to search spanning $\sim 100$'s of square degrees~\cite{grb}.  For the \ac{GW} 
-follow-up of \ac{sGRB} scenario the merger time for \ac{BNS} systems will be estimated from the 
-\ac{sGRB} to within a few seconds~\cite{grb}.  This makes the follow-up search less computationally
-expensive since it is performed over a smaller range of data using potentially fewer numbers of 
-waveform templates.  This computational saving enables the use of a more computationally expensive 
-multi-detector coherent scheme rather than the cheaper coincidence methods used in the untargeted 
-searches. 
+follow-up of \ac{sGRB} scenario the merger time for \ac{BNS}/\ac{NSBH} systems will be estimated 
+from the \ac{sGRB} to within a few seconds~\cite{grb}.  This makes the follow-up search less 
+computationally expensive since it is performed over a smaller range of data using potentially 
+fewer numbers of waveform templates.  This computational saving enables the use of a more 
+computationally expensive multi-detector coherent scheme rather than the cheaper coincidence 
+methods used in the untargeted searches. 
 
 % discuss the inclination angle issue
 A fortunate consequence of a joint \ac{GW}--\ac{sGRB} observation will be the fact that in order 
-for such an event to be observed, the \ac{BNS} system must have had its orbital angular momentum 
-vector pointing towards (or away) from the detector.  The actual inclination angle of the system, 
-defined as the angle between the orbital angular momentum vector and the line of sight, must be $<$
+for such an event to be observed, the \ac{BNS}/\ac{NSBH} system must have had its orbital angular 
+momentum vector pointing towards (or away) from the detector.  The actual inclination angle of the 
+system, defined as the angle between the orbital angular momentum vector and the line of sight, 
+must be $<$
 half of the \ac{sGRB} beaming angle.  This prerequisite property limits us to systems that are 
 approximately ``face-on'' and therefore biases us to higher \ac{SNR} signals.  However, as 
 discussed earlier, the property of beaming severely impacts the probable rate of such joint 
@@ -315,7 +317,7 @@ observations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Analysis}
+\section{Analysis}\label{sec:analysis}
 
 We want to assess how well the calibration scale factor defined in Eqn.~\ref{eq:scalefactor} can be 
 estimated from a single observed \ac{GW} associated with a particular \ac{sGRB}. As we {\it a 
@@ -367,9 +369,9 @@ We consider that the measured data in any detector is defined as
   \tilde{d}_{k}(f)=\scf_{k}(\tilde{n}_{k}(f)+\gws_{k}(f,\btheta))
 \end{equation}
 %
-where $\tilde{n}(f)$ is the Fourier transform of the true (in our case Gaussian) strain noise drawn 
-from a, $\btheta$ is the set of waveform parameters and $\scf_k$ is the calibration scale factor for 
-the $k^{\rm th}$ detector.
+where $\tilde{n}(f)$ is the Fourier transform of the true (in our case Gaussian) strain noise, 
+$\btheta$ is the set of waveform parameters and $\scf_k$ is the calibration scale factor for 
+the $k^{\rm th}$ detector, which we want to estimate.
 
 \subsection{Method}
 
@@ -380,7 +382,7 @@ this analysis we use the Markov chain Monte Carlo code {\tt emcee} \cite{2013PAS
 sample the posterior distribution. We use a Gaussian likelihood function given by
 \begin{widetext}
 \begin{equation}
-p(\bm{d} | \btheta, \vec{\scf}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm 
+p(\bm{d} | \btheta, \bm{\scf}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm 
 det}}
   \sum_{i=i_{f_{\rm low}}}^{i_{f_{\rm high}}}\frac{\Re{\left\{ \tilde{d}^{*}_{k,i} 
 \scf_{k}\gws_{k,i}(\btheta) - \frac{1}{2}\left(\scf_k^2 \gws^*_{k,i}(\btheta)\gws_{k,i}(\btheta) + 
@@ -395,7 +397,7 @@ and upper range in frequencies used for our analysis, which were 20\,Hz to 400\,
 This frequency range was chosen as the vast majority of the \ac{SNR} for the inspiralling signals 
 we use can be found within this range, so going to lower or higher frequencies provides very little 
 additional information. The source parameters have been subsumed into a vector $\btheta$ and the 
-calibration scale factors are within the vector $\vec{\scf}$.
+calibration scale factors are within the vector $\bm{\scf}$.
 
 \subsubsection{Prior ranges}\label{sec:priors}
 
@@ -447,7 +449,7 @@ Finally, we require a prior on the calibration scale factors for each detector. 
 assumption that in general the calibration applied to the detector data will be correct, so want to 
 use a prior that is peaked at unity. We also assume that the probability density that the 
 calibration scale factor is either larger or smaller than unity by an equivalent factor, e.g.\ 
-$s=10$ or $s=0.1$, is the same. For the scale factor for each detector we we therefore use a 
+$\scf=10$ or $\scf=0.1$, is the same. For the scale factor for each detector we we therefore use a 
 log-normal distribution as our prior
 \begin{equation}
  p(\scf|I) = \frac{1}{\scf\sigma\sqrt{2\pi}}\exp{\left( -\frac{(\ln{\scf} - \mu)^2}{2\sigma^2} 
@@ -469,8 +471,8 @@ range of distances (50\,Mpc to 500\,Mpc with 50\,Mpc increments for the \ac{BNS}
 two \ac{aLIGO} detectors (H1 and L1) and the \ac{AdV} detector (V1). The simulations were all 
 performed in the frequency domain and spanned a frequency range from 20\,Hz to 400\,Hz. We assumed
 all detectors were operating at their design sensitivity (as given by Figure~1 of 
-\cite{2013arXiv1304.0670L}). As such we added noise to each simulation based on the sensitivity 
-curve, but scaled with the associated calibration scale factor.
+\cite{2013arXiv1304.0670L}). As such we added coloured Gaussian noise to each simulation based on 
+the sensitivity curve, but scaled with the associated calibration scale factor.
 
 % Describe the ensemble of simulations used
 Separately for the \ac{BNS} and \ac{NSBH} systems we have performed a large number simulations at 
@@ -515,11 +517,11 @@ on the calibration scale factors for each detector. Examples of the marginalised
 probabilities for a \ac{BNS} system and a \ac{NSBH} system observed with the three detector network 
 are shown in figures~\ref{fig:bnspost} and \ref{fig:nsbhpost} respectively.
 
-From these posterior distributions we have calculated the minimal 68\% credible region on the 
+From these posterior distributions we have calculated the minimal 68\% credible region for the 
 calibration scale factors for each detector (if these were Gaussian distributions this is 
 equivalent to the region either side of the mean bounded by the $1\sigma$ intervals). For all the 
 signals at each distance increment we have produced the distribution of the fractional half widths 
-(i.e.\ $1\sigma$) of these scale factors' confidence intervals compared to the actual value. These 
+(i.e.\ $1\sigma$) of these scale factors' confidence intervals compared to the true value. These 
 are shown as boxplots in figures~\ref{fig:bnsresults} and \ref{fig:nsbhresults} for the \ac{BNS} 
 and \ac{NSBH} systems respectively. The boxes show the extent from the lower to upper quartile of 
 the values, whilst the whiskers extend from the 5$^{\rm th}$ to 95$^{\rm th}$ percentile. The black 
@@ -591,7 +593,7 @@ recovering the calibration scale factors are indeed very similar to the simple a
 would be given by $\sim 1/{\rm SNR}$, i.e.\ at the upper end of the distribution the \ac{SNR} in 
 the two \ac{aLIGO} detectors will be $\sim 5.5$, which would be expected to produce uncertainties 
 of $\lesssim 20\%$. Our results are probably slightly poorer than the \ac{SNR} expectation due to 
-their still be correlations with $\iota$ even within the constrained prior range, and slight 
+their still being correlations with $\iota$ even within the constrained prior range, and slight 
 correlations between the scale factors for H1 and L1 as seen in figure~\ref{fig:bnspost}.
 
 In figure~\ref{fig:nsbhresults} we see very similar results for the \ac{NSBH} systems although the 
@@ -604,7 +606,7 @@ convergence of the \ac{MCMC} take longer and means we have fewer independent sam
 the posterior distributions with. This leads to a larger statistical fluctuation on the results. 
 The second factor is that there appears to be a modest effect due to the population of sources that 
 are detectable. For distances at which the \ac{BNS} and \ac{NSBH} systems would give the same 
-percentage of observable sources there is a slight increase in the mean and standard distribution 
+percentage of observable sources there is a slight increase in the mean and standard deviation 
 of \acp{SNR} of the \ac{NSBH} systems over the \ac{BNS} systems.
 
 As noted previously the mass distribution for the black holes could be quite different from the one 
@@ -615,17 +617,16 @@ Including the merger and ring-down phase, which we currently ignore, may also he
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Distance estimates from \acp{sGRB}\label{sec:cosmo}}
+%\section{Distance estimates from \acp{sGRB}\label{sec:cosmo}}
 
-~\cm{Describe the cosmological analysis used to obtain the distance from the
-GRB}
+%~\cm{Describe the cosmological analysis used to obtain the distance from the GRB}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Multiple events without counterpart\label{sec:multiple}}
+%\section{Multiple events without counterpart\label{sec:multiple}}
 
-\cm{A discussion of the issues regarding multiple events
-without EM counterparts.}
+%\cm{A discussion of the issues regarding multiple events
+%without EM counterparts.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -634,16 +635,16 @@ without EM counterparts.}
 We have attempted to see how well we can assess the detector calibration for \ac{aLIGO} and 
 \ac{AdV} using astrophysical sources. To do this we require that a \ac{sGRB}, for which it has 
 been possible to measure the distance, is observed in coincidence with a \ac{CBC} signal in the 
-\ac{GW} detectors. This enables us to assume a known distance to the source, and also limit the 
-inclination of the source, which in turn allows us to test the consistency of the detector 
-calibration. We do this by including an unknown scale factor on the true signal and noise, which we 
-estimate given the data. We find that for detectable \ac{BNS} sources the uncertainty of on the 
-calibration scale factor could on average be determined to $\lesssim 10\%$ of its true value for the 
-\ac{aLIGO} and \ac{AdV} detectors out to 100\,Mpc. This is comparable to the hoped for level of 
-calibration accuracy of the detectors. For sources at the standard single detector \ac{BNS} horizon 
-distance of $\sim 450$\,Mpc the scale factor could on average be determined to within $\lesssim 
-20\%$ of its true value for the \ac{aLIGO} detectors. Similar results were found for \ac{NSBH} 
-sources, although sources could be observed out to higher distances.
+\ac{GW} detectors. This enables us to assume a known distance and sky position for the source, and 
+also limit the inclination of the source, which in turn allows us to test the consistency of the 
+detector calibration. We do this by including an unknown scale factor on the true signal and noise, 
+which we estimate given the data. We find that for detectable \ac{BNS} sources the uncertainty 
+on the calibration scale factor could on average be determined to $\lesssim 10\%$ of its true value 
+for the \ac{aLIGO} and \ac{AdV} detectors out to 100\,Mpc. This is comparable to the hoped for 
+level of calibration accuracy of the detectors. For sources at the standard single detector 
+\ac{BNS} horizon distance of $\sim 450$\,Mpc the scale factor could on average be determined to 
+within $\lesssim 20\%$ of its true value for the \ac{aLIGO} detectors. Similar results were found 
+for \ac{NSBH} sources, although sources could be observed out to higher distances.
 
 The requirement of a coincident \ac{sGRB} with a known distance means that there will be 
 considerable latency for this method of calibration assessment, but importantly this method would 
