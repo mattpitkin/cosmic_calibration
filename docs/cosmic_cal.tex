@@ -94,6 +94,7 @@ calibration of gravitational wave detector outputs through the use of standard
 \acrodef{aLIGO}[aLIGO]{Advanced LIGO}
 \acrodef{AdV}[AdV]{Advanced Virgo}
 \acrodef{PSD}[PSD]{power spectral density}
+\acrodef{PDF}[PDF]{probability distribution function}
 \acrodef{MCMC}[MCMC]{Markov chain Monte Carlo}
 \acrodef{ET}[ET]{Einstein Telescope}
 \acrodef{XRT}[XRT]{x-ray telescope}
@@ -319,47 +320,55 @@ observations.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Analysis}\label{sec:analysis}
 
-We want to assess how well the calibration scale factor defined in Eqn.~\ref{eq:scalefactor} can be 
-estimated from a single observed \ac{GW} associated with a particular \ac{sGRB}. As we {\it a 
-priori} have no knowledge of the likely location and distance of such an event we have performed 
-simulations of multiple events to see the expected distribution in the accuracy of the calibration 
-scale factor recovery.
+% the main aim of the analysis
+The main aim of this work is to assess how well the calibration scale factor
+defined in Eqn.~\ref{eq:scalefactor} can be estimated from a single observed
+\ac{GW} associated with a particular \ac{sGRB}. As we {\it a priori} have
+little knowledge of the likely location and distance of such an event we have
+performed simulations of multiple events to see the expected distribution in
+the accuracy of the calibration scale factor recovery.
 
 % Describe the signal model (Taylor F2 etc...)
-We use the TaylorF2 waveform approximation (see e.g.\ \cite{2009PhRvD..80h4043B} and references 
-therein) with a 3.5 post-Newtonian expansion in phase for modelling our signal (in both simulations 
-and signal recovery).  For \ac{BNS} systems we use non-spinning waveforms under the assumption that 
-spins will be negligible. For \ac{NSBH} system we use a spinning waveform, but in which only the 
-black hole has non-negligible spin and that its rotational angular momentum is aligned with the 
-system's orbital angular momentum.
+We use the TaylorF2 waveform approximation (see e.g.~\cite{2009PhRvD..80h4043B}
+and references therein) with a 3.5 post-Newtonian expansion in phase for
+modelling our signal (in both simulations and signal recovery).  For \ac{BNS}
+systems we use non-spinning waveforms under the assumption that spins will be
+negligible~\cm{ref?}. For \ac{NSBH} system we use a spinning waveform, but in which only
+the black hole has non-negligible spin and that its rotational angular momentum
+is aligned with the system's orbital angular momentum.
 
-For a non-spinning system the general form of the frequency-domain polarisation amplitudes are
+For a non-spinning system the general form of the frequency-domain polarisation
+amplitudes are
 %
-\begin{eqnarray}\label{eq:signal}
-  \gws_{+}(f) &\propto \frac{1+\cos^{2}\iota}{D_{L}}
-\mathcal{M}^{5/6}f^{-7/6}e^{-i\Psi(f, \nu, t_\mathrm{c}, \phi_{\mathrm{c}})} \nonumber \\
-  \gws_{\times}(f) &\propto
- \frac{\cos^{2}\iota}{D_{L}}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \nu, t_\mathrm{c}, 
-\phi_{\mathrm{c}})}
-\end{eqnarray}
+\begin{align}\label{eq:signal} 
+\gws_{+}(f) &\propto
+\left(1+\cos^{2}\iota\right)D_{L}^{-1} \mathcal{M}^{5/6}f^{-7/6}e^{-i\Psi(f,
+\nu, t_\mathrm{c}, \phi_{\mathrm{c}})} \nonumber \\ \gws_{\times}(f) &\propto
+\left(\cos^{2}\iota\right)D_{L}^{-1}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \nu,
+t_\mathrm{c}, \phi_{\mathrm{c}})} 
+\end{align}
 %
-where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$, with 
-$\eta=m_{1}m_{2}/M^{2}$ and $M=m_{1}+m_{2}$, $\iota$ is the inclination angle, and $\nu=(\pi 
-Mf)^{1/3}$.  The \ac{GW} strain measured at the $k^{\rm{th}}$ detector is then given by
+where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$,
+with the symmetric mass ratio $\eta=m_{1}m_{2}/M^{2}$.  The total mass
+$M=m_{1}+m_{2}$ where $m_{1}$ and $m_{2}$ are the component masses, $\iota$ is
+the inclination angle, and $\nu=(\pi Mf)^{1/3}$.  The \ac{GW} strain measured
+at the $k^{\rm{th}}$ detector is then given by
 %
-\begin{equation}
-  \label{eq:gravsig}
-   \gws^{k}(f) = \big[ F_{+}^{k}(\alpha, \delta, \psi)\gws_{+}(f) +
-F_{\times}^k(\alpha, \delta, \psi)\gws_{\times}(f)\big]
+\begin{equation} \label{eq:gravsig} 
+\gws^{k}(f) = \big[ F_{+}^{k}(\alpha,
+\delta, \psi)\gws_{+}(f) + F_{\times}^k(\alpha, \delta,
+\psi)\gws_{\times}(f)\big] 
 \end{equation}
 %
-where $F_{+}$ and $F_{\times}$ are the antenna response functions which are dependent upon the 
-polarisation angle $\psi$ and the sky position of the source $\alpha$ and $\delta$.
+where $F^{k}_{+}$ and $F^{k}_{\times}$ are the antenna response functions which
+are dependent upon the polarisation angle $\psi$ and the sky position of the
+source $\alpha$ and $\delta$.
 
 % Define the detectors and the noise epoch we will be using
-For this analysis we will consider the advanced generation \ac{aLIGO} and \ac{AdV} detectors 
-operating at their design sensitivity, with noise power spectral densities taken from
-\cite{2013arXiv1304.0670L}. The network we consider is the two \ac{aLIGO} detectors (H1 and L1) and 
+For this analysis we will consider the advanced generation \ac{aLIGO} and
+\ac{AdV} detectors operating at their design sensitivity, with noise power
+spectral densities taken from \cite{2013arXiv1304.0670L}. The detector network
+we consider consists of the two \ac{aLIGO} detectors (H1 and L1) and 
 the \ac{AdV} detector (V1). 
 
 % Define the likelihood function we will be using
@@ -369,165 +378,236 @@ We consider that the measured data in any detector is defined as
   \tilde{d}_{k}(f)=\scf_{k}(\tilde{n}_{k}(f)+\gws_{k}(f,\btheta))
 \end{equation}
 %
-where $\tilde{n}(f)$ is the Fourier transform of the true (in our case Gaussian) strain noise, 
-$\btheta$ is the set of waveform parameters and $\scf_k$ is the calibration scale factor for 
-the $k^{\rm th}$ detector, which we want to estimate.
+where $\tilde{n}(f)$ is the Fourier transform of the true (in this case
+Gaussian) strain noise, $\btheta$ is the set of waveform parameters and
+$\scf_k$ is the calibration scale factor for the $k^{\rm th}$ detector, the
+parameters we are interested in estimating.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Method}
 
-To assess the ability to estimate the unknown calibration scale factors we want to calculate their 
-marginal posterior probability distribution functions (pdf). We use Bayes' theorem for which we 
-need to define a likelihood function and prior pdfs on the signal parameters being estimated. In 
-this analysis we use the Markov chain Monte Carlo code {\tt emcee} \cite{2013PASP..125..306F} to 
-sample the posterior distribution. We use a Gaussian likelihood function given by
+% Introduce the Bayesian approach and the likelihood
+To assess the ability to estimate the unknown calibration scale factors we
+calculate their marginal posterior \acp{PDF}.  We use Bayes' theorem for which
+we need to define a likelihood function and prior \acp{PDF} on the signal
+parameters and the calibration scale factors. In this analysis we use the
+\ac{MCMC} code {\tt emcee}~\cite{2013PASP..125..306F} to sample
+the posterior distribution. We use a Gaussian likelihood function given by
+%
 \begin{widetext}
 \begin{equation}
 p(\bm{d} | \btheta, \bm{\scf}, \curlH, I) \propto \exp{\left[4\Delta f \sum_{k=1}^{N_{\rm 
 det}}
-  \sum_{i=i_{f_{\rm low}}}^{i_{f_{\rm high}}}\frac{\Re{\left\{ \tilde{d}^{*}_{k,i} 
+  \sum_{i=i_{\rm low}}^{i_{\rm high}}\frac{\Re{\left\{ \tilde{d}^{*}_{k,i} 
 \scf_{k}\gws_{k,i}(\btheta) - \frac{1}{2}\left(\scf_k^2 \gws^*_{k,i}(\btheta)\gws_{k,i}(\btheta) + 
 \tilde{d}^*_{k,i}\tilde{d}_{k,i}\right) \right\}}}{S_{k,i}}\right]}
 \end{equation}
 \end{widetext}
-where $\bm{d}$ is an array containing the data for all detectors, $\Delta f$ is the frequency 
-resolution, $S_k$ is the $k^{\rm th}$ detector's measured one sided noise \ac{PSD} (and as such 
-will contain the effect of the calibration scale factor), and the $i$ indices increment over 
-frequency with $i_{f_{\rm low}}$ and $i_{f_{\rm high}}$ corresponding to the lower 
-and upper range in frequencies used for our analysis, which were 20\,Hz to 400\,Hz respectively. 
-This frequency range was chosen as the vast majority of the \ac{SNR} for the inspiralling signals 
-we use can be found within this range, so going to lower or higher frequencies provides very little 
-additional information. The source parameters have been subsumed into a vector $\btheta$ and the 
-calibration scale factors are within the vector $\bm{\scf}$.
+%
+where $\bm{d}$ is an array containing the data for all detectors, $\Delta f$ is
+the frequency resolution, $S_k$ is the $k^{\rm th}$ detector's estimated
+one-sided noise \ac{PSD} (and as such will contain the effect of the
+calibration scale factor), and the $i$ indices increment over frequency with
+$i_{\rm low}$ and $i_{\rm high}$ corresponding to the lower and upper range in
+frequencies used for our analysis, which were 20\,Hz to 400\,Hz respectively.
+This frequency range was chosen as the vast majority of the \ac{SNR} for the
+inspiralling signals we use can be found within this range, so going to lower
+or higher frequencies provides very little additional information. The source
+parameters have been subsumed into a vector $\btheta$ and the calibration scale
+factors are within the vector $\bm{\scf}$.
 
 \subsubsection{Prior ranges}\label{sec:priors}
 
-The primary reason why we can use coincident observations with a \ac{sGRB} as a check of detector 
-calibration is that the \ac{sGRB} allows us to constrain the priors on various parameters that 
-would normally be highly correlated with the signal amplitude. The most important of these is 
-that the \ac{sGRB} can provide a very tight constraint on the source distance\footnote{For \ac{BNS} 
-and \ac{NSBH} systems they will be observable only in the relatively nearby Universe ($z \sim 
-0.1$ and $z\sim 0.2$ for \ac{BNS} and \ac{NSBH} systems respectively), so the relation between the 
-measured \ac{sGRB} redshift and distance is simple and our luminosity distance will be negligibly 
-effected by the choice of cosmology \MP{Check this?}.}. In this analysis we therefore assume that 
-the source distance is known (i.e.\ has a $\delta$-function prior). Another piece of information 
-that we can use from having a coincident \ac{sGRB} is that the system is likely to be relatively 
-close to face-on (and therefore nearly circularly polarised), which allows us to place prior 
-constraints on the system inclination angle. Beam opening angles for \acp{sGRB} are relatively 
-poorly constrained as they are based on only a few jet break detections, however 
-\cite{2014ApJ...780..118F} give a median opening angle value of $\sim 10^{\circ}$. If we assume 
-that the beam opening angle is a half-normal distribution, for which the median is given by 
-$\sqrt{2}\erf{}^{-1}(1/2)\sigma \sim 0.67\sigma$, then a median of $\sim 10^{\circ}$ corresponds to 
-$\sigma \sim 14.8^{\circ}$. We therefore place a Gaussian prior on the inclination angle with zero 
-mean and $\sigma=14.8^{\circ}$.
+% mention of distance delta function prior
+The primary reason why coincident observations with a \ac{sGRB} can be used as
+a check of detector calibration is that the \ac{sGRB} allows us to constrain
+the priors on various parameters that would normally be highly correlated with
+the signal amplitude. The most important of these is that the \ac{sGRB} can
+provide a very tight constraint on the source distance\footnote{For \ac{BNS}
+and \ac{NSBH} systems they will be observable only in the relatively nearby
+Universe ($z \sim 0.1$ and $z\sim 0.2$ for \ac{BNS} and \ac{NSBH} systems
+respectively), so the relation between the measured \ac{sGRB} redshift and
+distance is simple and our luminosity distance will be negligibly effected by
+the choice of cosmology \MP{Check this?}.}. In this analysis we therefore
+assume that the source distance is known (i.e.\ has a $\delta$-function
+prior).~\cm{Should we not say a little bit more about this? A really accurate
+distance from a really accurate redshift is only as good as the Hubble constant
+which currently has $\sim$ few percent error?  We should also say something
+about peculiar motion.}
 
-Our prior on the system component masses is dependent on whether we are considering the source 
-being a \ac{BNS} system or a \ac{NSBH}. For the former case the prior we use is a Gaussian 
-distribution for both components with means of $1.35\,\textrm{M}_{\odot}$ and standard deviations 
-of $0.13\,\textrm{M}_{\odot}$ \MP{(reference)}. In reality, for all the systems we use in our 
-study, the chirp mass, which we see from equation~\ref{eq:signal} plays a role in the overall 
-signal amplitude, is very well constrained by the system's phase evolution, so our prior could be 
-expanded with minimal effect on the results. In the case of \ac{NSBH} systems we use the same 
-prior as above for the neutron star, but for the black hole we use a prior based on the 
-canonical masss distribution used for the rate results in \cite{2012PhRvD..85h2002A} with a mean of 
-$5\,\textrm{M}_{\odot}$ and a standard deviation of $1\,\textrm{M}_{\odot}$. We note that the mass 
-range of black holes could be quite different from this, but use this range as an example for this 
-type of system. For the \ac{NSBH} systems we also require a prior on the black hole spin (for 
-\ac{BNS} systems we have assumed that the spins are small enough that they will be negligible). We 
-use a uniform prior on the normalised aligned spin magnitude between $-1$ and $1$.
+% discuss the inclination and opening angle
+Other information relevant for a coincident \ac{sGRB} is that the system is
+likely to be relatively close to face-on (and therefore nearly circularly
+polarised), which allows us to place prior constraints on the system
+inclination angle. Beam opening angles for \acp{sGRB} are relatively poorly
+constrained as they are based on only a few jet-break detections. A comparative
+study of estimates and lower-limits of opening angles in 13 \acp{sGRB} given
+in~\cite{2014ApJ...780..118F} provide a median opening angle value of $\sim
+10^{\circ}$. We assume that the beam opening angle is a half-normal
+distribution, for which the median is given by $\sqrt{2}\erf{}^{-1}(1/2)\sigma
+\sim 0.67\sigma$. It follows that the median of a $\sim 10^{\circ}$ opening
+angle corresponds to $\sigma \sim 14.8^{\circ}$. We therefore place a Gaussian
+prior on the inclination angle with zero mean and a standard deviation
+$\sigma=14.8^{\circ}$ truncated at values below zero.
 
-The final important piece of information that we can make use of from the \ac{sGRB} observation is 
-the sky position of the source, which we take to be known precisely.
+% discuss the component mass and spin priors 
+The prior on the system component masses is dependent on whether we are
+considering the source being a \ac{BNS} system or a \ac{NSBH}. For the former
+case the prior we use is a Gaussian distribution for both components with means
+of $1.35\,\textrm{M}_{\odot}$ and standard deviations of
+$0.13\,\textrm{M}_{\odot}$ \MP{(reference)}. In reality, for all the systems we
+use in our study, the chirp mass, which we see from Eq.~\ref{eq:signal}
+plays a role in the overall signal amplitude, is very well constrained by the
+system's phase evolution, so our prior could be expanded with minimal effect on
+the results. In the case of \ac{NSBH} systems we use the same prior as above
+for the neutron star, but for the black hole we use a prior based on the
+canonical masss distribution used for the rate results in
+\cite{2012PhRvD..85h2002A} with a mean of $5\,\textrm{M}_{\odot}$ and a
+standard deviation of $1\,\textrm{M}_{\odot}$. We note that the mass range of
+black holes could be quite different from this, but use this range as an
+example for this type of system. For the \ac{NSBH} systems we also require a
+prior on the black hole spin (for \ac{BNS} systems we have assumed that the
+spins are small enough that they will be negligible). We use a uniform prior on
+the normalised aligned spin magnitude between $-1$ and $1$.
 
-For the time of coalescence we use a uniform prior of spanning $\pm0.01$\,seconds around the 
-recorded time of the signal that would be returned by the detection pipeline. For the reference 
-phase a uniform prior between 0 and $\pi$ is used, and for the polarisation angle a uniform prior 
-between 0 and $\pi/2$ is used. As the signals we use are generally close to being circularly 
-polarised (face-on) the phase and polarisation angle will be degenerate meaning the exact 
-combination of them will have very little effect of the result.
+% discuss the known sky position
+The final important piece of information that we can make use of from the
+\ac{sGRB} observation is the sky position of the source. We assume that this is 
+known precisely and has been obtained, in conjunction with the source redshift,
+from the identification of the host galaxy. 
 
-Finally, we require a prior on the calibration scale factors for each detector. We make the 
-assumption that in general the calibration applied to the detector data will be correct, so want to 
-use a prior that is peaked at unity. We also assume that the probability density that the 
-calibration scale factor is either larger or smaller than unity by an equivalent factor, e.g.\ 
-$\scf=10$ or $\scf=0.1$, is the same. For the scale factor for each detector we we therefore use a 
-log-normal distribution as our prior
-\begin{equation}
+% discuss the nuisance parameters
+For the time of coalescence $t_{\mathrm{c}}$ we use a uniform prior spanning
+$\pm0.01$\,seconds around the recorded time of the signal that would be
+returned by the \ac{GW} detection pipeline. For the reference phase
+$\phi_{\mathrm{c}}$ a uniform prior on the range $(0,\pi]$ is used, and for the
+polarisation angle we use a uniform prior on the range $(0,\pi/2]$. As the
+signals we use are generally close to being circularly polarised (face-on) the
+phase and polarisation angle will be largely degenerate and their exact
+combination will have little effect on the result.
+
+% the scale factor prior
+Finally, we require a prior on the calibration scale factors for each detector.
+We make the assumption that in general the calibration applied to the detector
+data will be correct, so want to use a prior that is peaked at $\scf_k=1$. We
+also assume that the prior \ac{PDF} of the calibration scale factor is either
+larger or smaller than unity by an equivalent factor, e.g.\ $p(\scf|I)=10$ is
+equivelent to $p(\scf|I)=0.1$. For the scale factor in each detector we 
+therefore use the following log-normal distribution as our prior
+%
+\begin{equation}\label{eq:scale_prior}
  p(\scf|I) = \frac{1}{\scf\sigma\sqrt{2\pi}}\exp{\left( -\frac{(\ln{\scf} - \mu)^2}{2\sigma^2} 
 \right)},
 \end{equation}
-where we chose $\sigma = 1.07$, which in turn means that having the mode at unity gives $\mu = 
-1.15$. With these parameters the prior probability density at 0.1 and 10 is one tenth of that at 
-1. Note that this prior does not give a symmetric amount of probability about unity, but given our 
-simulation criterion described below in Section~\ref{sec:simulations} we find that the likelihood 
-generally overwhelms the prior. As $\scf$ is a scale factor we also have the further constraint 
-that it must be positive.
+%
+where we chose $\sigma = 1.07$, which together with the requirement that the
+mode is at unity gives $\mu = 1.15$. With these parameters the prior
+probability density at 0.1 and 10 is one tenth of that at 1. Note that this
+prior does not give a symmetric amount of probability about unity, but given
+our simulation criterion described in Section~\ref{sec:simulations} we find
+that the likelihood generally overwhelms the prior~\cm{I'm not sure about this
+sentence.  Why does the symmetry matter?}. As $\scf$ is a scale factor we also
+have the further constraint that it must be positive and hence the log-normal
+prior is a natural choice.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulations}\label{sec:simulations}
 
-To estimate how well we can constrain the calibration scaling for each detector in an advanced 
-detector network we have performed simulations with injected \ac{BNS} and \ac{NSBH} signals at a 
-range of distances (50\,Mpc to 500\,Mpc with 50\,Mpc increments for the \ac{BNS} signals and 
-100\,Mpc to 900\,Mpc with 100\,Mpc increments for the \ac{NSBH} signals). The simulations used the 
-two \ac{aLIGO} detectors (H1 and L1) and the \ac{AdV} detector (V1). The simulations were all 
-performed in the frequency domain and spanned a frequency range from 20\,Hz to 400\,Hz. We assumed
-all detectors were operating at their design sensitivity (as given by Figure~1 of 
-\cite{2013arXiv1304.0670L}). As such we added coloured Gaussian noise to each simulation based on 
-the sensitivity curve, but scaled with the associated calibration scale factor.
+% a general description of the simulations 
+To estimate how well the calibration scaling can be constrained for each
+detector in an advanced detector network we have performed simulations with
+injected \ac{BNS} and \ac{NSBH} signals. These signal injections were simulated
+at a range of distances: 50\,Mpc to 500\,Mpc with 50\,Mpc increments for the
+\ac{BNS} signals and 100\,Mpc to 900\,Mpc with 100\,Mpc increments for the
+\ac{NSBH} signals. The simulations used the two \ac{aLIGO} detectors (H1 and
+L1) and the \ac{AdV} detector (V1) and were all performed in the frequency
+domain and spanned a frequency range from 20\,Hz to 400\,Hz~\cm{can you remind
+me and maybe the reader of why a 400 Hz cutoff is OK?}. We assumed all
+detectors were operating at their design sensitivity (as given by Figure~1 of
+\cite{2013arXiv1304.0670L}). As such we added coloured Gaussian noise to each
+simulation based on the sensitivity curve, but scaled with the associated
+calibration scale factor.
 
 % Describe the ensemble of simulations used
-Separately for the \ac{BNS} and \ac{NSBH} systems we have performed a large number simulations at 
-each distance value. When proposing injections for each simulation the source parameters were 
-randomly drawn from the prior distributions given in Section~\ref{sec:priors}, with the sky 
-position being drawn randomly from a uniform distribution on the sky, the coalescence times held 
-fixed within the centre of the prior window, and with the calibration scaling factors for each 
-detector drawn from a Gaussian distribution with a mean of one and standard deviation of $0.125$ 
-(equivalent to a mean fractional offset of 10\%). However, in accepting a proposed injection as one 
-to be analysed 
-we introduced a criteria that the signal be ``detectable'', based on that used in 
-\cite{2012PhRvD..85h2002A} of it having an \ac{SNR} of $\geq 5.5$ in at least two detectors (as 
-these would be signals coincident with a \ac{sGRB} we do not include the often used further 
-constraint that the total coherent network \ac{SNR} is greater than 12). This criteria means that 
-at larger distances our population of injected sources was not uniformly distributed over the sky, 
-and were generally closer to being circularly polarised.
+Separately for the \ac{BNS} and \ac{NSBH} systems we have performed a large
+number~\cm{how many exactly/roughly?} simulations at each distance value. When
+proposing injections for each simulation the source parameters were randomly
+drawn from the prior distributions described in Section~\ref{sec:priors}, with
+the sky position being drawn randomly from a uniform distribution on the sky,
+the coalescence times held fixed within the centre of the prior window, and
+with the calibration scaling factors for each detector drawn from a Gaussian
+distribution with a mean of one and standard deviation of $0.125$ (equivalent
+to a mean fractional offset of 10\%)~\cm{should we explicitly acknowledge that
+we do not simulate from the same priors that we assume in the recovery?}.
+However, in accepting a proposed injection as one to be analysed we introduced
+a criteria that the signal be ``detectable'', based on that used in
+\cite{2012PhRvD..85h2002A}. We therefore only analysed injections that had an
+\ac{SNR} of $\geq 5.5$ in at least two detectors. Since we assume that these
+signals would be coincident with a \ac{sGRB} we do not include the often used
+further constraint that the total coherent network \ac{SNR} is greater than 12.
+For injections close to the \ac{SNR} threshold, the application of the
+threshold resulted in the preferential selection of better oriented systems.
+Therefore, at larger distances the population of injected sources was not
+uniformly distributed over the sky and instead favoured locations with better
+antenna response.  Similarly, despite already constrained by the prior to small
+inclination angles, the accepted injections show preference for sources very
+close to circularly polarised.
 
-These simulations have allowed us to assess how well on average we would be able to constrain the 
-calibration scale for a given \ac{CBC}-\ac{sGRB} coincidence.
+% final clarification on the simulation distribution
+These simulations have allowed us to assess how well on average we would be
+able to constrain the calibration scale for a given detected \ac{CBC}-\ac{sGRB}
+coincidence.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}\label{sec:results}
 
-A simple assumption that one could make would be that the uncertainties on the calibration scale 
-factors (if they are independent of other parameters and have a roughly Gaussian probability 
-distribution) should be given by $\sim 1/{\rm SNR}$ for each detector. As we will show below this 
-assumption is reasonable, but small correlations do exist between parameters meaning that it does 
-not completely hold.
+% a general and simple results statement 
+A simple assumption that one could make would be that the uncertainties on the
+calibration scale factors (if they are independent of other parameters and have
+a roughly Gaussian probability distribution) should be given by $\sim 1/{\rm
+SNR}$ for each detector. As we will show below this assumption is reasonable,
+but small correlations do exist between parameters meaning that it does not
+completely hold.
 
-For each of the simulated sources we have used the {\tt emcee} python \ac{MCMC} package 
-\cite{2013PASP..125..306F} to perform parameter estimation over the unknown source parameters using 
-the priors as discussed in Section~\ref{sec:priors}. In each case when calculating the likelihood 
-we used an estimate of the noise \ac{PSD} based on the advanced detector design sensitivities 
-(using those given in \cite{2013arXiv1304.0670L}), but simulated as if calculated by averaging 64 
-separate noisy \ac{PSD} estimates and scaled with the same factor as applied to the injection and 
-noise\footnote{We do not account for there being a potential difference between the estimated 
-\ac{PSD} and the actual \ac{PSD} of the analysed section of data as described in e.g.\ 
-\cite{2013PhRvD..88h4044L}. This difference would be very highly correlated with the calibration 
-scale factor, so in reality our estimate of the scale factor would be a combination of the
-calibration offset and the difference in the \ac{PSD}. As such our results on real data would be an 
-upper limit on the calibration scale factor.}. This has provided posterior probability distributions 
-on the calibration scale factors for each detector. Examples of the marginalised posterior 
-probabilities for a \ac{BNS} system and a \ac{NSBH} system observed with the three detector network 
-are shown in figures~\ref{fig:bnspost} and \ref{fig:nsbhpost} respectively.
+% a discussion of the PSD estimate
+For each of the simulated sources we have used the {\tt emcee} python \ac{MCMC}
+package~\cite{2013PASP..125..306F} to perform parameter estimation over the
+unknown source parameters using the priors as discussed in
+Section~\ref{sec:priors}. In each case when calculating the likelihood we used
+an estimate of the noise \ac{PSD} based on the advanced detector design
+sensitivities (using those given in~\cite{2013arXiv1304.0670L}), but simulated
+as if calculated by averaging 64 separate noisy \ac{PSD} estimates and scaled
+with the same factor as applied to the injection and noise~\cm{Do you estimate
+the PSD using 64 segments? This sentence might be a bit confusing to the
+reader.}\footnote{We do not account for there being a potential difference
+between the estimated \ac{PSD} and the actual \ac{PSD} of the analysed section
+of data as described in e.g.\ \cite{2013PhRvD..88h4044L}. This difference would
+be very highly correlated with the calibration scale factor, so in reality our
+estimate of the scale factor would be a combination of the calibration offset
+and the difference in the \ac{PSD}. As such our results on real data would be
+an upper limit on the calibration scale factor.~\cm{Even though we're hiding
+this in a footnote is it really this bad. How big is the statistical error on
+PSD estimation using 64 segments?}}. This has provided posterior probability
+distributions on the calibration scale factors for each detector.  Examples of
+the marginalised posterior probabilities for a \ac{BNS} system and a \ac{NSBH}
+system observed with the three detector network are shown in
+figures~\ref{fig:bnspost} and \ref{fig:nsbhpost} respectively.
 
-From these posterior distributions we have calculated the minimal 68\% credible region for the 
-calibration scale factors for each detector (if these were Gaussian distributions this is 
-equivalent to the region either side of the mean bounded by the $1\sigma$ intervals). For all the 
-signals at each distance increment we have produced the distribution of the fractional half widths 
-(i.e.\ $1\sigma$) of these scale factors' confidence intervals compared to the true value. These 
-are shown as boxplots in figures~\ref{fig:bnsresults} and \ref{fig:nsbhresults} for the \ac{BNS} 
-and \ac{NSBH} systems respectively. The boxes show the extent from the lower to upper quartile of 
-the values, whilst the whiskers extend from the 5$^{\rm th}$ to 95$^{\rm th}$ percentile. The black 
-line within each box gives the median value and the star gives the mean value. Also shown on each 
-plot as the dashed magenta line is the percentage of signals drawn from the prior distribution that 
-fulfil the detection criterion.
+% describe the main boxplot results
+From these posterior distributions we have calculated the minimal 68\% credible
+region for the calibration scale factors for each detector (if these were
+Gaussian distributions this is equivalent to the region either side of the mean
+bounded by the $1\sigma$ intervals). For all the signals at each distance
+increment we have produced the distribution of the fractional half widths
+(i.e.\ $1\sigma$) of these scale factors' confidence intervals compared to the
+true value. These are shown as boxplots in figures~\ref{fig:bnsresults} and
+\ref{fig:nsbhresults} for the \ac{BNS} and \ac{NSBH} systems respectively. The
+boxes show the extent from the lower to upper quartile of the values, whilst
+the whiskers extend from the 5$^{\rm th}$ to 95$^{\rm th}$ percentile. The
+black line within each box gives the median value and the star gives the mean
+value. Also shown on each plot as the dashed magenta line is the percentage of
+signals drawn from the prior distribution that fulfil the detection criterion.
 
 \begin{figure*}
  \begin{center}
@@ -537,7 +617,8 @@ fulfil the detection criterion.
  parameters of a \ac{BNS} system, including calibration scaling factors for the three detectors 
 (H1, L1 and V1). The injected signal was at a distance of 250\,Mpc, had \ac{SNR} of 8.7, 10.9 and 
 4.1 and percentage uncertainties in the calibration scale factors of 14\%, 11\% and 27\% for each 
-of the detectors respectively.}
+of the detectors respectively.~\cm{The fonts are a bit small.  Maybe also
+highlight somehow the boxes refereing to the scale factors?}}
 \end{figure*}
 
 \begin{figure*}
@@ -548,7 +629,8 @@ of the detectors respectively.}
  parameters of a \ac{NSBH} system, including calibration scaling factors for the three detectors 
 (H1, L1 and V1). The injected signal was at a distance of 450\,Mpc, had \ac{SNR} of 7.7, 10.9 and 
 4.2 and percentage uncertainties in the calibration scale factors of 17\%, 14\% and 34\% for each of 
-the detectors respectively.}
+the detectors respectively.~\cm{same things about the fonts and highlighting
+the scale factors.}}
 \end{figure*}
 
 \begin{figure*}
@@ -556,11 +638,13 @@ the detectors respectively.}
   \includegraphics[width=1.0\textwidth]{scale_factor.pdf}
  \end{center}
  \caption{\label{fig:bnsresults} Distributions of the percentage accuracy at which the calibration 
-scale factors can be determined for a three detector network if assuming \ac{BNS} systems (provided 
-a coincident \ac{GRB} is observed and can yield a distance estimate). The boxplots span the lower 
-to upper quartile range of the distributions, with the median value shown as a horizontal line 
-within the box and the mean shown as a star. The dashed magenta line shows the percentage of source 
-drawn from the prior distribution that would be detectable at each distance value.}
+scale factors can be determined for a three detector network if assuming
+\ac{BNS} systems (provided a coincident \ac{GRB} is observed and can yield a
+distance estimate). The boxplots span the lower to upper quartile range of the
+distributions, with the median value shown as a horizontal line within the box
+and the mean shown as a white star. The dashed magenta line shows the
+percentage of sources drawn from the prior distribution that would be detectable
+at each distance value.} 
 \end{figure*}
 
 \begin{figure*}
@@ -573,47 +657,64 @@ scale factors can be determined for a three detector network if assuming \ac{NSB
 are the same as in figure~\ref{fig:bnsresults}.}
 \end{figure*}
 
-In figure~\ref{fig:bnsresults} we see that on average the scale factor can be recovered to 
-equivalent precision in both \ac{aLIGO} detectors, as would be expected, with uncertainties 
-generally within the 10\% range for sources at 100\,Mpc. This is comparable to previous estimates 
-of the calibration error in the initial LIGO detectors. An interesting feature is that for 
-distances $\gtrsim 250$\,Mpc the upper extent of the uncertainty for H1 and L1 hits a maximum at 
-$\sim 25\%$, whilst the width of boxes narrows. This is due to our ``detectability'' criteria, 
-in that for all distances we will only be seeing those sources with a high enough \ac{SNR} that we 
-would consider them detectable. There will therefore be fewer sources with \ac{SNR} higher than 
-this criteria at large distances, giving us a narrower range, and we automatically exclude those 
-with \ac{SNR} that are too small thus truncating our uncertainty distribution at the upper end. 
-However, this does show that on average for sources that are detectable out to 450\,Mpc we would be 
-able to constrain the calibration scale factor uncertainty for the \ac{aLIGO} detectors to $\sim 
-20\%$. As the detection criteria will generally come from the \ac{SNR} being high enough within the 
-two \ac{aLIGO} instruments this means that the SNR in \ac{AdV} can be small and thus the ability to 
-constrain the scale factor for it becomes poor (although it still provides information that the 
-calibration is not grossly inaccurate). We also see that true uncertainties achievable for 
-recovering the calibration scale factors are indeed very similar to the simple assumption that they 
-would be given by $\sim 1/{\rm SNR}$, i.e.\ at the upper end of the distribution the \ac{SNR} in 
-the two \ac{aLIGO} detectors will be $\sim 5.5$, which would be expected to produce uncertainties 
-of $\lesssim 20\%$. Our results are probably slightly poorer than the \ac{SNR} expectation due to 
-their still being correlations with $\iota$ even within the constrained prior range, and slight 
-correlations between the scale factors for H1 and L1 as seen in figure~\ref{fig:bnspost}.
+% discuss the BNS plots - general behaviour
+In figure~\ref{fig:bnsresults} we see that on average the scale factor can be
+recovered to equivalent precision in both \ac{aLIGO} detectors, as would be
+expected, with uncertainties generally within the 10\% range for sources at
+100\,Mpc. This is comparable to previous estimates of the calibration error in
+the initial LIGO detectors. An interesting feature is that for distances
+$\gtrsim 250$\,Mpc the upper extent of the uncertainty for H1 and L1 hits a
+maximum at $\sim 25\%$, whilst the width of boxes narrows. This is due to our
+``detectability'' criteria, where for all distances we will only be seeing
+those sources with a high enough \ac{SNR} that we would consider them
+detectable. There will therefore be fewer sources with \ac{SNR} higher than
+this criteria at large distances, giving us a narrower range, and we
+automatically exclude those with \ac{SNR} that are too small thus truncating
+our uncertainty distribution at the upper end.  However, this does show that on
+average for sources that are detectable out to 450\,Mpc we would be able to
+constrain the calibration scale factor uncertainty for the \ac{aLIGO} detectors
+to $\sim 20\%$. 
 
-In figure~\ref{fig:nsbhresults} we see very similar results for the \ac{NSBH} systems although the 
-higher \ac{SNR} of the signals means that we can provide $\sim 20\mbox{--}25\%$ uncertainties on 
-the calibration scale factors for H1 and L1 out to greater distances. The distributions generally 
-appear slightly broader than those for the \ac{BNS} systems. This may be entirely explicable 
-through two factors. The first factor is from the fact that including the spin parameter leads to 
-strong correlations between the chirp mass, mass ratio and spin. These strong correlations make 
-convergence of the \ac{MCMC} take longer and means we have fewer independent samples to estimate 
-the posterior distributions with. This leads to a larger statistical fluctuation on the results. 
-The second factor is that there appears to be a modest effect due to the population of sources that 
-are detectable. For distances at which the \ac{BNS} and \ac{NSBH} systems would give the same 
-percentage of observable sources there is a slight increase in the mean and standard deviation 
-of \acp{SNR} of the \ac{NSBH} systems over the \ac{BNS} systems.
+% discuss the Virgo contribution and the simple estimate
+The largest \ac{SNR} contribution will generally come from either of the
+\ac{aLIGO} detectors and thus the detection criteria (\ac{SNR} threshold) will
+not apply to to\ac{adV} result. Hence, the \ac{SNR} in \ac{AdV} can be small
+and thus the ability to constrain its scale factor becomes poor (although it
+still provides information that the calibration is not grossly inaccurate). We
+also see that true uncertainties achievable for recovering the calibration
+scale factors are indeed very similar to the simple assumption that they would
+be given by $\sim 1/{\rm SNR}$, i.e.\ at the upper end of the distribution the
+\ac{SNR} in the two \ac{aLIGO} detectors will be $\sim 5.5$, which would be
+expected to produce uncertainties of $\lesssim 20\%$. Our results are slightly
+poorer than estimates based on this simple assumption due to correlations with
+$\iota$ even within the constrained prior range, and slight correlations
+between the scale factors for H1 and L1 as seen in figure~\ref{fig:bnspost}.
 
-As noted previously the mass distribution for the black holes could be quite different from the one 
-we used, with masses extending to $\gtrsim 10$\,M$_{\odot}$. We expect these would produce similar 
-results to those we see in figure~\ref{fig:nsbhresults}, but again extending to further distances. 
-Including the merger and ring-down phase, which we currently ignore, may also help increase 
-\ac{SNR}.
+% discuss the NSBH sources
+In figure~\ref{fig:nsbhresults} we see very similar results for the \ac{NSBH}
+systems although the higher \ac{SNR} of the signals means that we can provide
+$\sim 20\mbox{--}25\%$ uncertainties on the calibration scale factors for H1
+and L1 out to greater distances. The distributions generally appear slightly
+broader than those for the \ac{BNS} systems. This may be explained
+by two factors. The first is from the fact that including the spin
+parameter leads to strong correlations between the chirp mass, mass ratio and
+spin. These strong correlations make convergence of the \ac{MCMC} take longer
+and means we have fewer independent samples with which to estimate the posterior
+distributions. This leads to a larger statistical fluctuation on the
+results.  The second factor is that there appears to be a modest effect due to
+the population of sources that are detectable. For distances at which the
+\ac{BNS} and \ac{NSBH} systems would give the same percentage of observable
+sources there is a slight increase in the mean and standard deviation of
+\acp{SNR} of the \ac{NSBH} systems over the \ac{BNS} systems~\cm{can we go any
+further with this?}.
+
+% reiterate the BH mass distribution
+As noted previously, the mass distribution for black holes could be quite
+different from the one used here, with masses extending to $\gtrsim
+10$\,M$_{\odot}$. We expect these would produce similar results to those we see
+in figure~\ref{fig:nsbhresults}, but again extending to further distances.
+Including the merger and ring-down phase, which we currently ignore, will also
+increase \ac{SNR} and act to reduce the calibration scale uncertainties.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -632,57 +733,81 @@ Including the merger and ring-down phase, which we currently ignore, may also he
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion\label{sec:discussion}}
 
-We have attempted to see how well we can assess the detector calibration for \ac{aLIGO} and 
-\ac{AdV} using astrophysical sources. To do this we require that a \ac{sGRB}, for which it has 
-been possible to measure the distance, is observed in coincidence with a \ac{CBC} signal in the 
-\ac{GW} detectors. This enables us to assume a known distance and sky position for the source, and 
-also limit the inclination of the source, which in turn allows us to test the consistency of the 
-detector calibration. We do this by including an unknown scale factor on the true signal and noise, 
-which we estimate given the data. We find that for detectable \ac{BNS} sources the uncertainty 
-on the calibration scale factor could on average be determined to $\lesssim 10\%$ of its true value 
-for the \ac{aLIGO} and \ac{AdV} detectors out to 100\,Mpc. This is comparable to the hoped for 
-level of calibration accuracy of the detectors. For sources at the standard single detector 
-\ac{BNS} horizon distance of $\sim 450$\,Mpc the scale factor could on average be determined to 
-within $\lesssim 20\%$ of its true value for the \ac{aLIGO} detectors. Similar results were found 
-for \ac{NSBH} sources, although sources could be observed out to higher distances.
+% summary of main results
+We have established how well we can assess the detector calibration for
+\ac{aLIGO} and \ac{AdV} using astrophysical sources as standard sirens. To do
+this we require that a \ac{sGRB}, for which it has been possible to measure the
+distance, is observed in coincidence with a \ac{CBC} signal in the \ac{GW}
+detectors. This enables us to assume a known distance and sky position for the
+source, and also limit the inclination of the source, which in turn allows us
+to test the consistency of the detector calibration. We do this by including an
+unknown scale factor on the true signal and noise, which we estimate given the
+data from the 3 inteferometer advanced detector network. We find that for
+detectable \ac{BNS} sources the uncertainty on the calibration scale factor
+could on average be determined to $\lesssim 10\%$ of its true value for the
+\ac{aLIGO} and \ac{AdV} detectors out to 100\,Mpc. This is comparable to the
+proposed accuracy level of the hardware calibration of the detectors. For
+sources at the standard single detector \ac{BNS} horizon distance of $\sim
+450$\,Mpc the scale factor could on average be determined to within $\lesssim
+20\%$ of its true value for the \ac{aLIGO} detectors. Similar results were
+found for \ac{NSBH} sources, although sources could be observed out to higher
+distances.
 
-The requirement of a coincident \ac{sGRB} with a known distance means that there will be 
-considerable latency for this method of calibration assessment, but importantly this method would 
-provide semi-independent consistency check that the calibration is reasonably accurate. We do note 
-that this method has to make its own assumptions, including that the waveforms we use accurately 
-reflect the signal, that the phase calibration does not change to much over frequency and that 
-the overall calibration does not change considerably over the length of a signal. These are studies 
-that could be incorporated in the future.
+% mention caveats and future work
+The requirement of a coincident \ac{sGRB} with a known distance means that
+there will likely be considerable delay (beyond initial \ac{GW} detection) for
+the implementation of this method of calibration assessment.  Importantly
+however, this method would provide a semi-independent consistency check that
+the calibration is reasonably accurate.  We acknowledge that we have made a
+number of simplifying assumptions, including that the waveforms we use
+accurately model the true signal, and that the overall calibration remains
+constant over the duration of a signal and its \ac{PSD} estimation. A further
+major simplification made here is that the absolute calibration is constant
+with frequency.  Other authors~\cm{Ref: Cornish? and others?} have addressed
+this issue in the context of robust parameter estimation for astrophysical
+sources and in future work we intend to apply related methods for astrophysical
+calibration.
 
-We imagine that a test for consistency of calibration could be performed with an ensemble of 
-\ac{CBC} sources even without \ac{sGRB} counterparts, although such a method would have to 
-marginalise over highly uncertain population models and may give quite weak bounds on the overall 
-calibration uncertainty.
+% comparitive calibration
+We imagine that a test for consistency of calibration between detectors could be
+performed with an ensemble of \ac{CBC} sources without relying on \ac{EM}
+counterparts. Such a method would have to marginalise over highly
+uncertain population models and may give quite weak bounds on the overall
+calibration uncertainty.~\cm{I'm not sure what you mean here? I want to add a
+paragraph on relative calibration after I understand what you mean.} 
 
-We emphasise that our work has assumed that the \ac{PSD} used in the likelihood function when 
-estimating the calibration scale factor is an accurate representation of the \ac{PSD} at the time 
-of the observed \ac{CBC} signal. In reality the \ac{PSD} may be estimated from a period close to, 
-but not overlapping, the signal time and therefore may be slightly different 
-\cite{2013PhRvD..88h4044L}. Our result would therefore be highly correlated with any 
-uncertainty in the \ac{PSD} estimate, but would still offer an upper limit on the calibration 
-uncertainty. However, future plans for \ac{CBC} parameter estimation include estimating the 
-\ac{PSD} with the signal using BayesLine \cite{2015PhRvD..91h4034L}.
+% discus PSD uncertainty
+We emphasise that our work has assumed that the \ac{PSD} used in the likelihood
+function is an accurate representation of the \ac{PSD} at the time of the
+observed \ac{CBC} signal. In reality the \ac{PSD} may be estimated from a
+period close to, but not overlapping, the signal time and therefore may be
+slightly different \cite{2013PhRvD..88h4044L}. Our result would therefore be
+highly correlated with any uncertainty in the \ac{PSD} estimate, but would
+still offer an upper limit on the calibration uncertainty. However, future
+plans for \ac{CBC} parameter estimation include estimating the \ac{PSD} with
+the signal using BayesLine \cite{2015PhRvD..91h4034L}~\cm{I'm nit sure that
+this last point really helps us.}.
 
-A further extension of this work would be for the calibration scale factor to be estimated as a 
-function of frequency. This would require the frequency series to be broken up into sections and 
-the calibration scale factor estimated for each. However, the scale factor uncertainty will 
-obviously be related to the \ac{SNR} of a signal within a particular section. It could 
-therefore be a job of Bayesian model selection to work out the optimal number of frequency 
-sections to estimate the scale factor for. The BayesLine algorithm \cite{2015PhRvD..91h4034L}, or 
-the method described in \cite{2013PhRvD..88h4044L}, may provide a natural way to perform such an
-analysis. Indeed these methods, and those of \cite{Vitale:2012} are already being used for 
-marginalising over calibration uncertainties, but do not attempt to estimate it.
+% frequency dependence
+A further extension of this work would be for the calibration scale factor to
+be estimated as a function of frequency. This may require the frequency series
+to be divided into sections and the calibration scale factor estimated for
+each. However, since the scale factor uncertainty is related to the \ac{SNR}
+then the \ac{SNR} contribution in each frequency section will be of relevance.
+In this case Bayesian model selection may be applicabl for selecting the
+optimal number of frequency sections with which to estimate the scale factor.
+The BayesLine algorithm \cite{2015PhRvD..91h4034L}, or the method described in
+\cite{2013PhRvD..88h4044L}, may provide a natural way to perform such an
+analysis. Indeed these methods, and those of \cite{Vitale:2012} are already
+being used for marginalising over calibration uncertainties, but do not yet
+attempt to estimate it.
 
 \acknowledgements
 
 We would like to acknowledge the useful discussions with a whole bunch of people. LW was part 
 funded for this work through a Royal Astronomical Society Undergraduate Research Bursary.
-MP is funded by the STFC under grant number ST/L000946/1.
+MP is funded by the STFC under grant number ST/L000946/1 and CM is funded via
+XXX.
 
 \bibliography{masterbib}
 \end{document}
