@@ -2,9 +2,9 @@
 ./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1250 --Nburnin 1250 --Nensemble 1750 --intseed 1 --dist 450  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2 --nsbh
 
 For the current figure this gave:
-H1: SNR = 7.67
-L1: SNR = 10.90
-V1: SNR = 4.19
-0.166379
-0.144415
-0.340410
+H1: SNR = 11.07
+L1: SNR = 9.30
+V1: SNR = 3.76
+0.130917
+0.134738
+0.363572
