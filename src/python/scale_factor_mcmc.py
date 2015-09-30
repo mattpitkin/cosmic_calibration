@@ -757,7 +757,7 @@ if it does not fulfill the SNR criterion.")
     commandline += arg + ' '
   outdict['CommandLine'] = commandline
 
-  # get scale factor standard devaitions and 95% credible intervals
+  # get scale factor standard deviations and 95% credible intervals
   scstds = []
   cis95 = []
   cis90 = []
@@ -799,13 +799,37 @@ if it does not fulfill the SNR criterion.")
 
   if args.plot:
     try:
-      import triangle
+      from corner import corner
     except:
-      print >> sys.stderr, "Can't load triangle.py, so no plot will be produced"
+      print >> sys.stderr, "Can't load corner.py, so no plot will be produced"
       sys.exit(0)
 
     mC = (m1inj*m2inj)**(3./5.) / (m1inj+m2inj)**(1./5.)
     q = m2inj/m1inj
+
+    # make sure psi and phi0 are in their correct range (they don't seem to be returned correctly through theta)
+    i = 0
+    for psival, phival in samples[:,0:2]:
+      nmod = 0.
+      if psival > np.pi/2.:
+        nmod = np.floor(psival/(np.pi/2.))
+        psival = np.fmod(psival, np.pi/2.)
+      elif psival < 0.:
+        nmod = np.ceil(-psival/(np.pi/2.))
+        psival += nmod*(np.pi/2.)
+ 
+      phival += nmod*(np.pi/2.)
+ 
+      # wrap phi0 in the 0->pi range
+      if phival < 0.:
+        nmod = np.ceil(-phival/np.pi)
+        phival += nmod*np.pi
+      elif phival > np.pi:
+        phival = np.fmod(phival, np.pi)
+
+      samples[i,0] = psival
+      samples[i,1] = phival
+      i = i+1
 
     # set t0 to 0
     samples[:,3] = samples[:,3] - t0
@@ -823,7 +847,20 @@ if it does not fulfill the SNR criterion.")
     # plot 1, 2 and 3 sigma contours
     levels = 1.-np.exp(-0.5*np.array([1., 2., 3.])**2)
 
-    fig = triangle.corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
+    fig = corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, label_kwargs={'fontsize': 22}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
+
+    # highlight scale factor plots by making their borders red
+    figaxes = fig.get_axes()
+    for i in range(firstidx, firstidx+len(dets)):
+      for k in range(firstidx, firstidx+len(dets)):
+        if k-1 < i:
+          thisaxis = figaxes[i*len(labels)+k]
+          for spine in thisaxis.spines.values():
+            spine.set_edgecolor('red')
+
+    # make axes tick label fonts bigger
+    for ax in figaxes:
+      ax.tick_params(axis='both', labelsize=16)
 
     plotfile = os.path.join(outpath, 'posterior_plot_'+intseed+'.pdf')
     fig.savefig(plotfile)
