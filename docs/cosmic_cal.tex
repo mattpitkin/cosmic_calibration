@@ -34,7 +34,7 @@ superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
 %% ----- input git-version tag
 \input{tag.tex}
 
-\newcommand{\dcc}{LIGO-PXXXXXXXX}
+\newcommand{\dcc}{LIGO-P1500198}
 \newcommand{\cm}[1]{\textcolor{red}{CM: #1}}
 \newcommand{\MP}[1]{\textcolor{blue}{MP: #1}}
 \newcommand{\lw}[1]{\textcolor{green}{LW: #1}}
@@ -144,6 +144,17 @@ giving us a direct measurement of the luminosity distance to the source. The acc
 measurement depends on a number of factors including the accuracy with which the \ac{GW} detector 
 has been calibrated.  Hence, by comparison with the distance estimate from the \ac{sGRB} we can 
 re-calibrate (or validate) the existing experimentally obtained calibration. 
+
+For future planned space-based detectors such as eLISA there are several known galactic binary 
+systems known as ``verification'' binaries \cite{2006CQGra..23S.809S}, in that their masses and 
+orbital parameters allow them to be guarenteed sources for such detectors. These too could be used 
+for assessing calibiration for such detectors. However, generally for these verification binaries 
+the inclination of the system is not known and distances are fairly uncertain, so an accurate 
+calibration assessment may not be possible. Although there is at least one (J0651) currently known 
+eclipsing white dwarf binary \cite{2041-8205-737-1-L23}, which does provide the system inclination 
+\cite{2012ApJ...757L..21H, 2013ASPC..467...47K} and has an approximately 10\% distance uncertainty 
+\cite{2041-8205-737-1-L23}, which make it an excellent candiate for an astrophysical calibrator at 
+its frequency.
 
 % What do we do in this paper
 In this paper we investigate the feasibility of this approach for single coincident 
@@ -310,7 +321,8 @@ year~\cite{2013PhRvL.111r1101C,Kelley:2012fl,2014arXiv1405.2254S,2015MNRAS.448.3
 % observing a coincident event
 The most likely scenario in which a coincident \ac{GW}--\ac{sGRB} event would be identified is 
 through the targeted follow-up of an observed \ac{GW} or by post-facto matching of \ac{GW} 
-trigger lists with known \ac{sGRB} events.  The likelihood of being able to follow-up \ac{GW} 
+trigger lists with known (or subsequently found \cite{2015ApJS..217....8B}) \ac{sGRB} events.  
+The likelihood of being able to follow-up \ac{GW} 
 events using gamma-ray telescopes with low enough latency to catch a \ac{sGRB} is low.  Compounding 
 this issue is the relatively large \ac{GW} sky error-box giving a field-of-view for the \ac{EM} 
 observatories to search spanning $\sim 100$'s of square degrees (e.g.\ 
@@ -829,7 +841,7 @@ attempt to estimate it.
 We would like to acknowledge the useful discussions with a whole bunch of people. LW was part 
 funded for this work through a Royal Astronomical Society Undergraduate Research Bursary.
 MP is funded by the STFC under grant number ST/L000946/1 and CM is funded via
-XXX.
+XXX. This document has LIGO DCC number \dcc.
 
 \bibliography{masterbib}
 \end{document}
