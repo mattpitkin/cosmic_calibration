@@ -65,22 +65,28 @@ superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
 \date{\today}
 
 \begin{abstract}
-  We present an investigation assessing the validity of the 
-of gravitational wave detector calibration through the use of gamma-ray
-bursts as standard
+  We investigate a method to assess the validity of gravitational wave detector calibration 
+through the use of gamma-ray bursts as standard
   sirens. Such signals, as measured via gravitational wave
-  observations provide an estimated luminosity distance which is
+  observations, provide an estimated luminosity distance that is
   subject to uncertainties in the calibration of the data.  If a host
   galaxy is identified for a given source then its redshift can be
   combined with current knowledge of the cosmological
   parameters yielding the true luminosity distance.  This will then allow
-  a direct comparison with the estimated value and discrepancies can
-  then be used to correct the original calibration.~\MP{Update with results.
-End with a statement comparing to existing method but stressing its independent.}
+  a direct comparison with the estimated value and can validate the accuracy of the original 
+calibration. We use simulations of individual detectable gravitational wave signals from binary 
+neutron star (BNS) or neutron star-black hole (NSBH) systems, which we assume to be found in 
+coincidence with short gamma-ray bursts, to estimate any discrepancy in the overall scaling of the 
+calibration for detectors in the Advanced LIGO and Advanced Virgo network. We find that the 
+amplitude scaling of the calibration for the LIGO instruments could on average be confirmed to 
+within $\sim 10\%$ for a BNS source within 100\,Mpc. This result is largely independent of the 
+current detector calibration method and gives an uncertainty that is competitive with that expected 
+in the current calibration procedure. Confirmation of the calibration accuracy to within 
+$\sim 20\%$ can be found with BNS sources out to $\sim 500$\,Mpc.
 \end{abstract}
 
 \pacs{04.80.Nn, 95.55.Ym}
-\preprint{LIGO-P15XXXXX}
+\preprint{\dcc}
 
 \maketitle
 
@@ -127,7 +133,7 @@ It is considered likely that the merger of \ac{BNS} and/or \ac{NSBH} systems,
 in addition to emitting detectable \acp{GW}, is also the mechanism for
 producing \acp{sGRB} \cite{1992ApJ...395L..83N}. In this scenario these events
 produce tightly beamed \ac{EM} emission parallel to the orbital angular
-momentum vector of the \ac{BNS} system. Additional evidence for the coincidence
+momentum vector of the system. Additional evidence for the coincidence
 of \acp{sGRB} with \ac{GW} events are the estimated astrophysical rates of both
 phenomena. Observations of \acp{sGRB} give an inferred rate of \ac{sGRB}
 producing \ac{CBC} mergers of $8\times 10^{-9}$--$1.1\times
@@ -136,20 +142,21 @@ compared to independently obtained estimates of \ac{BNS} merger rates of
 $10^{-8}$--$10^{-5}$\,Mpc$^{-3}$\,yr$^{-1}$ \cite{2010CQGra..27q3001A}, or
 \ac{NSBH} merger rates of
 $6\,\times\,10^{-10}$--$1\,\times\,10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$
-\cite{2010CQGra..27q3001A}. However, the recent work of
+\cite{2010CQGra..27q3001A}\footnote{However, the recent work of
 \cite{2015MNRAS.448..928K}, which studied known galactic \ac{BNS} systems in
-more detail suggest a rate approximately five times lower. The estimates for
-\ac{NSBH} systems come entirely from population synthesis models as no such
-systems have yet been observed.
+more detail suggest a rate approximately five times lower.}.
+%The estimates for
+%\ac{NSBH} systems come entirely from population synthesis models as no such
+%systems have yet been observed.
 %The ranges of rates for \acp{BNS} is obtained from population synthesis models
 %together with knowledge of the X known \ac{BNS} systems in our galaxy, whilst
 %the range for \acp{NSBH} is entirely from population synthesis as not such
 %systems have been observed. 
   
 If a single \ac{GW} event is observed in coincidence with a \ac{sGRB} it may be
-possible to identify the host galaxy of the \ac{BNS} source.  With this
+possible to identify the host galaxy of the source.  With this
 information a spectroscopic redshift can be very accurately obtained (see
-values quoted in e.g. \cite{0004-637X-664-2-1000} and references therein). With
+values quoted in e.g.\ \cite{0004-637X-664-2-1000} and references therein). With
 knowledge of the redshift, using current best estimates for the Hubble constant
 and other cosmological parameters, the true luminosity distance can be
 estimated to $\sim 1\%$ accuracy.  The \ac{GW} measurement acts as a standard
@@ -159,17 +166,6 @@ including the accuracy with which the \ac{GW} detector has been calibrated.
 Hence, by comparison with the distance estimate from the \ac{sGRB} we can
 re-calibrate (or validate) the existing experimentally obtained calibration. 
 
-\MP{Move this paragraph to conclusions} For future planned space-based detectors such as eLISA there are several known galactic binary 
-systems known as ``verification'' binaries \cite{2006CQGra..23S.809S}, in that their masses and 
-orbital parameters allow them to be guaranteed sources for such detectors. These too could be used 
-for assessing calibration for such detectors. However, generally for these verification binaries 
-the inclination of the system is not known and distances are fairly uncertain, so an accurate 
-calibration assessment may not be possible. Although there is at least one (J0651) currently known 
-eclipsing white dwarf binary \cite{2041-8205-737-1-L23}, which does provide the system inclination 
-\cite{2012ApJ...757L..21H, 2013ASPC..467...47K} and has an approximately 10\% distance uncertainty 
-\cite{2041-8205-737-1-L23}, which make it an excellent candidate for an astrophysical calibrator at 
-its frequency.
-
 % What do we do in this paper
 In this paper we investigate the feasibility of this approach for single coincident 
 \ac{GW}--\ac{sGRB} events and establish the validation power of such a calibration technique.  In 
@@ -177,7 +173,7 @@ Sec.~\ref{sec:calibration} we briefly summarize the existing experimental techni
 detector calibration and its expected accuracy.  We then review the concept of \ac{GW} standard 
 sirens and their proposed coincident \ac{EM} signatures, the \acp{sGRB} in
 Secs.~\ref{sec:sirens} and~\ref{sec:GRB}. In Secs.~\ref{sec:analysis} and \ref{sec:results} we 
-discuss out analysis method and the results, and in Sec.~\ref{sec:discussion} we 
+discuss our analysis method and the results, and in Sec.~\ref{sec:discussion} we 
 conclude.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,8 +187,8 @@ difference between the moving mirrors. A comprehensive description of the calibr
 particular for the LIGO detectors during their fifth science run) can be found in 
 \cite{2010NIMPA.624..223A}, and a brief description is giving in \cite{Vitale:2012} and references 
 therein. For \ac{aLIGO} and \ac{AdV}, at the frequency range used in this project, the error in the 
-amplitude calibration is roughly $10\%$ \cite{Vitale:2012}. This is a benchmark set for the error 
-estimation using the proposed method in this project.
+amplitude calibration is expected to be roughly $10\%$ \cite{Vitale:2012}. This is a benchmark set 
+for the error estimation using the proposed method in this project.
 
 % Describe our model for the calibration
 The \ac{GW} strain is measured through the differential arm length, $\Delta L$, changes of the 
@@ -202,7 +198,7 @@ This relation is known as the length response function, $R(f)$, defined such tha
 \begin{equation}
 \Delta L(f,t) = R(f) e(f, t),
 \end{equation}
-where where we assume $R$ varies only slowly in time (in comparison to transient signal 
+where we assume $R$ varies only slowly in time (in comparison to transient signal 
 time-scales). Calculation of $R$ requires the measurement of various functions within a control 
 feedback loop (see \cite{2010NIMPA.624..223A}), which are subject to uncertainties. In this 
 study we will assume an estimate of $R$ is available (although in theory we could take on the role 
@@ -281,7 +277,7 @@ combining these issues in future analyses.
 \section{GRB counterparts\label{sec:GRB}}
 
 % what are sGRBs 
-It is believed that \acp{sGRB} (those \acp{GRB} with duration ${<}2$ sec) are
+It is believed that \acp{sGRB} (those gamma-ray bursts with duration ${<}2$ sec) are
 emitted during the merger of
 \ac{BNS} or \ac{NSBH} systems ~\cite{1989Natur.340..126E,1992ApJ...395L..83N}. The emission
 from these events is highly beamed along the binary rotation axis and hence
@@ -308,7 +304,7 @@ sensitivity. However, a higher rate of $0.4$--$400$ is given in
 slightly different threshold definitions or design sensitivity curves used. We
 also note the study mentioned in Sec.~\ref{sec:intro} that potentially lowers
 the expected rate by a factor of five.}.  In~\cite{2012MNRAS.425.2668C} using
-the rate of observed \acp{sGRB} and assuming a beaming angle of $15^{o}$ a
+the rate of observed \acp{sGRB} and assuming a beaming angle of $15^{\circ}$ a
 similar event rate of $1$--$180$ is obtained. The beaming angle is the primary
 factor in determining the fraction of detected \ac{GW} \ac{BNS} signals with an
 \ac{EM} \ac{sGRB} counterpart and is unfortunately highly uncertain.  Various
@@ -370,20 +366,21 @@ which only the black hole has non-negligible spin and its rotational angular mom
 with the system's orbital angular momentum.
 
 For a non-spinning system the general form of the frequency-domain polarisation
-amplitudes are
+amplitudes is
 %
 \begin{align}\label{eq:signal} 
 \gws_{+}(f) &\propto
 \left(1+\cos^{2}\iota\right)D_{L}^{-1} \mathcal{M}^{5/6}f^{-7/6}e^{-i\Psi(f,
-\mathcal{M}, t_\mathrm{c}, \phi_{\mathrm{c}})} \nonumber \\ \gws_{\times}(f) &\propto
+\mathcal{M}, t_\mathrm{c}, \phi_{\mathrm{c}})}, \nonumber \\
+\gws_{\times}(f) &\propto
 \left(\cos^{2}\iota\right)D_{L}^{-1}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \mathcal{M},
 t_\mathrm{c}, \phi_{\mathrm{c}})} 
 \end{align}
 %
 where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$,
-with the symmetric mass ratio $\eta=m_{1}m_{2}/M^{2}$.  The total mass
-$M=m_{1}+m_{2}$ where $m_{1}$ and $m_{2}$ are the component masses, $\iota$ is
-the inclination angle.  The \ac{GW} strain measured
+with the symmetric mass ratio $\eta=m_{1}m_{2}/M^{2}$, total mass
+$M=m_{1}+m_{2}$ (where $m_{1}$ and $m_{2}$ are the component masses), and $\iota$ is
+the inclination angle.  The Fourier transform of the \ac{GW} strain measured
 at the $k^{\rm{th}}$ detector is then given by
 %
 \begin{equation} \label{eq:gravsig} 
@@ -468,14 +465,20 @@ likely to be relatively close to face-on (and therefore nearly circularly
 polarised), which allows us to place prior constraints on the system
 inclination angle. Beam opening angles for \acp{sGRB} are relatively poorly
 constrained as they are based on only a few jet-break detections. A comparative
-study of estimates and lower-limits of opening angles in 13 \acp{sGRB} given
-in~\cite{2014ApJ...780..118F} provide a median opening angle value of $\sim
+study of estimates and lower-limits of opening angles for 13 \acp{sGRB} given
+in~\cite{2014ApJ...780..118F} provides a median opening angle value of $\sim
 10^{\circ}$. We assume that the beam opening angle is a half-normal
 distribution, for which the median is given by $\sqrt{2}\erf{}^{-1}(1/2)\sigma
 \sim 0.67\sigma$. It follows that the median of a $\sim 10^{\circ}$ opening
 angle corresponds to $\sigma \sim 14.8^{\circ}$. We therefore place a Gaussian
 prior on the inclination angle $\iota$ with zero mean and a standard deviation
-$\sigma=14.8^{\circ}$.~\MP{Check regarding the face/arse orientation issue.}
+$\sigma=14.8^{\circ}$. This, and the choice of polarisation angle prior range given below, 
+explicitly fixes the handedness of the system's rotation (or alternatively whether it is face-on or 
+back-on). If we were to allow the inclination to have two modes (one for face-on and one 
+for back-on), or alternatively to double the range of the polarisation angle, it would have no 
+effect on our ability to estimate the signal amplitude as the two modes should be identical with 
+regards to the amplitude parameter probability distributions. However, we are consistent between the 
+range of simulated signals discussed in Sec.~\ref{sec:simulations} and the initial ranges stated.
 
 % discuss the component mass and spin priors 
 The prior on the system component masses is dependent on whether we are
@@ -502,7 +505,8 @@ the normalised aligned spin magnitude between $-1$ and $1$.
 The final important piece of information that we can make use of from the
 \ac{sGRB} observation is the sky position of the source. We assume that this is 
 known precisely and has been obtained, in conjunction with the source redshift,
-from the identification of the host galaxy. 
+from the identification of the host galaxy. This fixes the time delay between detectors to a known 
+value and, along with the polarisation angle, defines the antenna response patterns.
 
 % discuss the nuisance parameters
 For the time of coalescence $t_{\mathrm{c}}$ we use a uniform prior spanning
@@ -517,7 +521,7 @@ combination will have little effect on the result.
 % the scale factor prior
 Finally, we require a prior on the calibration scale factors for each detector.
 We make the assumption that in general the calibration applied to the detector
-data will be correct, so want to use a prior that is peaked at $\scf_k=1$. We
+data will be close to being correct, so want to use a prior that is peaked at $\scf_k=1$. We
 also assume that the prior \ac{PDF} of the calibration scale factor is either
 larger or smaller than unity by an equivalent factor, e.g.\ $p(\scf|I)=10$ is
 equivalent to $p(\scf|I)=0.1$. For the scale factor in each detector we 
@@ -532,7 +536,7 @@ where we chose $\sigma = 1.07$, which together with the requirement that the
 mode is at unity gives $\mu = 1.15$. With these parameters the prior
 probability density at 0.1 and 10 is one tenth of that at 1. Note that this
 prior does not give a symmetric amount of probability about unity (so our prior
-favour \scf\xspace values greater than 1), but given our simulation criterion
+favours \scf\xspace values greater than 1), but given our simulation criterion
 described in Section~\ref{sec:simulations} we find that the likelihood
 generally overwhelms the prior. As $\scf$ is a scale factor we also have the
 further constraint that it must be positive and hence the log-normal prior is a
@@ -568,9 +572,9 @@ centre of the prior window, and with the calibration scaling factors for each
 detector drawn from a Gaussian distribution with a mean of one and standard
 deviation of $0.125$ (equivalent to a mean fractional offset of 10\%).  Note
 that this distribution is broadly consistent with the scale of calibration
-uncertainties that are expected via experimental methods but not the same as
-the prior that we assume on $\mathcal{C}$ (see Eq.~\ref{eq:scale_prior}) when
-performing our analysis. 
+uncertainties that are expected via experimental methods, but is not the same as
+the prior that we assume on $\mathcal{C}$ (see Eq.~\ref{eq:scale_prior}) when recovering 
+signals. 
 
 % describe the detection cut 
 In accepting a proposed injection as one to be analysed we introduced a
@@ -583,13 +587,13 @@ For injections close to the \ac{SNR} threshold, the application of the
 threshold resulted in the preferential selection of better oriented systems.
 Therefore, at larger distances the population of injected sources was not
 uniformly distributed over the sky and instead favoured locations with better
-antenna response.  Similarly, despite being already constrained by the prior to
+antenna response.  Similarly, despite already being constrained by the prior to
 small inclination angles, the accepted injections show preference for sources
 very close to circularly polarised.
 
 % final clarification on the simulation distribution
 These simulations have allowed us to assess how well on average we would be
-able to constrain the calibration scale for a given detected \ac{CBC}-\ac{sGRB}
+able to constrain the calibration scale for a detected \ac{CBC}-\ac{sGRB}
 coincidence.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -746,6 +750,7 @@ there being fewer observable cycles during the inspiral stage.
 Including the merger and ring-down phase, which we currently ignore, will also
 increase \ac{SNR} and act to reduce the calibration scale uncertainties.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Distance estimates from \acp{sGRB}\label{sec:cosmo}}
@@ -787,13 +792,14 @@ distances.
 The requirement of a coincident \ac{sGRB} with a known distance means that
 there will likely be considerable delay (beyond initial \ac{GW} detection) for
 the implementation of this method of calibration assessment.  Importantly
-however, this method would provide a \MP{semi-independent} consistency check that
-the calibration is reasonably accurate.  We acknowledge that we have made a
-number of simplifying assumptions, including that the waveforms we use
-accurately model the true signal, and that the overall calibration remains
-constant over the duration of a signal and its \ac{PSD} estimation. A further
+however, this method would provide an independent\footnote{There are caveats to this independence. 
+We rely on a source having been detected, which most likely implies that calibration is not grossly 
+inaccurate and is fairly consistent between detectors.} consistency check that the calibration is 
+reasonably accurate.  We acknowledge that we have made a number of simplifying assumptions, 
+including that the waveforms we use accurately model the true signal, and that the overall 
+calibration remains constant over the duration of a signal and its \ac{PSD} estimation. A further
 major simplification made here is that the absolute calibration is constant
-with frequency.  Other authors (e.g.\ \cite{Vitale:2012,2013PhRvD..88h4044L} have addressed
+with frequency.  Other authors (e.g.\ \cite{Vitale:2012,2013PhRvD..88h4044L}) have addressed
 this issue in the context of robust parameter estimation for astrophysical
 sources and in future work we intend to apply related methods for astrophysical
 calibration.
@@ -848,6 +854,19 @@ The BayesLine algorithm \cite{2015PhRvD..91h4034L}, or the method described in
 analysis. Indeed these methods, and those of \cite{Vitale:2012} are already
 being used for marginalising over calibration uncertainties, but do not yet
 attempt to estimate it.
+
+It is also worth noting that astrophysical calibration may be possible for future planned 
+space-based detectors such as eLISA \cite{2013GWN.....6....4A}. For such detectors there are 
+several 
+galactic binary systems known as ``verification'' binaries \cite{2006CQGra..23S.809S}, in that 
+their masses and orbital parameters allow them to be guaranteed sources. These too could be used 
+for assessing detector calibration. However, generally for these verification binaries 
+the inclination of the system is not known and distances are fairly uncertain, so a precise 
+calibration assessment may not be possible. Although there is at least one currently known 
+eclipsing white dwarf binary (J0651) \cite{2041-8205-737-1-L23}, which does provide the system 
+inclination \cite{2012ApJ...757L..21H, 2013ASPC..467...47K} and has an approximately 10\% distance 
+uncertainty \cite{2041-8205-737-1-L23}, which makes it an excellent candidate for an astrophysical 
+calibrator.
 
 \acknowledgements
 
