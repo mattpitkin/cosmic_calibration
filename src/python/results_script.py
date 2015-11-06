@@ -235,7 +235,6 @@ alpha = 1.-0.95
 
 for i in range(3):
   # get cumulative histogram of found regions
-  if i == 0: print pp50[:,i]
   ax.hist(pp50[:,i], bins=len(pp50[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
 
 ax.set_xlabel('Credible interval (CI)')
@@ -275,7 +274,7 @@ fig, ax = pl.subplots(figsize=(6,5))
 
 for i in range(3):
   # get cumulative histogram of found regions
-  ax.hist(pp500[:,i], bins=100, cumulative=True, normed=True, histtype='step', color=boxColors[i])
+  ax.hist(pp500[:,i], bins=len(pp500[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
 
 ax.set_xlabel('Credible interval (CI)')
 ax.set_ylabel('Cumulative fraction of true values within CI')
