@@ -3,14 +3,16 @@
 """
 Script to go through a set of directories and gather up information from all the
 info_* files to produce a histrogram of how well the calibration scale factor
-can be recovered for different distance.
+can be recovered for different distance and the P-P plots of injected versus
+recovered confidence intervals.
 """
 
 import json
 import sys
 import os
 import sys
-
+from scipy.interpolate import interp1d
+from scipy.stats import beta
 from optparse import OptionParser
 
 import numpy as np
@@ -48,22 +50,16 @@ else:
       parser.print_help()
       sys.exit(0)
 
-# a function to get the credible intervals using a greedy binning method
-def credible_interval(dsamples, ci):
-  n, binedges = np.histogram(dsamples, bins=100)
-  dbins = binedges[1]-binedges[0] # width of a histogram bin
-  bins = binedges[0:-1]+dbins/2. # centres of bins
 
-  histIndices=np.argsort(n)[::-1]  # indices of the points of the histogram in decreasing order
-  frac = 0.0
-  j = 0
-  for i in histIndices:
-    frac += float(n[i])/float(len(dsamples))
-    j = j+1
-    if frac >= ci:
-      break
+# get the credible region in which the injected value is found (bounded from zero for convenience)
+def credible_inj(histbins, histvals, injval)
+  # normalise histogram and get cumulative sum
+  cumvals = np.cumsum(histvals/np.sum(histvals))
 
-  return (np.min(bins[histIndices[:j]]), np.max(bins[histIndices[:j]]))
+  if injval <= histbins[0] or injval >= histbins[-1]:
+    return 1. # injection outside posterior
+  else:
+    return cumvals[(np.abs(histbins-injval)).argmin()]
 
 
 pl.rc('text', usetex=True)
@@ -85,6 +81,9 @@ fig, ax = pl.subplots(figsize=(8,5))
 data = []
 rates = []
 
+pp50 = []
+pp500 = []
+
 for i, d in enumerate(dirs):
   print d
 
@@ -95,11 +94,17 @@ for i, d in enumerate(dirs):
   totaltime = 0.
   accepted = 0
 
+  # get info for p-p plots for first and last distance
+  pps = []
+
   # go through files and extract the relative standard devaition on the scale factors for each detector
   for f in files:
     fo = open(f, 'r')
     info = json.load(fo)
     fo.close()
+
+    
+    ppss = []
 
     vals = []
     for k in range(len(info['InjectionParameters']['scales'])):
@@ -114,9 +119,13 @@ for i, d in enumerate(dirs):
       if float(len(nonzero))/float(len(histd[0])) > 0.9 and info['Results']['ScaleSigma'][k] < (histd[1][-1]-histd[1][0])/6.:
         # divide by two to get the half widths and convert to percentage
         vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
+        if i == 0 or i == len(dirs)-1:
+          ppss.append(credible_inj(histd[1], histd[0], info['InjectionParameters']['scales'][k]))
 
     if len(vals) == 3:
       relsf.append(vals)
+      if i == 0 or i == len(dirs)-1:
+        pps.append(ppss)
       accepted += 1
 
     totaltime += info['Attempts']
@@ -127,6 +136,11 @@ for i, d in enumerate(dirs):
   data.append(nprelsf[:,0])
   data.append(nprelsf[:,1])
   data.append(nprelsf[:,2])
+
+  if i == 0:
+    pp50 = np.copy(np.array(pps))
+  if i == len(dirs)-1:
+    pp500 = np.copy(np.array(pps))
 
   print accepted
   print np.mean(nprelsf[:,0]), np.mean(nprelsf[:,1]), np.mean(nprelsf[:,2])
@@ -202,3 +216,86 @@ try:
 except:
   print >> sys.stderr, "Cannot create plot!"
   sys.exit(0)
+
+fig.clf()
+pl.close(fig)
+
+# create P-P plots for 50 and 500 Mpc for all detectors
+fig, ax = pl.subplots(figsize=(6,5))
+
+# info for error bars
+ps = np.linspace(0., 1., 1000)
+
+# ('even tailed') confidence interval for 95%
+alpha = 1.-0.95
+
+for i in range(3):
+  # get cumulative histogram of found regions
+  ax.hist(pp50[:,i], bins=len(pp50[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
+
+ax.set_xlabel('Credible interval (CI)')
+ax.set_ylabel('Cumulative fraction of true values within CI')
+ax.set_xlim((0., 1.))
+ax.set_ylim((0., 1.))
+pl.legend(['H1', 'L1', 'V1'], loc='best')
+
+ax.plot([0., 1.], [0., 1.], 'k--') # plot diagonal
+
+# plot target confidence band
+bins = np.linspace(0.01, 0.99, 50)
+ntot = len(pp50[:,0])
+cs = np.round(bins*ntot)
+errortop = np.zeros(len(bins))
+errorbottom = np.zeros(len(bins))
+
+for i, v in enumerate(cs):
+  a = v + 1
+  b = ntot - v + 1
+
+  Bcs = beta.cdf(ps, a, b)
+  csu, ui = np.unique(Bcs, return_index=True)
+  intf = interp1d(csu, ps[ui], kind='linear') # interpolation function
+
+  errortop[i] = intf(1.-alpha/2.)
+  errorbottom[i] = intf(alpha/2.)
+
+pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor'grey')
+
+fig.savefig('pp50Mpc_'+outfile)
+
+fig.clf()
+pl.close(fig)
+
+fig, ax = pl.subplots(figsize=(6,5))
+
+for i in range(3):
+  # get cumulative histogram of found regions
+  ax.hist(pp500[:,i], bins=100, cumulative=True, normed=True, histtype='step', color=boxColors[i])
+
+ax.set_xlabel('Credible interval (CI)')
+ax.set_ylabel('Cumulative fraction of true values within CI')
+ax.set_xlim((0., 1.))
+ax.set_ylim((0., 1.))
+pl.legend(['H1', 'L1', 'V1'], loc='best')
+
+ax.plot([0., 1.], [0., 1.], 'k--') # plot diagonal
+
+# plot target confidence band
+bins = np.linspace(0.01, 0.99, 50)
+ntot = len(pp50[:,0])
+cs = np.round(bins*ntot)
+for i, v in enumerate(cs):
+  a = v + 1
+  b = ntot - v + 1
+
+  Bcs = beta.cdf(ps, a, b)
+  csu, ui = np.unique(Bcs, return_index=True)
+  intf = interp1d(csu, ps[ui], kind='linear') # interpolation function
+
+  errortop[i] = intf(1.-alpha/2.)
+  errorbottom[i] = intf(alpha/2.)
+
+pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor'grey')
+
+fig.savefig('pp500Mpc_'+outfile)
+

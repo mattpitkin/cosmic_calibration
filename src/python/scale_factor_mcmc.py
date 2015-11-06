@@ -320,7 +320,7 @@ the analysis output (a sub-directory based on the pulsar name will be created he
 contains the pulsar information)", metavar="DIR")
 
   parser.add_argument("-O", "--output-samples", dest="outsamps", help="If this flag "
-                    "is set then the samples will be output.", default=False, action="store_true",)
+                    "is set then the samples will be output.", default=False, action="store_true")
 
   parser.add_argument("-g", "--det", dest="dets", type=str,
                       help="An interferometer to be used (multiple interferometers can be set \
