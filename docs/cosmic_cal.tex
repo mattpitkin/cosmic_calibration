@@ -17,6 +17,7 @@ superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
 \usepackage{url}
 \usepackage[normalem]{ulem}   % temporal one in draft.
 \usepackage{xspace}
+\usepackage{subcaption}
 
 \usepackage{amsopn} % for using DeclareMathOperator
 
@@ -28,6 +29,7 @@ superscriptaddress, showpacs, letterpaper, nofootinbib]{revtex4}}{}
 \newcommand{\curlH}{\mathcal{H}}
 \newcommand{\gws}{\tilde{h}}
 \newcommand{\scf}{\ensuremath{\mathcal{C}}}
+\newcommand{\scft}{\scf\xspace}
 
 \newcommand{\btheta}{\bm{\theta}}
 
@@ -759,6 +761,52 @@ Including the merger and ring-down phase, which we currently ignore, will also
 increase \ac{SNR} and act to reduce the calibration scale uncertainties.
 
 
+% discuss any bias on the actual recovered values
+\subsection{Parameter biases}
+
+It is also interested to see if our analysis has any bias on the recovered \scft \acp{PDF}, or whether they
+are recovered in a way that is consistent with the simulated values.
+To do this we have produced plots showing the cumulative fraction of the true (simulated)
+\scft values recovered within given posterior credible intervals (see e.g.\ \cite{2014PhRvD..89h4060S})
+for the \ac{BNS} systems at 50 and 500\,Mpc (see figure~\ref{fig:ppplots}).
+Self-consistent \acp{PDF} should show that a fraction of injected values falls within the corresponding credible interval,
+and therefore the cumulative fraction should lie along the diagonal of the plot. Any
+biases would show up as significant deviations from the diagonal.
+
+Figure~\ref{subfig:pp50} shows
+that for sources at 50\,Mpc there is not a very significant bias on the recovery of \scft for any of
+the detectors. However, in figure~\ref{subfig:pp500}, with sources at 500\,Mpc, whilst
+H1 and L1 follow the diagonal well, V1 goes significantly above the diagonal.
+This shows that the \acp{PDF} on \scft for V1 are too broad. The reason for this is that at these
+larger distances the \acp{PDF} on \scft for V1 are not well constrained and start to become dominated
+by the prior. As we have previously noted this prior is not that same as the distribution used
+to generate the \scf values, but is instead far broader and more conservative. So, this bias is
+showing up due to the simulated values of \scft being generated from a much narrow range.
+
+Despite the inconsistency in V1 it is satisfying to see that for the detectors for which the
+\scft values are reasonably constrained (i.e.\ H1 and L1 in figure~\ref{fig:bnsresults}) the
+actual value is recovered consistently, with little effect from the prior.
+
+\begin{figure*}
+\begin{center}
+
+\begin{tabular}{c c}
+\subcaptionbox{\label{subfig:pp50}}{
+ \includegraphics[width=0.475\textwidth]{pp50Mpc}}
+
+&
+
+ \subcaptionbox{\label{subfig:pp500}}{
+ \includegraphics[width=0.475\textwidth]{pp500Mpc}}
+\end{tabular}
+\end{center}
+\caption{\label{fig:ppplots} Each figure shows the cumulative fraction of true \scft values
+found within a
+given fractional credible interval versus fractional credible interval for each detector for
+the \ac{BNS} simulations at (\subref{subfig:pp50}) 50\,Mpc and (\subref{subfig:pp500})
+500\,Mpc. The grey shaded region is a 95\% credible band for the expected deviations from diagonal.}
+\end{figure*}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Distance estimates from \acp{sGRB}\label{sec:cosmo}}
@@ -881,9 +929,11 @@ calibrator.
 We would like to acknowledge useful discussions within the LIGO-Virgo
 Collaboration and specifically with Salvatore Vitale. LW was part funded for
 this work through a Royal Astronomical Society Undergraduate Research Bursary.
-MP and CM are funded by the Science and Technology Research Council under grant
+MP and CM are funded by the Science and Technology Facilities Council (STFC) under grant
 number ST/L000946/1. CM is also supported by a Glasgow University Lord Kelvin
-Adam Smith Fellowship. This document has LIGO DCC number \dcc.
+Adam Smith Fellowship. We are grateful for computational resources provided by
+Cardiff University, and funded by STFC grant ST/I006285/1 supporting UK Involvement in
+the operation of Advanced LIGO. This document has LIGO DCC number \dcc.
 
 \bibliography{masterbib}
 \end{document}
