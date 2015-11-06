@@ -193,7 +193,7 @@ for the error estimation using the proposed method in this project.
 % Describe our model for the calibration
 The \ac{GW} strain is measured through the differential arm length, $\Delta L$, changes of the 
 interferometer via $h(f,t) = \Delta L(f,t) / L$, where $L$ is the full arm length. Calibration is 
-required to relate the actual measured interferometer error signal output $e(f)$ to $\Delta L$. 
+required to relate the actual measured interferometer error signal output $e(f, t)$ to $\Delta L$. 
 This relation is known as the length response function, $R(f)$, defined such that
 \begin{equation}
 \Delta L(f,t) = R(f) e(f, t),
@@ -264,7 +264,8 @@ post-merger hyper-massive \ac{NS} stages of the \ac{GW} waveform.
 To put the existing work on \ac{GW} cosmology in context with the study
 described in this manuscript we are essentially turning the standard
 cosmological problem upside-down. We assume that the existing \ac{EM}
-cosmological parameter estimation (specifically for the Hubble constant) is
+cosmological parameter estimation (specifically for the Hubble constant, which is has 
+uncertainties of $O(1\%)$) is
 accurately determined and therefore a known quantity. We then assume that the
 unknown in our analysis is the absolute amplitude calibration of the
 interferometers in the global \ac{GW} detector network. The issue of
@@ -354,7 +355,7 @@ performed simulations of multiple events to see the distribution in the accuracy
 scale factor recovery.
 
 % Describe the signal model (Taylor F2 etc...)
-For our signals we use the TaylorF2 waveform approximation (see e.g.~\cite{2009PhRvD..80h4043B}
+For all our signals, for both simulation and recovery, we use the TaylorF2 waveform approximation (see e.g.~\cite{2009PhRvD..80h4043B}
 and references therein) with a 3.5 post-Newtonian expansion in phase for
 modelling our signal (in both simulations and signal recovery).  For \ac{BNS}
 systems we use non-spinning waveforms under the assumption that the component spins will be small 
@@ -377,8 +378,8 @@ amplitudes is
 t_\mathrm{c}, \phi_{\mathrm{c}})} 
 \end{align}
 %
-where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=M\eta^{3/5}$,
-with the symmetric mass ratio $\eta=m_{1}m_{2}/M^{2}$, total mass
+where the chirp-mass $\mathcal{M}$ is defined as $\mathcal{M}=Mq^{3/5}$,
+with the symmetric mass ratio $q=m_{1}m_{2}/M^{2}$, total mass
 $M=m_{1}+m_{2}$ (where $m_{1}$ and $m_{2}$ are the component masses), and $\iota$ is
 the inclination angle.  The Fourier transform of the \ac{GW} strain measured
 at the $k^{\rm{th}}$ detector is then given by
@@ -440,8 +441,14 @@ calibration scale factor), and the $i$ indices increment over frequency with
 $i_{\rm low}$ and $i_{\rm high}$ corresponding to the lower and upper range in
 frequencies used for our analysis, which were 20\,Hz to 400\,Hz respectively.
 This frequency range was chosen as the vast majority of the \ac{SNR} for the
-inspiralling signals we use can be found within this range, so going to lower
-or higher frequencies provides very little additional information. The source
+inspiralling signals we use can be found within it (for a typical \ac{BNS}
+system of two $1.4\,{\rm M_{odot}}$ stars, or a \ac{NSBH} system with component masses of
+$5\,{\rm M_{\odot}}$ and $1.4\,{\rm M_{\odot}}$, only $\sim 3-4\%$ more \ac{SNR} is gained
+by using a 10 to 1500\,Hz frequency range), so going to lower
+or higher frequencies provides very little additional information whilst increasing
+the computational cost\footnote{In a real analysis, rather than this case study, the additional
+computational cost of using a larger frequency range may be worthwhile, but in this case we had
+to run many simulations and the computational cost was a limiting factor.}. The source
 parameters have been subsumed into a vector $\btheta$ and the calibration scale
 factors are within the vector $\bm{\scf}$.
 
@@ -522,7 +529,7 @@ combination will have little effect on the result.
 Finally, we require a prior on the calibration scale factors for each detector.
 We make the assumption that in general the calibration applied to the detector
 data will be close to being correct, so want to use a prior that is peaked at $\scf_k=1$. We
-also assume that the prior \ac{PDF} of the calibration scale factor is either
+also (na\"{i}vely) assume that the prior \ac{PDF} of the calibration scale factor is either
 larger or smaller than unity by an equivalent factor, e.g.\ $p(\scf|I)=10$ is
 equivalent to $p(\scf|I)=0.1$. For the scale factor in each detector we 
 therefore use the following log-normal distribution as our prior
@@ -534,13 +541,12 @@ therefore use the following log-normal distribution as our prior
 %
 where we chose $\sigma = 1.07$, which together with the requirement that the
 mode is at unity gives $\mu = 1.15$. With these parameters the prior
-probability density at 0.1 and 10 is one tenth of that at 1. Note that this
+probability density at 0.1 and 10 is one tenth of that at 1 making this a fairly
+conservative prior designed to have little impact on our results. Note that this
 prior does not give a symmetric amount of probability about unity (so our prior
 favours \scf\xspace values greater than 1), but given our simulation criterion
 described in Section~\ref{sec:simulations} we find that the likelihood
-generally overwhelms the prior. As $\scf$ is a scale factor we also have the
-further constraint that it must be positive and hence the log-normal prior is a
-natural choice.
+generally overwhelms the prior and our na\"{i}ve assumptions have little effect.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulations}\label{sec:simulations}
@@ -574,7 +580,9 @@ deviation of $0.125$ (equivalent to a mean fractional offset of 10\%).  Note
 that this distribution is broadly consistent with the scale of calibration
 uncertainties that are expected via experimental methods, but is not the same as
 the prior that we assume on $\mathcal{C}$ (see Eq.~\ref{eq:scale_prior}) when recovering 
-signals. 
+signals\footnote{The reason behind this is that we wanted to use a fairly na\"{i}ve and
+conservative prior for signal recovery that had little impact in the results, i.e.\
+to produce results domintaed by the likelihood for these parameters.}. 
 
 % describe the detection cut 
 In accepting a proposed injection as one to be analysed we introduced a
@@ -585,8 +593,8 @@ signals would be coincident with a \ac{sGRB} we do not include the often used
 further constraint that the total coherent network \ac{SNR} is greater than 12.
 For injections close to the \ac{SNR} threshold, the application of the
 threshold resulted in the preferential selection of better oriented systems.
-Therefore, at larger distances the population of injected sources was not
-uniformly distributed over the sky and instead favoured locations with better
+Therefore, at larger distances the population of injected
+sources was not uniformly distributed over the sky and instead favoured locations with better
 antenna response.  Similarly, despite already being constrained by the prior to
 small inclination angles, the accepted injections show preference for sources
 very close to circularly polarised.
@@ -651,7 +659,7 @@ signals drawn from the prior distribution that fulfill the detection criterion.
  \caption{\label{fig:bnspost} The marginalised posterior probability distributions for the unknown
  parameters of a \ac{BNS} system, including calibration scaling factors (surrounded by the red 
 borders) for the three detectors (H1, L1 and V1). The injected signal was at a distance of 
-250\,Mpc, had \ac{SNR} of 8.7, 10.9 and 4.1 and percentage uncertainties in the calibration scale 
+250\,Mpc, had \ac{SNR} of 8.7, 10.9 and 4.1 and percentage relative uncertainties in the calibration scale 
 factors of 14\%, 11\% and 27\% for each of the detectors respectively.}
 \end{figure*}
 
@@ -662,7 +670,7 @@ factors of 14\%, 11\% and 27\% for each of the detectors respectively.}
  \caption{\label{fig:nsbhpost} The marginalised posterior probability distributions for the unknown
  parameters of a \ac{NSBH} system, including calibration scaling factors for the three detectors 
 (H1, L1 and V1). The injected signal was at a distance of 450\,Mpc, had \ac{SNR} of 7.7, 10.9 and 
-4.2 and percentage uncertainties in the calibration scale factors of 17\%, 14\% and 34\% for each of 
+4.2 and percentage relative uncertainties in the calibration scale factors of 17\%, 14\% and 34\% for each of 
 the detectors respectively.}
 \end{figure*}
 
