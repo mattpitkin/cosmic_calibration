@@ -65,6 +65,9 @@ def credible_inj(histbins, histvals, injval):
 pl.rc('text', usetex=True)
 pl.rc('font', family='serif')
 pl.rc('font', size=14)
+pl.rc('grid', linestyle=':')
+pl.rc('grid', alpha=0.5)
+pl.rc('grid', linewidth=0.5)
 
 dists = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
 
@@ -204,6 +207,7 @@ ax.set_ylim((0, 100))
 pl.legend(hs, ['H1', 'L1', 'V1'], loc='best')
 pl.xlabel('distance (Mpc)')
 pl.ylabel('\% calibration scaling error (1$\sigma$ equivalent)')
+ax.grid(True)
 
 ax2 = ax.twinx()
 ax2.plot(dists, rates, 'mo--', markerfacecolor='None', markeredgecolor='m')
@@ -239,7 +243,7 @@ ax.set_ylabel('Cumulative fraction of true values within CI')
 ax.set_xlim((0., 1.))
 ax.set_ylim((0., 1.))
 pl.legend(['H1', 'L1', 'V1'], loc='best')
-
+ax.grid(True)
 ax.plot([0., 1.], [0., 1.], 'k--') # plot diagonal
 
 # plot target confidence band
@@ -262,7 +266,7 @@ for i, v in enumerate(cs):
 
 pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor='grey')
 
-fig.savefig(os.path.join(os.path.dirname(outfile), 'pp50Mpc_'+os.path.basename(outfile)))
+fig.savefig(os.path.join(os.path.dirname(outfile), 'pp50Mpc.pdf'))
 
 fig.clf()
 pl.close(fig)
@@ -278,7 +282,7 @@ ax.set_ylabel('Cumulative fraction of true values within CI')
 ax.set_xlim((0., 1.))
 ax.set_ylim((0., 1.))
 pl.legend(['H1', 'L1', 'V1'], loc='best')
-
+ax.grid(True)
 ax.plot([0., 1.], [0., 1.], 'k--') # plot diagonal
 
 # plot target confidence band
@@ -298,4 +302,4 @@ for i, v in enumerate(cs):
 
 pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor='grey')
 
-fig.savefig(os.path.join(os.path.dirname(outfile), 'pp500Mpc_'+os.path.basename(outfile)))
+fig.savefig(os.path.join(os.path.dirname(outfile), 'pp500Mpc.pdf'))

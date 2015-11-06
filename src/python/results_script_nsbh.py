@@ -69,6 +69,9 @@ def credible_interval(dsamples, ci):
 pl.rc('text', usetex=True)
 pl.rc('font', family='serif')
 pl.rc('font', size=14)
+pl.rc('grid', linestyle=':')
+pl.rc('grid', alpha=0.5)
+pl.rc('grid', linewidth=0.5)
 
 dists = [100, 200, 300, 400, 500, 600, 700, 800, 900] #, 1000]
 
@@ -185,6 +188,7 @@ ax.set_xticks(dists)
 
 ax.set_xlim((0, 1100))
 ax.set_ylim((0, 100))
+ax.grid(True)
 
 pl.legend(hs, ['H1', 'L1', 'V1'], loc='best')
 pl.xlabel('distance (Mpc)')
