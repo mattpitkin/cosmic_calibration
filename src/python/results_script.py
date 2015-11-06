@@ -52,9 +52,9 @@ else:
 
 
 # get the credible region in which the injected value is found (bounded from zero for convenience)
-def credible_inj(histbins, histvals, injval)
+def credible_inj(histbins, histvals, injval):
   # normalise histogram and get cumulative sum
-  cumvals = np.cumsum(histvals/np.sum(histvals))
+  cumvals = np.cumsum(histvals.astype(float)/np.sum(histvals))
 
   if injval <= histbins[0] or injval >= histbins[-1]:
     return 1. # injection outside posterior
@@ -120,7 +120,7 @@ for i, d in enumerate(dirs):
         # divide by two to get the half widths and convert to percentage
         vals.append(100.*(info['Results']['Scale68%CredibleInterval'][k][1]-info['Results']['Scale68%CredibleInterval'][k][0])/(2.*info['InjectionParameters']['scales'][k]))
         if i == 0 or i == len(dirs)-1:
-          ppss.append(credible_inj(histd[1], histd[0], info['InjectionParameters']['scales'][k]))
+          ppss.append(credible_inj(np.array(histd[1]), np.array(histd[0]), info['InjectionParameters']['scales'][k]))
 
     if len(vals) == 3:
       relsf.append(vals)
@@ -231,6 +231,7 @@ alpha = 1.-0.95
 
 for i in range(3):
   # get cumulative histogram of found regions
+  if i == 0: print pp50[:,i]
   ax.hist(pp50[:,i], bins=len(pp50[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
 
 ax.set_xlabel('Credible interval (CI)')
@@ -259,9 +260,9 @@ for i, v in enumerate(cs):
   errortop[i] = intf(1.-alpha/2.)
   errorbottom[i] = intf(alpha/2.)
 
-pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor'grey')
+pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor='grey')
 
-fig.savefig('pp50Mpc_'+outfile)
+fig.savefig(os.path.join(os.path.dirname(outfile), 'pp50Mpc_'+os.path.basename(outfile)))
 
 fig.clf()
 pl.close(fig)
@@ -295,7 +296,6 @@ for i, v in enumerate(cs):
   errortop[i] = intf(1.-alpha/2.)
   errorbottom[i] = intf(alpha/2.)
 
-pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor'grey')
+pl.fill_between(bins, errorbottom, errortop, alpha=0.25, facecolor='grey', edgecolor='grey')
 
-fig.savefig('pp500Mpc_'+outfile)
-
+fig.savefig(os.path.join(os.path.dirname(outfile), 'pp500Mpc_'+os.path.basename(outfile)))
