@@ -11,7 +11,7 @@ from optparse import OptionParser
 import json
 
 from matplotlib import pyplot as pl
-import triangle
+import corner
 
 # swig lal modules for signal generation
 import lal
