@@ -234,8 +234,12 @@ ps = np.linspace(0., 1., 1000)
 alpha = 1.-0.95
 
 for i in range(3):
+  nb, binedges = np.histogram(pp50[:,i], bins=len(pp50[:,i]))
+  cn = np.cumsum(nb)/float(len(pp50)) 
+
   # get cumulative histogram of found regions
-  ax.hist(pp50[:,i], bins=len(pp50[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
+  #ax.hist(pp50[:,i], bins=len(pp50[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
+  ax.step(binedges[:-1], cn, color=boxColors[i])
 
 ax.set_xlabel('Credible interval (CI)')
 ax.set_ylabel('Cumulative fraction of true values within CI')
@@ -273,8 +277,12 @@ pl.close(fig)
 fig, ax = pl.subplots(figsize=(6,5))
 
 for i in range(3):
+  nb, binedges = np.histogram(pp500[:,i], bins=len(pp500[:,i]))              
+  cn = np.cumsum(nb)/float(len(pp500))
+
   # get cumulative histogram of found regions
-  ax.hist(pp500[:,i], bins=len(pp500[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
+  # ax.hist(pp500[:,i], bins=len(pp500[:,i]), cumulative=True, normed=True, histtype='step', color=boxColors[i])
+  ax.step(binedges[:-1], cn, color=boxColors[i])
 
 ax.set_xlabel('Credible interval (CI)')
 ax.set_ylabel('Cumulative fraction of true values within CI')
