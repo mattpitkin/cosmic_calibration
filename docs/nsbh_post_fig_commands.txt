@@ -1,10 +1,24 @@
 # command lines used to produce the BNS posterior example:
-./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1250 --Nburnin 1250 --Nensemble 1750 --intseed 1 --dist 450  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2 --nsbh
+
+DIST=450
+M1=4.456
+M2=1.337
+PHI=0.1
+PSI=1.2
+IOTA=8
+S1=0.81
+S2=0.75
+S3=0.9
+RA=4.1
+DEC=-0.2
+A1=-0.35
+
+./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1500 --Nburnin 1250 --Nensemble 1750 --intseed 1 --dist $DIST  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2 --nsbh -p $PHI -a $PSI -i $IOTA -q $M1 -Q $M2 -S $S1 -S $S2 -S $S3 -r $RA -d $DEC -A $A1
 
 For the current figure this gave:
-H1: SNR = 11.07
-L1: SNR = 9.30
-V1: SNR = 3.76
-0.130917
-0.134738
-0.363572
+H1: SNR = 9.81
+L1: SNR = 10.25
+V1: SNR = 3.75
+0.145918
+0.141486
+0.362384

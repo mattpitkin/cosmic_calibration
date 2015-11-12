@@ -1,10 +1,22 @@
 # command lines used to produce the BNS posterior example:
-./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1500 --Nburnin 1000 --Nensemble 1000 --intseed 0 --dist 250  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2
+M1=1.414 # mass of component 1
+M2=1.223 # mass of component 2
+PHI=0.6  # coalescence phase
+PSI=1.35 # polarisation angle
+RA=4.1   # right ascension (rads)
+DEC=0.1  # decination (rads)
+IOTA=17  # iota in degrees
+S1=0.98  # scale factors for H1, L1 and V1
+S2=1.02
+S3=1.03
+DIST=250
+
+./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1500 --Nburnin 1000 --Nensemble 1000 --intseed 0 --dist $DIST  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2 -p $PHI -a $PSI -i $IOTA -q $M1 -Q $M2 -S $S1 -S $S2 -S $S3 -r $RA -d $DEC
 
 For the current figure this gave:
-H1: SNR = 7.76
-L1: SNR = 8.33
-V1: SNR = 5.37
-0.156993
-0.153978
-0.229018
+H1: SNR = 7.86
+L1: SNR = 9.17
+V1: SNR = 5.15
+0.173344
+0.146805
+0.237310

@@ -834,12 +834,24 @@ if it does not fulfill the SNR criterion.")
     # set t0 to 0
     samples[:,3] = samples[:,3] - t0
 
+    # set Mc to be centred at 0 and in 1/1000 solar mass units
+    samples[:,4] = (samples[:,4] - mC)*1e3
+
+    # for the moment ignore psi, phi0 and t_c in output plots
+    samplesnew = np.delete(samples, 0, 1) # delete psi
+    samplesnew = np.delete(samplesnew, 0, 1) # delete phi0
+    samplesnew = np.delete(samplesnew, 1, 1) # delete t_c
+
     if args.nsbh:
-      labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$", "$a_1$"]
-      truths = [psi, phi0, iota, 0.0, mC, q, a1spin]
+      #labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$", "$a_1$"]
+      #truths = [psi, phi0, iota, 0.0, mC, q, a1spin]
+      labels = ["$\iota\,\mathrm{rads}$", "$\mathcal{M}-\mathcal{M}_{\mathrm{true}}\,10^{-3}\mathrm{M}_{\odot}$", "$q$", "$a_1$"]
+      truths = [iota, mC-mC, q, a1spin]
     else:
-      labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
-      truths = [psi, phi0, iota, 0.0, mC, q]
+      #labels = ["$\psi$", "$\phi_0$", "$\iota$", "$t_c$", "$\mathcal{M}$", "$q$"]
+      #truths = [psi, phi0, iota, 0.0, mC, q]
+      labels = ["$\iota \,\mathrm{rads}$", "$\mathcal{M}-\mathcal{M}_{\mathrm{true}}\,10^{-3}\mathrm{M}_{\odot}$", "$q$"]
+      truths = [iota, mC-mC, q]
     for i in range(len(dets)):
       labels.append("$\mathcal{C}_{\mathrm{%s}}}$" % dets[i])
       truths.append(scales[i])
@@ -847,7 +859,14 @@ if it does not fulfill the SNR criterion.")
     # plot 1, 2 and 3 sigma contours
     levels = 1.-np.exp(-0.5*np.array([1., 2., 3.])**2)
 
-    fig = corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, label_kwargs={'fontsize': 22}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
+    #fig = corner(samples, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, label_kwargs={'fontsize': 22}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
+    fig = corner(samplesnew, labels=labels, truths=truths, data_kwargs={'color': 'darkblue', 'ms': 2}, label_kwargs={'fontsize': 22}, plot_density=True, no_fill_contours=False, plot_contours=True, levels=levels)
+
+    # change first idx
+    if args.nsbh:
+      firstidx = 4
+    else:
+      firstidx = 3
 
     # highlight scale factor plots by making their borders red
     figaxes = fig.get_axes()
