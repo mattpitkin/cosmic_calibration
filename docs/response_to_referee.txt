@@ -1,17 +1,9 @@
-----------------------------------------------------------------------
-Report of the Referee -- DL11679/Pitkin
-----------------------------------------------------------------------
+We would like to thank the referee for their very useful comments.
+We have included response to them inline below and make note any
+changes to the manuscript. These changes are displayed in red in the
+resubmitted version of the manuscript.
 
-This article proposes a novel method of calibrating ground-based
-gravitational-wave detectors by employing compact-binary systems as
-standard sirens. I find it to be scientifically interesting, novel,
-and well explained. Provided that the authors can address my following
-points, I suggest this article for publication subject to minor
-revision.
-
-** MAJOR COMMENTS
-
--- In section 5, I have a problem with the assumption of the sGRB jet
+Major comment: "In section 5, I have a problem with the assumption of the sGRB jet
 opening angle being modelled as a half-normal distribution. Figure 3
 in Fong et al. (2014) shows that the long GRB distribution may be
 modelled by something like a Rayleigh distribution (or something
@@ -22,139 +14,197 @@ half-normal distribution for the opening angle is not a good match to
 the data. Did you try other priors on the inclination angle which may
 better represent the true distribution? I ask that you try to use a
 better prior for the inclination angle, or alternatively provide me
-with a better justification of your current choice.
+with a better justification of your current choice."
 
-** MINOR COMMENTS
+Response: Our poor description regarding how we use the opening angle (theta_j)
+distribution to constrain the distribution on the orientation angle (iota) of
+the systems has caused confusion here. We are not really interested
+in the jet opening angle distribution, but are just trying to somehow use
+it as a proxy for getting an idea of the orientation angle distribution,
+which would not be expected to look the same. Under the assumption that to
+observe a sGRB we must have theta_j >= |iota|, and assuming a Rayleigh
+distribution on theta_j, the distribution on |iota| does become a half-normal
+distribution. In fact our choice of a half-normal for |iota| with a sigma value of
+14.8 degs is rather conservative (in that it extends to larger iota values
+[this is something we would plan to correct in future studies]) compared to the
+half-normal distribution that you truly get based a Rayleigh distribution in 
+theta_j with a median of 10 degs. We have added text to the manuscipt to
+hopefully make this clearer. If the referee would like to see more detail on
+these we can send them further information.
 
-INTRODUCTION
+Minor comments
+--------------
 
--- The first sentence should be followed by a reference to Abadie et
+Comment: "The first sentence should be followed by a reference to Abadie et
 al. (2010), or a similar updated article on predicted detection rates
-if available.
+if available."
 
--- "will be detected out to a maximum range of ≈ 450 Mpc." -> clarify
-whether this is the horizon distance or sensemon distance.
+Response: 
 
--- "Observations of sGRBs give an inferred rate of sGRB producing CBC
+Comment: ""will be detected out to a maximum range of ≈ 450 Mpc." -> clarify
+whether this is the horizon distance or sensemon distance."
+
+Response: 
+
+Comment: ""Observations of sGRBs give an inferred rate of sGRB producing CBC
 mergers" -> mention that the sGRB rate must be corrected for beaming
-effects to map to CBC merger rate.
+effects to map to CBC merger rate."
 
--- "may be possible to identify the host galaxy of the source" -> is a
+Response:
+
+Comment: ""may be possible to identify the host galaxy of the source" -> is a
 host galaxy necessary for redshift identification? Can the redshift
-not be attained from spectroscopic analysis of the sGRB light curve?
+not be attained from spectroscopic analysis of the sGRB light curve?"
 
--- "With knowledge of the redshift, using current best estimates for
+Response:
+
+Comment: ""With knowledge of the redshift, using current best estimates for
 the Hubble constant and other cosmological parameters, the true
 luminosity distance can be estimated to ∼ 1% accuracy." -> reference
-needed for current estimates of cosmological parameters.
+needed for current estimates of cosmological parameters."
 
-SECTION II
+Response:
 
--- Semi-colon in first sentence can be simply replaced by a comma.
+Comment: "Semi-colon in first sentence can be simply replaced by a comma."
 
--- "at the frequency range used in this project" --> explicitly
-mention the frequency range.
+Response:
 
--- "error in the amplitude calibration" -> is this the strain
-amplitude or the error signal output. Clarify either way.
+Comment: ""at the frequency range used in this project" --> explicitly
+mention the frequency range."
 
--- "within a control feedback loop (see [7]), which are subject to
+Response:
+
+Comment: ""error in the amplitude calibration" -> is this the strain
+amplitude or the error signal output. Clarify either way."
+
+Response:
+
+Comment: ""within a control feedback loop (see [7]), which are subject to
 uncertainties." -> This is quite a vague sentence. What kind of
-uncertainties?
+uncertainties?"
 
--- Even though the math is quite simple, I would advocate explicitly
+Response:
+
+Comment: "Even though the math is quite simple, I would advocate explicitly
 stating the relationship between the true length response function and
-the estimated one via the calibration scale factor.
+the estimated one via the calibration scale factor."
 
--- "larger amplitude (e.g. be closer)" -> it would only appear to be
+Response:
+
+Comment: ""larger amplitude (e.g. be closer)" -> it would only appear to be
 closer if we had a handle on the other parameters affecting the
 amplitude e.g. the chirp mass. We obviously get the latter from the
-signal's phase evolution, but this point should be clarified.
+signal's phase evolution, but this point should be clarified."
 
--- How realistic is the assumption of a constant calibration scale
+Response:
+
+Comment: "How realistic is the assumption of a constant calibration scale
 factor over the full LIGO band? What physical mechanism would lead us
 to make a poor estimation of the length response function, and why
 would other calibration tests fail to mitigate the effect dealt with
-in this article?
+in this article?"
 
-SECTION III
+Response:
 
--- "different signal arrival times at each detector in the network" ->
+Comment: ""different signal arrival times at each detector in the network" ->
 the concept of a network has not been mentioned or discussed before. A
 simple sentence explaining the purpose and composition of the kind of
-detector network expected in the advanced era is necessary.
+detector network expected in the advanced era is necessary."
 
--- A reference for the Einstein Telescope is necessary, whether this
+Response:
+
+Comment: "A reference for the Einstein Telescope is necessary, whether this
 be the original design study, or possibly studies of arm orientation
-preferences.
+preferences."
 
--- "The use of GW events with sGRB counterparts for use as a
+Response:
+
+Comment: ""The use of GW events with sGRB counterparts for use as a
 cosmological tool was investigated in [11] and [12] with respect to
 the 3rd generation GW interferometer, the Einstein Telescope (ET)." ->
 the concept was also explored for advanced era detectors in a later
-section of Taylor, Gair, Mandel (2012).
+section of Taylor, Gair, Mandel (2012)."
 
--- "These instead use either the distribution [...] assumed neutron
+Response:
+
+Comment: ""These instead use either the distribution [...] assumed neutron
 star (NS) mass" -> to clarify, Taylor, Gair, Mandel (2012) assume the
 *form* of the NS mass distribution, but search over the parameters of
-the distribution as hyperparameters in a hierarchical modeling scheme.
+the distribution as hyperparameters in a hierarchical modeling scheme."
 
--- "specifically for the Hubble constant, which is has uncertainties
-of O(1%)" -> reference to Planck results or other appropriate sources.
+Response:
 
-SECTION IV
+Comment: ""specifically for the Hubble constant, which is has uncertainties
+of O(1%)" -> reference to Planck results or other appropriate sources."
 
--- "If the event exhibits an optical afterglow then the host galaxy
+Response:
+
+Comment: ""If the event exhibits an optical afterglow then the host galaxy
 can be identified and from which a redshift can be obtained" -> I
 reiterate my question from earlier: why can the redshift not be
-determined from the sGRB light curve itself?
+determined from the sGRB light curve itself?"
 
--- "The fraction of events with associated redshifts is ∼1/3" -> do
-you have a reference for this?
+Response:
 
--- "equal to the horizon range of the advanced GW detector network for
-BNS systems." -> what is the network composition in this case?
+Comment: ""The fraction of events with associated redshifts is ∼1/3" -> do
+you have a reference for this?"
 
--- "derived from three main sources, population synthesis models..."
--> "derived from three main sources: population synthesis models..."
+Response:
 
--- "In [3] using the rate of observed sGRBs and assuming a beaming
+Comment: ""equal to the horizon range of the advanced GW detector network for
+BNS systems." -> what is the network composition in this case?"
+
+Response:
+
+Comment: ""derived from three main sources, population synthesis models..."
+-> "derived from three main sources: population synthesis models...""
+
+Response:
+
+Comment: ""In [3] using the rate of observed sGRBs and assuming a beaming
 angle of 15◦ a similar event rate of 1–180 is obtained." -> This
 sentence was a bit difficult to parse. I suggest restructuring it to
 with something like "A similar event rate of 1-180 was obtained in
 [3], where the rate of observed sGRBs was converted to the rate of BNS
-events by assuming a beaming angle of 15 degrees."
+events by assuming a beaming angle of 15 degrees.""
 
--- Is the beaming angle here the full opening angle, or the half
-opening angle?
+Response:
 
--- "For the GW followup of sGRB scenario the merger time for BNS/NSBH
+Comment: "Is the beaming angle here the full opening angle, or the half
+opening angle?"
+
+Response:
+
+Comment: ""For the GW followup of sGRB scenario the merger time for BNS/NSBH
 systems will be estimated from the sGRB to within a few seconds" ->
 This sentence was difficult to understand. Suggest changing it to "For
 the scenario of a GW-followup of an observed sGRB, the merger time for
 BNS/NSBH systems will be estimated from the sGRB to within a few
-seconds."
+seconds.""
 
--- "However, as discussed earlier, the property of beaming severely
+Response:
+
+Comment: ""However, as discussed earlier, the property of beaming severely
 impacts the probable rate of such joint observations." -> So am I to
 understand from this final paragraph that although the probability of
 such joint observations is low, the SNR distribution of any detected
 signals will be comparatively higher than the regular
-GW-detection-only SNR distribution?
+GW-detection-only SNR distribution?"
 
-SECTION V
+Response:
 
--- In equation 3, I believe the inclination term in hx should simply
+Comment: "In equation 3, I believe the inclination term in hx should simply
 be cosine(iota) rather than the square. Please proof check all
-equations to ensure they match your intent.
+equations to ensure they match your intent."
 
--- "the sky position of the source α and δ." -> I assume these
-correspond to RA and DEC, but this should be made clear.
+Response: The referee is correct. This has been fixed.
 
--- See my comment on the modeling of the inclination angle
-distribution above.
+Comment: ""the sky position of the source α and δ." -> I assume these
+correspond to RA and DEC, but this should be made clear."
 
--- "for the black hole we use a prior based on the canonical mass
+Response: alpha and delta have now been defined as right ascension and declinarion respectively.
+
+Comment: ""for the black hole we use a prior based on the canonical mass
 distribution used for the rate results in [34] with a mean of 5 M and
 a standard deviation of 1 M." -> you mention that this distribution is
 only an example for this type of system, but how would you do this in
@@ -162,48 +212,69 @@ reality? Would you make the mean and standard deviation further
 parameters in your search in a hierarchical modelling scheme? How
 would your current choices bias calibration attempts if the population
 you are targeting is significantly different than your assumptions
-here?
+here?"
 
--- In equation 7, do your choices mean p(C=0.1) = p(C=10) or
-p(lnC=ln(0.1)) = p(lnC=ln(10))?
+Response:
 
--- "uniform distribution on the sky" -> does this mean uniform in
-right ascension and uniform in cosine(90-declination)?
+Comment: "In equation 7, do your choices mean p(C=0.1) = p(C=10) or
+p(lnC=ln(0.1)) = p(lnC=ln(10))?"
 
--- Your range of injected calibration scale factors is quite narrow,
+Response: The choice mean p(C=0.1) = p(C=10). This has been fixed.
+
+Comment: ""uniform distribution on the sky" -> does this mean uniform in
+right ascension and uniform in cosine(90-declination)?"
+
+Response:
+
+Comment: "Your range of injected calibration scale factors is quite narrow,
 meaning you only really tested situations where the factor was pretty
 close to optimal. Did you test cases where the detectors were very
 poorly calibrated? If not, then I highly suggest that you do so, or
-adequately comment on expectations from these tests.
+adequately comment on expectations from these tests."
 
-SECTION VI
+Response:
 
--- "calculated by averaging 64 separate noisy realisations of the PSD
+Comment: ""calculated by averaging 64 separate noisy realisations of the PSD
 and scaled with the same calibraion scale factor as applied to the
 injection and noise" -> firstly the typo in "calibration" should be
 corrected. Also, does this mean that the calibration scale factor
 appears in "S" as a parameter also during your MCMC? If so, why does
 it not explicitly appear in the denominator of the exp[] of equation
-6?
+6?"
 
--- In the paragraph on page 6 beginning "In figure 3..." there is some
+Response: The typo has been corrected. The calibration scale factor does
+not appear in "S" during the MCMC or the denominator of equation 6. The
+description in this section is saying how the simulated data was created,
+whereas during the MCMC it is the only the expect signal waveform
+that has the scale factor applied to it to try and match the data (to which
+the calibration factor has already been applied during its creation).
+
+Comment: "In the paragraph on page 6 beginning "In figure 3..." there is some
 explanation of why the H1 and L1 uncertainties saturate out to ~25%.
 The explanation did not seem very clear to me, and does not address
 why V1 does not show a similar saturation. What is the significance of
 the value of ~25%? Is there some influence of the finiteness of the
 detected population at larger distances that is influencing the width
-of the uncertainty distribution?
+of the uncertainty distribution?"
 
--- In figure 1 the tick labels for the chirp mass are overlaid with
+Response:
+
+Comment: "In figure 1 the tick labels for the chirp mass are overlaid with
 the label. Better labelling or figure formatting is needed here, as
 well as units where appropriate. I like the different edge coloring
 for the relevant scale factor boxes, but perhaps these red edges could
-be thickened for black and white printing.
+be thickened for black and white printing."
 
--- No mention is given to the number of MCMC iterations, the length of
+Response:
+
+Comment: "No mention is given to the number of MCMC iterations, the length of
 burn-in, or how convergence was ascertained. A brief comment would be
-appropriate.
+appropriate."
 
--- Page 9, second paragraph. "this prior is not that same" -> "this
-prior is not the same"
+Response:
+
+Comment: "Page 9, second paragraph. "this prior is not that same" -> "this
+prior is not the same""
+
+Response: This has been fixed.
 
