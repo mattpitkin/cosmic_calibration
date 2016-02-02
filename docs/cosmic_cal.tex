@@ -359,7 +359,7 @@ amplitudes is
 \left(1+\cos^{2}\iota\right)D_{L}^{-1} \mathcal{M}^{5/6}f^{-7/6}e^{-i\Psi(f,
 \mathcal{M}, t_\mathrm{c}, \phi_{\mathrm{c}})}, \nonumber \\
 \gws_{\times}(f) &\propto
-\left(\cos^{2}\iota\right)D_{L}^{-1}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \mathcal{M},
+\cos{\iota}D_{L}^{-1}\mathcal{M}^{5/6} f^{-7/6}e^{-i\Psi(f, \mathcal{M},
 t_\mathrm{c}, \phi_{\mathrm{c}})} 
 \end{align}
 %
@@ -377,7 +377,7 @@ at the $k^{\rm{th}}$ detector is then given by
 %
 where $F^{k}_{+}$ and $F^{k}_{\times}$ are the antenna response functions which
 are dependent upon the polarisation angle $\psi$ and the sky position of the
-source $\alpha$ and $\delta$.
+source \refresp{with right ascension} $\alpha$ and \refresp{declination} $\delta$.
 
 % Define the detectors and the noise epoch we will be using
 For this analysis we consider the advanced generation \ac{aLIGO} and
@@ -459,12 +459,11 @@ inclination angle. Beam opening angles for \acp{sGRB} are relatively poorly
 constrained as they are based on only a few jet-break detections. A comparative
 study of estimates and lower-limits of opening angles for 13 \acp{sGRB} given
 in~\cite{2014ApJ...780..118F} provides a median opening angle value of $\sim
-10^{\circ}$. We assume that the beam opening angle is a half-normal
-distribution, for which the median is given by $\sqrt{2}\erf{}^{-1}(1/2)\sigma
-\sim 0.67\sigma$. It follows that a median opening angle of a $\sim 10^{\circ}$
-corresponds to $\sigma \sim 14.8^{\circ}$. We therefore place a Gaussian
-prior on the inclination angle $\iota$ with zero mean and a standard deviation
-$\sigma=14.8^{\circ}$. This, and the choice of polarisation angle prior range given below, 
+10^{\circ}$. \refresp{We use this median opening angle as a rather conservative
+guide to form a Gaussian prior distribution on the system inclination angle,
+$\iota$, by converting it into an equivalent standard devaition for a half-normal
+distribution. We therefore place a Gaussian prior on $\iota$ with zero mean and a standard deviation
+$\sigma=14.8^{\circ}$.} This, and the choice of polarisation angle prior range given below, 
 explicitly fixes the handedness of the system's rotation (or alternatively whether it is face-on or 
 back-on). If we were to allow the inclination to have two modes (one for face-on and one 
 for back-on), or alternatively to double the range of the polarisation angle, it would have no 
@@ -515,8 +514,8 @@ Finally, we require a prior on the calibration scale factors for each detector.
 We make the assumption that in general the calibration applied to the detector
 data will be close to being correct, so want to use a prior that is peaked at $\scf_k=1$. We
 also (na\"{i}vely) assume that the prior \ac{PDF} of the calibration scale factor is either
-larger or smaller than unity by an equivalent factor, e.g.\ $p(\scf|I)=10$ is
-equivalent to $p(\scf|I)=0.1$. For the scale factor in each detector we 
+larger or smaller than unity by an equivalent factor, e.g.\ \refresp{$p(\scf=10|I)$ is
+equivalent to $p(\scf=0.1|I)$}. For the scale factor in each detector we 
 therefore use the following log-normal distribution as our prior
 %
 \begin{equation}\label{eq:scale_prior}
@@ -609,7 +608,7 @@ Section~\ref{sec:priors}. In each case when calculating the likelihood we used
 an estimate of the noise \ac{PSD} based on the advanced detector design
 sensitivities (using those given in~\cite{2013arXiv1304.0670L}), but calculated by averaging 
 64 separate noisy realisations of the \ac{PSD} and scaled
-with the same calibraion scale factor as applied to the injection and noise\footnote{We do not account for there 
+with the same \refresp{calibration} scale factor as applied to the injection and noise\footnote{We do not account for there 
 being a potential difference
 between the estimated \ac{PSD} and the actual \ac{PSD} of the analysed section
 of data as described in e.g.\ \cite{2013PhRvD..88h4044L}. This difference would
@@ -764,7 +763,7 @@ the detectors. However, in figure~\ref{subfig:pp500}, with sources at 500\,Mpc, 
 H1 and L1 follow the diagonal well, V1 goes significantly above the diagonal.
 This shows that the \acp{PDF} on \scft for V1 are too broad. The reason for this is that at these
 larger distances the \acp{PDF} on \scft for V1 are not well constrained and start to become dominated
-by the prior. As we have previously noted this prior is not that same as the distribution used
+by the prior. As we have previously noted this prior is not \refresp{the} same as the distribution used
 to generate the \scft values, but is instead far broader and more conservative. So, this bias is
 showing up due to the simulated values of \scft being generated from a much narrow range.
 
