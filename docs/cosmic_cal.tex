@@ -117,7 +117,7 @@ $\sim 20\%$ can be found with BNS sources out to $\sim 500$\,Mpc.
 
 % introduce GWs and BNS systems
 It is expected that the advanced generation of interferometric \ac{GW}
-detectors will detect waves emitted from $O(10s)$ of \acp{CBC} per year. One
+detectors will detect waves emitted from $O(10s)$ of \acp{CBC} per year \refresp{\cite{2010CQGra..27q3001A}}. One
 such class of these cataclysmic events, the inspiral and merger of \ac{BNS}
 systems will be detected out to a maximum range of $\approx 450$ Mpc. Assuming
 the current best estimates for the cosmological parameters, this is equivalent
@@ -174,7 +174,7 @@ conclude.
 \section{Gravitational wave detector calibration\label{sec:calibration}}
 
 The technique used throughout \ac{GW} research in calibrating the detectors is carried out through 
-a complicated system of physical manipulations of the Fabry-P\'{e}rot Michelson interferometer; 
+a complicated system of physical manipulations of the Fabry-P\'{e}rot Michelson interferometer\refresp{,}
 where an elaborate feedback system is used to sustain a defined measurement in arm length 
 difference between the moving mirrors. A comprehensive description of the calibration procedure (in 
 particular for the LIGO detectors during their fifth science run) can be found in 
@@ -193,14 +193,16 @@ This relation is known as the length response function, $R(f)$, defined such tha
 \end{equation}
 where we assume $R$ varies only slowly in time (in comparison to transient signal 
 time-scales). Calculation of $R$ requires the measurement of various functions within a control 
-feedback loop (see \cite{2010NIMPA.624..223A}), which are subject to uncertainties. In this 
+feedback loop (see \cite{2010NIMPA.624..223A}), \refresp{each of which are subject to measurement uncertainties}. In this 
 study we will assume an estimate of $R$ is available (although in theory we could take on the role 
 of estimating $R$ itself), but that it differs from the truth through some unknown scale factor, 
 $\scf$, so that at a particular time we have
 \begin{equation}\label{eq:scalefactor}
 \scf h(f) = h_{\rm m}(f) = \frac{R(f) e(f)}{L},
 \end{equation}
-where $h(f)$ is the true strain and $h_{\rm m}(f)$ is the measured strain. With this definition it
+where $h(f)$ is the true strain and $h_{\rm m}(f)$ is the measured strain \refresp{(i.e.\
+the measured length response function $R(f)$ is related to the true length response function $R_{\rm true}(f)$
+via $R(f) = \scf R_{\rm true}(f)$)}. With this definition it
 means that if $\scf > 1$ then a signal would appear to have a larger amplitude (e.g.\ be 
 closer) than in reality\footnote{However, the \ac{SNR} would be the correct value as the signal and 
 the noise will both contain the same scale factor.}, whereas if $\scf < 1$ it would appear to have a 
@@ -563,10 +565,13 @@ detector drawn from a Gaussian distribution with a mean of one and standard
 deviation of $0.125$ (equivalent to a mean fractional offset of 10\%).  Note
 that this distribution is broadly consistent with the scale of calibration
 uncertainties that are expected via experimental methods, but is not the same as
-the prior that we assume on $\mathcal{C}$ (see Eq.~\ref{eq:scale_prior}) when recovering 
+the prior that we assume on $\scf$ (see Eq.~\ref{eq:scale_prior}) when recovering 
 signals\footnote{The reason behind this is that we wanted to use a fairly na\"{i}ve and
 conservative prior for signal recovery that had little impact in the results, i.e.\
-to produce results domintaed by the likelihood for these parameters.}. 
+to produce results domintaed by the likelihood for these parameters. \refresp{However,
+limited studies using $\scf$ values within the much larger range of
+$\sim 0.1$ to 10 show distributions with consistent relative widths to
+those we find in our main study.}}. 
 
 % describe the detection cut 
 In accepting a proposed simulation as one to be analysed we introduced a
@@ -616,7 +621,9 @@ be very highly correlated with the calibration scale factor, so in reality our
 estimate of the scale factor would be a combination of the calibration offset
 and the difference in the \ac{PSD}. As such our results on real data would be
 an upper limit on the calibration scale factor.}. This has provided posterior probability
-distributions on the calibration scale factors for each detector.  Examples of
+distributions\refresp{\footnote{\refresp{As a proxy to check for convergence of the MCMC chains
+we check that the calibration scale factor posterior histograms do not contain many disjoint modes.}}}
+on the calibration scale factors for each detector.  Examples of
 the marginalised posterior probabilities for a \ac{BNS} system and a \ac{NSBH}
 system observed with the three detector network are shown in
 figures~\ref{fig:bnspost} and \ref{fig:nsbhpost} respectively.
@@ -692,7 +699,9 @@ $\gtrsim 250$\,Mpc the upper extent of the uncertainty for H1 and L1 hits a
 maximum at $\sim 25\%$, whilst the width of boxes narrows. This is due to our
 ``detectibility'' criteria, where for all distances we will only be seeing
 those sources with a high enough \ac{SNR} that we would consider them
-detectable. There will therefore be fewer sources with \ac{SNR} higher than
+detectable\refresp{, i.e.\ the weakest signals that could still be detected would
+always have a single detector \ac{SNR} of $\sim 5.5$ no matter their distance, hence the
+plateau}. \refresp{In addition there will also} be fewer sources with \ac{SNR} higher than
 this criteria at large distances, giving us a narrower range, and we
 automatically exclude those with \ac{SNR} that are too small thus truncating
 our uncertainty distribution at the upper end.  However, this does show that on

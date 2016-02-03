@@ -1,7 +1,7 @@
 We would like to thank the referee for their very useful comments.
-We have included response to them inline below and make note any
-changes to the manuscript. These changes are displayed in red in the
-resubmitted version of the manuscript.
+We have included response to them inline below and make note where this
+has resulted in changes to the manuscript. These changes are displayed in red
+in the resubmitted version of the manuscript.
 
 Major comment: "In section 5, I have a problem with the assumption of the sGRB jet
 opening angle being modelled as a half-normal distribution. Figure 3
@@ -22,15 +22,19 @@ the systems has caused confusion here. We are not really interested
 in the jet opening angle distribution, but are just trying to somehow use
 it as a proxy for getting an idea of the orientation angle distribution,
 which would not be expected to look the same. Under the assumption that to
-observe a sGRB we must have theta_j >= |iota|, and assuming a Rayleigh
+observe a sGRB we must have theta_j/2 >= |iota|, and assuming a Rayleigh
 distribution on theta_j, the distribution on |iota| does become a half-normal
 distribution. In fact our choice of a half-normal for |iota| with a sigma value of
-14.8 degs is rather conservative (in that it extends to larger iota values
+14.8 degs is rather conservative* (in that it extends to larger iota values
 [this is something we would plan to correct in future studies]) compared to the
 half-normal distribution that you truly get based a Rayleigh distribution in 
 theta_j with a median of 10 degs. We have added text to the manuscipt to
 hopefully make this clearer. If the referee would like to see more detail on
 these we can send them further information.
+
+*this conservative nature is in part due to one of us (M Pitkin) mistakenly
+assuming the opening angle referred to the half width of the beam rather than
+the full beam width.
 
 Minor comments
 --------------
@@ -39,7 +43,7 @@ Comment: "The first sentence should be followed by a reference to Abadie et
 al. (2010), or a similar updated article on predicted detection rates
 if available."
 
-Response: 
+Response: We agree and have added the Abadie et al. (2010) reference here.
 
 Comment: ""will be detected out to a maximum range of ≈ 450 Mpc." -> clarify
 whether this is the horizon distance or sensemon distance."
@@ -67,7 +71,7 @@ Response:
 
 Comment: "Semi-colon in first sentence can be simply replaced by a comma."
 
-Response:
+Response: Done.
 
 Comment: ""at the frequency range used in this project" --> explicitly
 mention the frequency range."
@@ -83,13 +87,14 @@ Comment: ""within a control feedback loop (see [7]), which are subject to
 uncertainties." -> This is quite a vague sentence. What kind of
 uncertainties?"
 
-Response:
+Response: This has been changed to "...within a control feedback loop (see [7]),
+each of which are subject to measurement uncertainties."
 
 Comment: "Even though the math is quite simple, I would advocate explicitly
 stating the relationship between the true length response function and
 the estimated one via the calibration scale factor."
 
-Response:
+Response: The relationship has now been explictly added.
 
 Comment: ""larger amplitude (e.g. be closer)" -> it would only appear to be
 closer if we had a handle on the other parameters affecting the
@@ -104,7 +109,15 @@ to make a poor estimation of the length response function, and why
 would other calibration tests fail to mitigate the effect dealt with
 in this article?"
 
-Response:
+Response: Our analysis uses the frequency range from 20-400Hz, so our assumption
+of a constant calibration scale factor only relates to this band rather than the
+full LIGO bandwidth. However, having just one scale factor should be a
+conservative case and in the future we would like to look at how having
+some frequency dependence to the calibration scale factor would effects results.
+
+We do not consider what physical effects could cause a poor estimation of the
+length response function. We mainly put our proposal forward as an independent
+way of estimating the length response function.
 
 Comment: ""different signal arrival times at each detector in the network" ->
 the concept of a network has not been mentioned or discussed before. A
@@ -173,7 +186,7 @@ Response:
 Comment: "Is the beaming angle here the full opening angle, or the half
 opening angle?"
 
-Response:
+Response: See response to the first comment.
 
 Comment: ""For the GW followup of sGRB scenario the merger time for BNS/NSBH
 systems will be estimated from the sGRB to within a few seconds" ->
@@ -232,7 +245,11 @@ close to optimal. Did you test cases where the detectors were very
 poorly calibrated? If not, then I highly suggest that you do so, or
 adequately comment on expectations from these tests."
 
-Response:
+Response: We have tested situations were the detectors were very poorly
+calibrated e.g. scale factors ranging from ~0.1 to ~10. Even for these
+very poorly calibrated cases the widths of the scale factor distributions
+stay consistent with cases were the scale factor is close to 1. We have
+added some additional text to footnote 7 about this.
 
 Comment: ""calculated by averaging 64 separate noisy realisations of the PSD
 and scaled with the same calibraion scale factor as applied to the
@@ -257,7 +274,15 @@ the value of ~25%? Is there some influence of the finiteness of the
 detected population at larger distances that is influencing the width
 of the uncertainty distribution?"
 
-Response:
+Response: We have added the additional text stating "the weakest signals that could still
+be detected would always have a single detector \ac{SNR} of $\sim 5.5$ no matter
+their distance, hence the plateau.
+
+The issue of the V1 result not saturating is addressed in the manuscript in the lines
+"The largest SNR contribution will generally come from the two aLIGO detectors and thus
+the detection criteria (SNR threshold) will not apply to the AdV result. Hence, the SNR
+in AdV can be small and thus the ability to constrain its scale factor becomes poor (although it
+still provides information that the calibration is not grossly inaccurate)."
 
 Comment: "In figure 1 the tick labels for the chirp mass are overlaid with
 the label. Better labelling or figure formatting is needed here, as
@@ -271,7 +296,11 @@ Comment: "No mention is given to the number of MCMC iterations, the length of
 burn-in, or how convergence was ascertained. A brief comment would be
 appropriate."
 
-Response:
+Response: As a proxy to check for convergence of the chains we check that the
+scale parameter posterior histograms do not contain many disjoint modes. We have
+added this as a footnote into the paper. The actual tests we use are that 90% or
+more of the histogram bins are non-zero and the standard deviation
+of the posterior is less than 1/6th of the total histogram range.
 
 Comment: "Page 9, second paragraph. "this prior is not that same" -> "this
 prior is not the same""
