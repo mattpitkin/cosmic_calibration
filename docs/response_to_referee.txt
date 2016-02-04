@@ -290,7 +290,8 @@ well as units where appropriate. I like the different edge coloring
 for the relevant scale factor boxes, but perhaps these red edges could
 be thickened for black and white printing."
 
-Response:
+Response: We have ammended the plots to produce non-overlapping make the chirp mass tick labels,
+give the chirp mass units, and thicker red borders on the scale factor subplots.
 
 Comment: "No mention is given to the number of MCMC iterations, the length of
 burn-in, or how convergence was ascertained. A brief comment would be
