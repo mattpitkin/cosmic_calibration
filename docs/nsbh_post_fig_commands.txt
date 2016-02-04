@@ -16,9 +16,9 @@ A1=-0.35
 ./scale_factor_mcmc.py --outpath . --det H1 --det L1 --det V1 --Niter 1500 --Nburnin 1250 --Nensemble 1750 --intseed 1 --dist $DIST  --iotawidth 14.8 --fmin 20 --fmax 400 --noise --psd-noise 64 --plot --threads 2 --nsbh -p $PHI -a $PSI -i $IOTA -q $M1 -Q $M2 -S $S1 -S $S2 -S $S3 -r $RA -d $DEC -A $A1
 
 For the current figure this gave:
-H1: SNR = 9.81
-L1: SNR = 10.25
-V1: SNR = 3.75
-0.145918
-0.141486
-0.362384
+H1: SNR = 9.68
+L1: SNR = 10.27
+V1: SNR = 3.77
+0.137788
+0.129595
+0.433194
