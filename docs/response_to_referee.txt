@@ -48,26 +48,30 @@ Response: We agree and have added the Abadie et al. (2010) reference here.
 Comment: ""will be detected out to a maximum range of ≈ 450 Mpc." -> clarify
 whether this is the horizon distance or sensemon distance."
 
-Response: 
+Response: This is the horizon distance and has been clarified in the
+manuscript.
 
 Comment: ""Observations of sGRBs give an inferred rate of sGRB producing CBC
 mergers" -> mention that the sGRB rate must be corrected for beaming
 effects to map to CBC merger rate."
 
-Response:
+Response: This has now been clarified in the text.
 
 Comment: ""may be possible to identify the host galaxy of the source" -> is a
 host galaxy necessary for redshift identification? Can the redshift
 not be attained from spectroscopic analysis of the sGRB light curve?"
 
-Response:
+Response: No, unfortunately the redshift cannot be otained via the sGRB itself
+since it contains no transmission or absorbtion lines. CHRIS: Need a bit more
+than this. 
 
 Comment: ""With knowledge of the redshift, using current best estimates for
 the Hubble constant and other cosmological parameters, the true
 luminosity distance can be estimated to ∼ 1% accuracy." -> reference
 needed for current estimates of cosmological parameters."
 
-Response:
+Response: We have added a reference to the most recent Planck cosmology
+results.
 
 Comment: "Semi-colon in first sentence can be simply replaced by a comma."
 
@@ -76,12 +80,12 @@ Response: Done.
 Comment: ""at the frequency range used in this project" --> explicitly
 mention the frequency range."
 
-Response:
+Response: Done.
 
 Comment: ""error in the amplitude calibration" -> is this the strain
 amplitude or the error signal output. Clarify either way."
 
-Response:
+Response: It is the strain amplitude and is now clarified in the text.
 
 Comment: ""within a control feedback loop (see [7]), which are subject to
 uncertainties." -> This is quite a vague sentence. What kind of
@@ -101,7 +105,8 @@ closer if we had a handle on the other parameters affecting the
 amplitude e.g. the chirp mass. We obviously get the latter from the
 signal's phase evolution, but this point should be clarified."
 
-Response:
+Response: The text has been changed to state "(i.e.\ for a given system, would
+seem closer)"
 
 Comment: "How realistic is the assumption of a constant calibration scale
 factor over the full LIGO band? What physical mechanism would lead us
@@ -124,13 +129,15 @@ the concept of a network has not been mentioned or discussed before. A
 simple sentence explaining the purpose and composition of the kind of
 detector network expected in the advanced era is necessary."
 
-Response:
+Response: The network is first mentioned in the previous sentence but we have
+now added extra clarification.
 
 Comment: "A reference for the Einstein Telescope is necessary, whether this
 be the original design study, or possibly studies of arm orientation
 preferences."
 
-Response:
+Response: We have added a reference to Punturo et al 2010 "The third generation
+of gravitational wave observatories and their science reach"
 
 Comment: ""The use of GW events with sGRB counterparts for use as a
 cosmological tool was investigated in [11] and [12] with respect to
@@ -138,50 +145,55 @@ the 3rd generation GW interferometer, the Einstein Telescope (ET)." ->
 the concept was also explored for advanced era detectors in a later
 section of Taylor, Gair, Mandel (2012)."
 
-Response:
+Response: This omission has now been corrected in the text.
 
 Comment: ""These instead use either the distribution [...] assumed neutron
 star (NS) mass" -> to clarify, Taylor, Gair, Mandel (2012) assume the
 *form* of the NS mass distribution, but search over the parameters of
 the distribution as hyperparameters in a hierarchical modeling scheme."
 
-Response:
+Response: Corrected.
 
 Comment: ""specifically for the Hubble constant, which is has uncertainties
 of O(1%)" -> reference to Planck results or other appropriate sources."
 
-Response:
+Response: We have added a reference to the latest Planck cosmology results.
 
 Comment: ""If the event exhibits an optical afterglow then the host galaxy
 can be identified and from which a redshift can be obtained" -> I
 reiterate my question from earlier: why can the redshift not be
 determined from the sGRB light curve itself?"
 
-Response:
+Response: See previous answer.
 
 Comment: ""The fraction of events with associated redshifts is ∼1/3" -> do
 you have a reference for this?"
 
-Response:
+Response: We don't know of a particular publication that includes this number
+but we have added a reference to the NASA Swift GRB database from which it can
+be seen that only ~1/3 have a measured redshift. 
 
 Comment: ""equal to the horizon range of the advanced GW detector network for
 BNS systems." -> what is the network composition in this case?"
 
-Response:
+Response: The present statement indicates only an approximate matching between
+the closest known sGRB and the advanced detector network range. We feel that
+stating a specific network configuration (LIGO Hanford, LIGO Livingston, Virgo,
+Kagra, LIGO India) would be misleading and therefore not necessary.   
 
 Comment: ""derived from three main sources, population synthesis models..."
 -> "derived from three main sources: population synthesis models...""
 
-Response:
+Response: Done.
 
 Comment: ""In [3] using the rate of observed sGRBs and assuming a beaming
-angle of 15◦ a similar event rate of 1–180 is obtained." -> This
+angle of 15 degrees a similar event rate of 1–180 is obtained." -> This
 sentence was a bit difficult to parse. I suggest restructuring it to
 with something like "A similar event rate of 1-180 was obtained in
 [3], where the rate of observed sGRBs was converted to the rate of BNS
 events by assuming a beaming angle of 15 degrees.""
 
-Response:
+Response: Done.
 
 Comment: "Is the beaming angle here the full opening angle, or the half
 opening angle?"
@@ -195,7 +207,7 @@ the scenario of a GW-followup of an observed sGRB, the merger time for
 BNS/NSBH systems will be estimated from the sGRB to within a few
 seconds.""
 
-Response:
+Response: Done.
 
 Comment: ""However, as discussed earlier, the property of beaming severely
 impacts the probable rate of such joint observations." -> So am I to
@@ -204,7 +216,17 @@ such joint observations is low, the SNR distribution of any detected
 signals will be comparatively higher than the regular
 GW-detection-only SNR distribution?"
 
-Response:
+Response: No. The text at present is actually misleading/wrong. The truth is
+that jointly observed systems will be face-on and therefore better oriented. At
+a given distance such an event will likely have higher SNR than an arbitrarily
+oriented GW-only event. A meaningful way to express this is to state that the
+senstive range (and hence the sensitive volume) is increased for these jointly
+observed systems. We have modified the text to read:
+
+"This prerequisite property limits us to systems that are approximately
+``face-on'' and therefore effectively optimally oriented. At given distances
+this biases us to higher SNR signals but it is more meaningful to think of this
+as an increase in the sensitivity range of the detectors."
 
 Comment: "In equation 3, I believe the inclination term in hx should simply
 be cosine(iota) rather than the square. Please proof check all
@@ -227,7 +249,19 @@ would your current choices bias calibration attempts if the population
 you are targeting is significantly different than your assumptions
 here?"
 
-Response:
+Response: Our choices of signal parameter prior primarily effect the ensemble
+statistics, i.e. the distributions of calibration uncertainties at given
+distances. These give the reader an indication of the likely accuracy of an
+astrophysical calibration scheme. In "reality" we would first hope to be able
+to make this measurement for single detections in which case the true prior is out
+of our control and we must simply deal with what the universe gives us. In this
+case our assumed mass priors would be dominated by the information content of
+the likelihood due to the mass dependent phasing information.  Hence for
+individual detections we believe that any choice of conservative priors will
+have negligible effect on the result. If in the future one were to attempt this
+with a population of detections then it would be necessary to assume a
+hierachical scheme with some form for the mass distribution as the referee
+suggests.  However, we feel that this is beyond the scope of this work.  
 
 Comment: "In equation 7, do your choices mean p(C=0.1) = p(C=10) or
 p(lnC=ln(0.1)) = p(lnC=ln(10))?"
@@ -237,7 +271,7 @@ Response: The choice mean p(C=0.1) = p(C=10). This has been fixed.
 Comment: ""uniform distribution on the sky" -> does this mean uniform in
 right ascension and uniform in cosine(90-declination)?"
 
-Response:
+Response: Yes.
 
 Comment: "Your range of injected calibration scale factors is quite narrow,
 meaning you only really tested situations where the factor was pretty
@@ -290,7 +324,7 @@ well as units where appropriate. I like the different edge coloring
 for the relevant scale factor boxes, but perhaps these red edges could
 be thickened for black and white printing."
 
-Response:
+Response: MATT: I think this is done now right?
 
 Comment: "No mention is given to the number of MCMC iterations, the length of
 burn-in, or how convergence was ascertained. A brief comment would be
