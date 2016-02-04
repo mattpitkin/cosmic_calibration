@@ -876,6 +876,7 @@ if it does not fulfill the SNR criterion.")
           thisaxis = figaxes[i*len(labels)+k]
           for spine in thisaxis.spines.values():
             spine.set_edgecolor('red')
+            spine.set_linewidth(2)
 
     # make axes tick label fonts bigger
     for ax in figaxes:
