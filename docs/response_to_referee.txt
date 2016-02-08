@@ -29,12 +29,10 @@ distribution. In fact our choice of a half-normal for |iota| with a sigma value 
 [this is something we would plan to correct in future studies]) compared to the
 half-normal distribution that you truly get based a Rayleigh distribution in 
 theta_j with a median of 10 degs. We have added text to the manuscipt to
-hopefully make this clearer. If the referee would like to see more detail on
-these we can send them further information.
+hopefully make this clearer.
 
-*this conservative nature is in part due to one of us (M Pitkin) mistakenly
-assuming the opening angle referred to the half width of the beam rather than
-the full beam width.
+*this conservative nature is in part due to mistakenly assuming the opening
+angle referred to the half width of the beam rather than the full beam width.
 
 Minor comments
 --------------
@@ -62,8 +60,8 @@ host galaxy necessary for redshift identification? Can the redshift
 not be attained from spectroscopic analysis of the sGRB light curve?"
 
 Response: No, unfortunately the redshift cannot be otained via the sGRB itself
-since it contains no transmission or absorbtion lines. CHRIS: Need a bit more
-than this. 
+since it contains no specific spectral features to allow redshift
+determination, e.g. transmission or absorbtion lines.
 
 Comment: ""With knowledge of the redshift, using current best estimates for
 the Hubble constant and other cosmological parameters, the true
@@ -252,21 +250,25 @@ here?"
 Response: Our choices of signal parameter prior primarily effect the ensemble
 statistics, i.e. the distributions of calibration uncertainties at given
 distances. These give the reader an indication of the likely accuracy of an
-astrophysical calibration scheme. In "reality" we would first hope to be able
-to make this measurement for single detections in which case the true prior is out
-of our control and we must simply deal with what the universe gives us. In this
-case our assumed mass priors would be dominated by the information content of
-the likelihood due to the mass dependent phasing information.  Hence for
-individual detections we believe that any choice of conservative priors will
-have negligible effect on the result. If in the future one were to attempt this
-with a population of detections then it would be necessary to assume a
-hierachical scheme with some form for the mass distribution as the referee
-suggests.  However, we feel that this is beyond the scope of this work.  
+astrophysical calibration scheme. We specifically discuss the effect of higher
+mass BH systems on our results just before Section VIA.  However, in that
+discussion we do not mention bias but rather the effect of different choices of
+source population where the appropriate prior would be used. With regards to
+bias, in "reality" we would first hope to be able to make a calibration
+measurement for single detections in which case the true source distribution is
+unknown to us. In this case our assumed mass priors would be dominated by the
+information content of the likelihood due to the mass dependent phasing
+information.  Hence for individual detections we believe that any choice of
+conservative priors will have negligible effect on the result. If in the future
+one were to attempt this with a population of detections then it would be
+necessary to assume a hierachical scheme with some form for the mass
+distribution as the referee suggests.  However, we feel that this is beyond the
+scope of this work.  
 
 Comment: "In equation 7, do your choices mean p(C=0.1) = p(C=10) or
 p(lnC=ln(0.1)) = p(lnC=ln(10))?"
 
-Response: The choice mean p(C=0.1) = p(C=10). This has been fixed.
+Response: The choice means p(C=0.1) = p(C=10). This has been fixed.
 
 Comment: ""uniform distribution on the sky" -> does this mean uniform in
 right ascension and uniform in cosine(90-declination)?"
@@ -308,15 +310,16 @@ the value of ~25%? Is there some influence of the finiteness of the
 detected population at larger distances that is influencing the width
 of the uncertainty distribution?"
 
-Response: We have added the additional text stating "the weakest signals that could still
-be detected would always have a single detector \ac{SNR} of $\sim 5.5$ no matter
-their distance, hence the plateau.
+Response: We have added the additional text stating "the weakest signals that
+could still be detected would always have a single detector \ac{SNR} of $\sim
+5.5$ no matter their distance, hence the plateau.
 
-The issue of the V1 result not saturating is addressed in the manuscript in the lines
-"The largest SNR contribution will generally come from the two aLIGO detectors and thus
-the detection criteria (SNR threshold) will not apply to the AdV result. Hence, the SNR
-in AdV can be small and thus the ability to constrain its scale factor becomes poor (although it
-still provides information that the calibration is not grossly inaccurate)."
+The issue of the V1 result not saturating is addressed in the manuscript in the
+lines "The largest SNR contribution will generally come from the two aLIGO
+detectors and thus the detection criteria (SNR threshold) will not apply to the
+AdV result. Hence, the SNR in AdV can be small and thus the ability to
+constrain its scale factor becomes poor (although it still provides information
+that the calibration is not grossly inaccurate)."
 
 Comment: "In figure 1 the tick labels for the chirp mass are overlaid with
 the label. Better labelling or figure formatting is needed here, as
@@ -324,8 +327,9 @@ well as units where appropriate. I like the different edge coloring
 for the relevant scale factor boxes, but perhaps these red edges could
 be thickened for black and white printing."
 
-Response: We have ammended the plots to produce non-overlapping make the chirp mass tick labels,
-give the chirp mass units, and thicker red borders on the scale factor subplots.
+Response: We have ammended the plots to produce non-overlapping make the chirp
+mass tick labels, give the chirp mass units, and thicker red borders on the
+scale factor subplots.
 
 Comment: "No mention is given to the number of MCMC iterations, the length of
 burn-in, or how convergence was ascertained. A brief comment would be
