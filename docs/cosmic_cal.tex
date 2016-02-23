@@ -37,7 +37,6 @@
 %\input{tag.tex}
 
 \newcommand{\dcc}{LIGO-P1500198}
-\newcommand{\refresp}[1]{\textcolor{red}{#1}}
 
 \DeclareMathOperator{\erf}{erf}
 
@@ -118,9 +117,9 @@ $\sim 20\%$ can be found with BNS sources out to $\sim 500$\,Mpc.
 % introduce GWs and BNS systems
 It is expected that the advanced generation of interferometric \ac{GW}
 detectors will detect waves emitted from $O(10s)$ of \acp{CBC} per year
-\refresp{\cite{2010CQGra..27q3001A}}. One such class of these cataclysmic
+\cite{2010CQGra..27q3001A}. One such class of these cataclysmic
 events, the inspiral and merger of \ac{BNS} systems will be detected out to a
-maximum range \refresp{(horizon distance)} of $\approx 450$ Mpc. Assuming the
+maximum range (horizon distance) of $\approx 450$ Mpc. Assuming the
 current best estimates for the cosmological parameters, this is equivalent to a
 redshift $z\approx 0.1$. As noted by~\citet{1986Natur.323..310S}, \ac{CBC}
 systems can be used as cosmological distance markers, otherwise known as
@@ -138,8 +137,8 @@ momentum vector of the system. Additional evidence for the coincidence of
 \acp{sGRB} with \ac{GW} events are the estimated astrophysical rates of both
 phenomena. Observations of \acp{sGRB} give an inferred rate of \ac{sGRB}
 producing \ac{CBC} mergers of $8\times 10^{-9}$--$1.1\times
-10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$~\cite{2012MNRAS.425.2668C} \refresp{after accounting for
-beaming effects. This} can be compared to independently obtained estimates of
+10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$~\cite{2012MNRAS.425.2668C} after accounting for
+beaming effects. This can be compared to independently obtained estimates of
 \ac{BNS} merger rates of $10^{-8}$--$10^{-5}$\,Mpc$^{-3}$\,yr$^{-1}$
 \cite{2010CQGra..27q3001A}, or \ac{NSBH} merger rates of
 $6\,\times\,10^{-10}$--$1\,\times\,10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$
@@ -153,7 +152,7 @@ spectroscopic redshift can be very accurately obtained (see values quoted in
 e.g.\ \cite{0004-637X-664-2-1000} and references therein). With knowledge of
 the redshift, using current best estimates for the Hubble constant and other
 cosmological parameters, the true luminosity distance can be estimated to $\sim
-1\%$ accuracy~\refresp{\cite{2015arXiv150201589P}}.  The \ac{GW} measurement
+1\%$ accuracy~\cite{2015arXiv150201589P}.  The \ac{GW} measurement
 acts as a standard siren also giving us a direct measurement of the luminosity
 distance to the source. The accuracy of such a measurement depends on a number
 of factors including the accuracy with which the \ac{GW} detector has been
@@ -177,14 +176,14 @@ conclude.
 
 The technique used throughout \ac{GW} research in calibrating the detectors is
 carried out through a complicated system of physical manipulations of the
-Fabry-P\'{e}rot Michelson interferometer\refresp{,} where an elaborate feedback
+Fabry-P\'{e}rot Michelson interferometer, where an elaborate feedback
 system is used to sustain a defined measurement in arm length difference
 between the moving mirrors. A comprehensive description of the calibration
 procedure (in particular for the LIGO detectors during their fifth science run)
 can be found in \cite{2010NIMPA.624..223A}, and a brief description is given in
 \cite{Vitale:2012} and references therein. For \ac{aLIGO} and \ac{AdV}, at the
-frequency range used in this analysis \refresp{(20--400 Hz)}, the error in the
-\refresp{strain} amplitude calibration is expected to be roughly $10\%$
+frequency range used in this analysis (20--400 Hz), the error in the
+strain amplitude calibration is expected to be roughly $10\%$
 \cite{Vitale:2012}. This is a benchmark set for the error estimation using the
 proposed method in this project.
 
@@ -202,7 +201,7 @@ known as the length response function, $R(f)$, defined such that
 where we assume $R$ varies only slowly in time (in comparison to transient
 signal time-scales). Calculation of $R$ requires the measurement of various
 functions within a control feedback loop (see \cite{2010NIMPA.624..223A}),
-\refresp{each of which are subject to measurement uncertainties}. In this study
+each of which are subject to measurement uncertainties. In this study
 we will assume an estimate of $R$ is available (although in theory we could
 take on the role of estimating $R$ itself), but that it differs from the truth
 through some unknown scale factor, $\scf$, so that at a particular time we have
@@ -212,11 +211,11 @@ through some unknown scale factor, $\scf$, so that at a particular time we have
 \end{equation}
 %
 where $h(f)$ is the true strain and $h_{\rm m}(f)$ is the measured strain
-\refresp{(i.e.\ the measured length response function $R(f)$ is related to the
+(i.e.\ the measured length response function $R(f)$ is related to the
 true length response function $R_{\rm true}(f)$ via $R(f) = \scf R_{\rm
-true}(f)$)}. With this definition it means that if $\scf > 1$ then a signal
-would appear to have a larger amplitude \refresp{(i.e.\ for a given system,
-would seem closer)} than in reality\footnote{However, the \ac{SNR} would be
+true}(f)$). With this definition it means that if $\scf > 1$ then a signal
+would appear to have a larger amplitude (i.e.\ for a given system,
+would seem closer) than in reality\footnote{However, the \ac{SNR} would be
 the correct value as the signal and the noise will both contain the same scale
 factor.}, whereas if $\scf < 1$ it would appear to have a lower amplitude than
 reality.  In this analysis we will simplify the situation by assuming that
@@ -237,7 +236,7 @@ in~\cite{1986Natur.323..310S}. Unlike the primary \ac{EM} standard candle
 event, Type Ia Supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
 not only a function of distance. It also depends upon the chirp mass (a
 function of the component masses) and the binary orientation with respect to
-the \refresp{global network of \ac{GW} detectors}. However, measurement of the
+the global network of \ac{GW} detectors. However, measurement of the
 phase evolution of such an event allows accurate determination of the chirp
 mass\footnote{In reality it is the redshifted chirp mass that is measured.}.
 Timing information from the different signal arrival times at each detector in
@@ -255,8 +254,8 @@ as part of the cosmological distance ladder. The use of \ac{GW} events with
 \ac{sGRB} counterparts for use as a cosmological tool was investigated
 in~\cite{2010CQGra..27u5006S} and~\cite{2011PhRvD..83b3005Z} with respect to
 the 3rd generation \ac{GW} interferometer, the
-\ac{ET}~\refresp{\cite{2010CQGra..27h4007P} and in ~\cite{2012PhRvD..85b3535T}
-for the Advanced detector network}. In this case, the redshift information
+\ac{ET}~\cite{2010CQGra..27h4007P} and in ~\cite{2012PhRvD..85b3535T}
+for the Advanced detector network. In this case, the redshift information
 obtained from the \ac{sGRB} host galaxy, provides a complementary measurement
 allowing each event to inform the distance-redshift relationship and hence
 obtain cosmological parameter estimates. Other methods for cosmological
@@ -264,7 +263,7 @@ inference (see~\cite{1996PhRvD..53.2878F,2012PhRvD..85b3535T,
 2012PhRvD..86b3502T,Messenger:2011ux,2013arXiv1312.1862M}) have been proposed
 for \ac{BNS} systems that do not rely on any redshift measurements. These
 instead use either the distribution of measured \acp{SNR} and assumed
-\refresp{form} of \ac{NS} mass and spatial distributions or exploit the
+form of \ac{NS} mass and spatial distributions or exploit the
 features of the tidal and post-merger hyper-massive \ac{NS} stages of the
 \ac{GW} waveform. 
 
@@ -273,7 +272,7 @@ To put the existing work on \ac{GW} cosmology in context with the study
 described in this manuscript we are essentially turning the standard
 cosmological problem upside-down. We assume that the existing \ac{EM}
 cosmological parameter estimation (specifically for the Hubble constant, which
-is has uncertainties of $O(1\%)$~\refresp{\cite{2015arXiv150201589P}}) is
+is has uncertainties of $O(1\%)$~\cite{2015arXiv150201589P}) is
 accurately determined and therefore a known quantity. We then assume that the
 unknown in our analysis is the absolute amplitude calibration of the
 interferometers in the global \ac{GW} detector network.    
@@ -291,7 +290,7 @@ observable for a fraction of the mergers. If the event exhibits an optical
 afterglow then the host galaxy can be identified and from which a redshift can
 be obtained (e.g.~\cite{2005Natur.437..851G}).  The fraction of events with
 associated redshifts is
-${\sim}1/3$~\refresp{\footnote{http://swift.gsfc.nasa.gov/archive/grb\_table/}}.
+${\sim}1/3$~\footnote{http://swift.gsfc.nasa.gov/archive/grb\_table/}.
 The range to which the \emph{Swift} \ac{XRT} has detected \acp{sGRB} is
 $z{\sim}2$ and the nearest event with associated redshift is at
 $z{\sim}0.1$~\cite{2015GCN..17278...1C}, which is approximately equal to the
@@ -299,7 +298,7 @@ horizon range of the advanced \ac{GW} detector network for \ac{BNS} systems.
 
 % discuss joint-event rates
 The predicted detection rates of \ac{BNS} events (irrespective of an \ac{sGRB}
-counterpart) are derived from three main sources\refresp{:} population
+counterpart) are derived from three main sources: population
 synthesis models, extrapolations based on known galactic \ac{BNS} systems, and
 from observations of \ac{sGRB} events. Various studies using the first two
 methods have been compiled into an overall detection rate of $0.2$--$200$
@@ -312,10 +311,10 @@ sensitivity. However, a higher rate of $0.4$--$400$ is given in
 \ac{aLIGO} detector, but the discrepancy may also have contributions from
 slightly different threshold definitions or design sensitivity curves used. We
 also note the study mentioned in Sec.~\ref{sec:intro} that potentially lowers
-the expected rate by a factor of five.}. \refresp{A similar event rate of
+the expected rate by a factor of five.}. A similar event rate of
 $1$--$180$ was obtained in~\cite{2012MNRAS.425.2668C}, where the rate of
 observed \acp{sGRB} was converted to the rate of \ac{BNS} events by assuming a
-beaming angle of $15^{\circ}$.} The beaming angle is the primary factor in
+beaming angle of $15^{\circ}$. The beaming angle is the primary factor in
 determining the fraction of detected \ac{GW} \ac{BNS} signals with an \ac{EM}
 \ac{sGRB} counterpart and is unfortunately highly uncertain.  Various authors
 have provided estimates on the rate of joint detections to be in the range
@@ -332,10 +331,10 @@ catch a \ac{sGRB} is low.  Compounding this issue is the relatively large
 \ac{GW} sky error-box giving a field-of-view for the \ac{EM} observatories to
 search spanning $\sim 100$'s of square degrees (e.g.\
 \cite{2011CQGra..28j5021F,2013arXiv1304.0670L,2014ApJ...795..105S}).
-\refresp{For the scenario of a \ac{GW}-followup of an observed \ac{sGRB}, the
+For the scenario of a \ac{GW}-followup of an observed \ac{sGRB}, the
 merger time for \ac{BNS}/\ac{NSBH} systems will be estimated from the \ac{sGRB}
 to within a few seconds (see e.g.\ 340 the discussion in Sec.\ 2.2 of
-\cite{2012ApJ...760...12A})}. This makes the follow-up search less
+\cite{2012ApJ...760...12A}). This makes the follow-up search less
 computationally expensive since it is performed over a
 smaller range of data using potentially fewer numbers of waveform templates.
 This computational saving enables the use of a more computationally expensive
@@ -349,10 +348,10 @@ system must have had its orbital angular momentum vector pointing towards (or
 away) from the detector.  The actual inclination angle of the system, defined
 as the angle between the orbital angular momentum vector and the line of sight,
 must be $<$ half of the \ac{sGRB} beaming angle.  This prerequisite property
-limits us to systems that are approximately ``face-on'' \refresp{and therefore
+limits us to systems that are approximately ``face-on'' and therefore
 effectively optimally oriented. At given distances this biases us to  higher
 \ac{SNR} signals but it is more meaningful to think of this as an increase in
-the sensitivity range of the detectors}. However, as discussed earlier, the
+the sensitivity range of the detectors. However, as discussed earlier, the
 property of beaming severely impacts the probable rate of such joint
 observations.   
 
@@ -407,7 +406,7 @@ at the $k^{\rm{th}}$ detector is then given by
 %
 where $F^{k}_{+}$ and $F^{k}_{\times}$ are the antenna response functions which
 are dependent upon the polarisation angle $\psi$ and the sky position of the
-source \refresp{with right ascension} $\alpha$ and \refresp{declination} $\delta$.
+source with right ascension $\alpha$ and declination $\delta$.
 
 % Define the detectors and the noise epoch we will be using
 For this analysis we consider the advanced generation \ac{aLIGO} and
@@ -489,11 +488,11 @@ inclination angle. Beam opening angles for \acp{sGRB} are relatively poorly
 constrained as they are based on only a few jet-break detections. A comparative
 study of estimates and lower-limits of opening angles for 13 \acp{sGRB} given
 in~\cite{2014ApJ...780..118F} provides a median opening angle value of $\sim
-10^{\circ}$. \refresp{We use this median opening angle as a rather conservative
+10^{\circ}$. We use this median opening angle as a rather conservative
 guide to form a Gaussian prior distribution on the system inclination angle,
 $\iota$, by converting it into an equivalent standard deviation for a
 half-normal distribution. We therefore place a Gaussian prior on $\iota$ with
-zero mean and a standard deviation $\sigma=14.8^{\circ}$.} This, and the choice
+zero mean and a standard deviation $\sigma=14.8^{\circ}$. This, and the choice
 of polarisation angle prior range given below, explicitly fixes the handedness
 of the system's rotation (or alternatively whether it is face-on or back-on).
 If we were to allow the inclination to have two modes (one for face-on and one
@@ -547,8 +546,8 @@ Finally, we require a prior on the calibration scale factors for each detector.
 We make the assumption that in general the calibration applied to the detector
 data will be close to being correct, so want to use a prior that is peaked at $\scf_k=1$. We
 also (na\"{i}vely) assume that the prior \ac{PDF} of the calibration scale factor is either
-larger or smaller than unity by an equivalent factor, e.g.\ \refresp{$p(\scf=10|I)$ is
-equivalent to $p(\scf=0.1|I)$}. For the scale factor in each detector we 
+larger or smaller than unity by an equivalent factor, e.g.\ $p(\scf=10|I)$ is
+equivalent to $p(\scf=0.1|I)$. For the scale factor in each detector we 
 therefore use the following log-normal distribution as our prior
 %
 \begin{equation}\label{eq:scale_prior}
@@ -599,10 +598,10 @@ uncertainties that are expected via experimental methods, but is not the same as
 the prior that we assume on $\scf$ (see Eq.~\ref{eq:scale_prior}) when recovering 
 signals\footnote{The reason behind this is that we wanted to use a fairly na\"{i}ve and
 conservative prior for signal recovery that had little impact in the results, i.e.\
-to produce results domintaed by the likelihood for these parameters. \refresp{However,
+to produce results domintaed by the likelihood for these parameters. However,
 limited studies using $\scf$ values within the much larger range of
 $\sim 0.1$ to 10 show distributions with consistent relative widths to
-those we find in our main study.}}. 
+those we find in our main study.}. 
 
 % describe the detection cut 
 In accepting a proposed simulation as one to be analysed we introduced a
@@ -644,7 +643,7 @@ Section~\ref{sec:priors}. In each case when calculating the likelihood we used
 an estimate of the noise \ac{PSD} based on the advanced detector design
 sensitivities (using those given in~\cite{2013arXiv1304.0670L}), but calculated by averaging 
 64 separate noisy realisations of the \ac{PSD} and scaled
-with the same \refresp{calibration} scale factor as applied to the injection and noise\footnote{We do not account for there 
+with the same calibration scale factor as applied to the injection and noise\footnote{We do not account for there 
 being a potential difference
 between the estimated \ac{PSD} and the actual \ac{PSD} of the analysed section
 of data as described in e.g.\ \cite{2013PhRvD..88h4044L}. This difference would
@@ -652,8 +651,8 @@ be very highly correlated with the calibration scale factor, so in reality our
 estimate of the scale factor would be a combination of the calibration offset
 and the difference in the \ac{PSD}. As such our results on real data would be
 an upper limit on the calibration scale factor.}. This has provided posterior probability
-distributions\refresp{\footnote{\refresp{As a proxy to check for convergence of the MCMC chains
-we check that the calibration scale factor posterior histograms do not contain many disjoint modes.}}}
+distributions\footnote{As a proxy to check for convergence of the MCMC chains
+we check that the calibration scale factor posterior histograms do not contain many disjoint modes.}
 on the calibration scale factors for each detector.  Examples of
 the marginalised posterior probabilities for a \ac{BNS} system and a \ac{NSBH}
 system observed with the three detector network are shown in
@@ -680,7 +679,7 @@ signals drawn from the prior distribution that fulfill the detection criterion.
  \end{center}
  \caption{\label{fig:bnspost} The marginalised posterior probability distributions for some of the unknown
  parameters of a \ac{BNS} system, including calibration scaling factors (surrounded by the 
-\refresp{thicker} red 
+thicker red 
 borders) for the three detectors (H1, L1 and V1). The simulated signal was at a distance of 
 250\,Mpc, had \ac{SNR} of 7.9, 9.1 and 5.2 and percentage relative uncertainties in the calibration 
 scale factors of 15\%, 14\% and 22\% for each of the detectors respectively.}
@@ -731,9 +730,9 @@ $\gtrsim 250$\,Mpc the upper extent of the uncertainty for H1 and L1 hits a
 maximum at $\sim 25\%$, whilst the width of boxes narrows. This is due to our
 ``detectibility'' criteria, where for all distances we will only be seeing
 those sources with a high enough \ac{SNR} that we would consider them
-detectable\refresp{, i.e.\ the weakest signals that could still be detected would
+detectable, i.e.\ the weakest signals that could still be detected would
 always have a single detector \ac{SNR} of $\sim 5.5$ no matter their distance, hence the
-plateau}. \refresp{In addition there will also} be fewer sources with \ac{SNR} higher than
+plateau. In addition there will also be fewer sources with \ac{SNR} higher than
 this criteria at large distances, giving us a narrower range, and we
 automatically exclude those with \ac{SNR} that are too small thus truncating
 our uncertainty distribution at the upper end.  However, this does show that on
@@ -804,7 +803,7 @@ the detectors. However, in figure~\ref{subfig:pp500}, with sources at 500\,Mpc, 
 H1 and L1 follow the diagonal well, V1 goes significantly above the diagonal.
 This shows that the \acp{PDF} on \scft for V1 are too broad. The reason for this is that at these
 larger distances the \acp{PDF} on \scft for V1 are not well constrained and start to become dominated
-by the prior. As we have previously noted this prior is not \refresp{the} same as the distribution used
+by the prior. As we have previously noted this prior is not the same as the distribution used
 to generate the \scft values, but is instead far broader and more conservative. So, this bias is
 showing up due to the simulated values of \scft being generated from a much narrow range.
 
