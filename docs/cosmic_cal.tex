@@ -74,7 +74,7 @@ through the use of gamma-ray bursts as standard
   parameters yielding the true luminosity distance.  This will then allow
   a direct comparison with the estimated value and can validate the accuracy of the original 
 calibration. We use simulations of individual detectable gravitational-wave signals from binary 
-neutron star (BNS) or neutron star-black hole (NSBH) systems, which we assume to be found in 
+neutron star (BNS) or neutron star-black hole systems, which we assume to be found in 
 coincidence with short gamma-ray bursts, to estimate any discrepancy in the overall scaling of the 
 calibration for detectors in the Advanced LIGO and Advanced Virgo network. We find that the 
 amplitude scaling of the calibration for the LIGO instruments could on average be confirmed to 
@@ -101,7 +101,7 @@ $\sim 20\%$ can be found with BNS sources out to $\sim 500$\,Mpc.
 \acrodef{GRB}[GRB]{gamma-ray burst}
 \acrodef{sGRB}[sGRB]{short gamma-ray burst}
 \acrodef{CBC}[CBC]{compact binary coalescence}
-\acrodef{EM}[EM]{electro-magnetic}
+\acrodef{EM}[EM]{electromagnetic}
 \acrodef{aLIGO}[aLIGO]{Advanced LIGO}
 \acrodef{AdV}[AdV]{Advanced Virgo}
 \acrodef{PSD}[PSD]{power spectral density}
@@ -124,7 +124,7 @@ current best estimates for the cosmological parameters, this is equivalent to a
 redshift $z\approx 0.1$. As noted by~\citet{1986Natur.323..310S}, \ac{CBC}
 systems can be used as cosmological distance markers, otherwise known as
 ``standard sirens'' (analogous to \ac{EM} standard candles). The nature of
-these sources will allow us to estimate, amongst other parameters, their
+these sources will allow us to estimate, among other parameters, their
 luminosity distance without the need for calibration against the cosmic
 distance ladder.
 
@@ -134,7 +134,7 @@ in addition to emitting detectable \acp{GW}, is also the mechanism for
 producing \acp{sGRB} \cite{1992ApJ...395L..83N}. In this scenario these events
 produce tightly beamed \ac{EM} emission parallel to the orbital angular
 momentum vector of the system. Additional evidence for the coincidence of
-\acp{sGRB} with \ac{GW} events are the estimated astrophysical rates of both
+\acp{sGRB} with \ac{GW} events is the estimated astrophysical rates of both
 phenomena. Observations of \acp{sGRB} give an inferred rate of \ac{sGRB}
 producing \ac{CBC} mergers of $8\times 10^{-9}$--$1.1\times
 10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$~\cite{2012MNRAS.425.2668C} after accounting for
@@ -144,7 +144,7 @@ beaming effects. This can be compared to independently obtained estimates of
 $6\,\times\,10^{-10}$--$1\,\times\,10^{-6}$\,Mpc$^{-3}$\,yr$^{-1}$
 \cite{2010CQGra..27q3001A}\footnote{However, the recent work of
 \cite{2015MNRAS.448..928K}, which studied known galactic \ac{BNS} systems in
-more detail suggest a rate approximately five times lower.}.
+more detail, suggests a rate approximately five times lower.}.
   
 If a single \ac{GW} event is observed in coincidence with a \ac{sGRB} it may be
 possible to identify the host galaxy of the source.  With this information a
@@ -157,7 +157,7 @@ acts as a standard siren also giving us a direct measurement of the luminosity
 distance to the source. The accuracy of such a measurement depends on a number
 of factors including the accuracy with which the \ac{GW} detector has been
 calibrated.  Hence, by comparison with the distance estimate from the \ac{sGRB}
-we can re-calibrate (or validate) the existing experimentally obtained
+we can recalibrate (or validate) the existing experimentally obtained
 calibration. 
 
 % What do we do in this paper
@@ -166,13 +166,13 @@ In this paper we investigate the feasibility of this approach for single coincid
 Sec.~\ref{sec:calibration} we briefly summarize the existing experimental technique for \ac{GW} 
 detector calibration and its expected accuracy.  We then review the concept of \ac{GW} standard 
 sirens and their proposed coincident \ac{EM} signatures, the \acp{sGRB} in
-Secs.~\ref{sec:sirens} and~\ref{sec:GRB}. In Secs.~\ref{sec:analysis} and \ref{sec:results} we 
+Secs.~\ref{sec:sirens}--\ref{sec:GRB}. In Secs.~\ref{sec:analysis}--\ref{sec:results} we 
 discuss our analysis method and the results, and in Sec.~\ref{sec:discussion} we 
 conclude.    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Gravitational wave detector calibration\label{sec:calibration}}
+\section{Gravitational-wave detector calibration\label{sec:calibration}}
 
 The technique used throughout \ac{GW} research in calibrating the detectors is
 carried out through a complicated system of physical manipulations of the
@@ -199,10 +199,10 @@ known as the length response function, $R(f)$, defined such that
 \end{equation}
 %
 where we assume $R$ varies only slowly in time (in comparison to transient
-signal time-scales). Calculation of $R$ requires the measurement of various
+signal time scales). Calculation of $R$ requires the measurement of various
 functions within a control feedback loop (see \cite{2010NIMPA.624..223A}),
 each of which are subject to measurement uncertainties. In this study
-we will assume an estimate of $R$ is available (although in theory we could
+we assume an estimate of $R$ is available (although in theory we could
 take on the role of estimating $R$ itself), but that it differs from the truth
 through some unknown scale factor, $\scf$, so that at a particular time we have
 %
@@ -218,12 +218,12 @@ would appear to have a larger amplitude (i.e.\ for a given system,
 would seem closer) than in reality\footnote{However, the \ac{SNR} would be
 the correct value as the signal and the noise will both contain the same scale
 factor.}, whereas if $\scf < 1$ it would appear to have a lower amplitude than
-reality.  In this analysis we will simplify the situation by assuming that
+reality.  In this analysis we simplify the situation by assuming that
 $\scf$ is a constant with respect to frequency (and is real, so has no phase
 component), but in future studies that assumption could be dropped and $\scf$
-could take some functional form, or piece-wise fit, with respect to $f$ (e.g.\
+could take some functional form, or piecewise fit, with respect to $f$ [e.g.\
 in a similar way to the method of \cite{2013PhRvD..88h4044L} used for fitting
-differences in \ac{PSD} estimates).
+differences in \ac{PSD} estimates].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -233,7 +233,7 @@ differences in \ac{PSD} estimates).
 The idea of \ac{GW} standard sirens is directly analogous to the concept of
 standard candles in \ac{EM} astronomy and was first proposed
 in~\cite{1986Natur.323..310S}. Unlike the primary \ac{EM} standard candle
-event, Type Ia Supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
+event, type Ia supernovae, the measured luminosity of a \ac{CBC} in \acp{GW} is
 not only a function of distance. It also depends upon the chirp mass (a
 function of the component masses) and the binary orientation with respect to
 the global network of \ac{GW} detectors. However, measurement of the
@@ -248,15 +248,15 @@ determination of the binary system orientation.
 % The classic use of sirens
 Standard sirens are clearly a very powerful tool for \ac{GW} cosmology since
 they give us a direct measure of the absolute luminosity distance to sources.
-This is distinct from Type Ia Supernovae standard candles that only provide
+This is distinct from type Ia supernovae standard candles that only provide
 relative luminosity distance measures and require calibration via other methods
 as part of the cosmological distance ladder. The use of \ac{GW} events with
 \ac{sGRB} counterparts for use as a cosmological tool was investigated
-in~\cite{2010CQGra..27u5006S} and~\cite{2011PhRvD..83b3005Z} with respect to
-the 3rd generation \ac{GW} interferometer, the
-\ac{ET}~\cite{2010CQGra..27h4007P} and in ~\cite{2012PhRvD..85b3535T}
+in~\cite{2010CQGra..27u5006S}--\cite{2011PhRvD..83b3005Z} with respect to
+the third generation \ac{GW} interferometer, the
+Einstein Telescope~\cite{2010CQGra..27h4007P} and in ~\cite{2012PhRvD..85b3535T}
 for the Advanced detector network. In this case, the redshift information
-obtained from the \ac{sGRB} host galaxy, provides a complementary measurement
+obtained from the \ac{sGRB} host galaxy provides a complementary measurement
 allowing each event to inform the distance-redshift relationship and hence
 obtain cosmological parameter estimates. Other methods for cosmological
 inference (see~\cite{1996PhRvD..53.2878F,2012PhRvD..85b3535T,
@@ -264,15 +264,15 @@ inference (see~\cite{1996PhRvD..53.2878F,2012PhRvD..85b3535T,
 for \ac{BNS} systems that do not rely on any redshift measurements. These
 instead use either the distribution of measured \acp{SNR} and assumed
 form of \ac{NS} mass and spatial distributions or exploit the
-features of the tidal and post-merger hyper-massive \ac{NS} stages of the
+features of the tidal and postmerger hypermassive \ac{NS} stages of the
 \ac{GW} waveform. 
 
 % put this in context with calibration
 To put the existing work on \ac{GW} cosmology in context with the study
 described in this manuscript we are essentially turning the standard
-cosmological problem upside-down. We assume that the existing \ac{EM}
-cosmological parameter estimation (specifically for the Hubble constant, which
-is has uncertainties of $O(1\%)$~\cite{2015arXiv150201589P}) is
+cosmological problem upside down. We assume that the existing \ac{EM}
+cosmological parameter estimation [specifically for the Hubble constant, which
+has uncertainties of $O(1\%)$~\cite{2015arXiv150201589P}] is
 accurately determined and therefore a known quantity. We then assume that the
 unknown in our analysis is the absolute amplitude calibration of the
 interferometers in the global \ac{GW} detector network.    
@@ -333,7 +333,7 @@ search spanning $\sim 100$'s of square degrees (e.g.\
 \cite{2011CQGra..28j5021F,2013arXiv1304.0670L,2014ApJ...795..105S}).
 For the scenario of a \ac{GW}-followup of an observed \ac{sGRB}, the
 merger time for \ac{BNS}/\ac{NSBH} systems will be estimated from the \ac{sGRB}
-to within a few seconds (see e.g.\ 340 the discussion in Sec.\ 2.2 of
+to within a few seconds (see e.g.\ the discussion in Sec.\ 2.2 of
 \cite{2012ApJ...760...12A}). This makes the follow-up search less
 computationally expensive since it is performed over a
 smaller range of data using potentially fewer numbers of waveform templates.
@@ -349,7 +349,7 @@ away) from the detector.  The actual inclination angle of the system, defined
 as the angle between the orbital angular momentum vector and the line of sight,
 must be $<$ half of the \ac{sGRB} beaming angle.  This prerequisite property
 limits us to systems that are approximately ``face-on'' and therefore
-effectively optimally oriented. At given distances this biases us to  higher
+effectively optimally oriented. At given distances this makes us biased towards higher
 \ac{SNR} signals but it is more meaningful to think of this as an increase in
 the sensitivity range of the detectors. However, as discussed earlier, the
 property of beaming severely impacts the probable rate of such joint
